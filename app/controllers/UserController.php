@@ -242,4 +242,46 @@ class UserController extends BaseController {
 				->with(compact('users', 'title'));
 	}
 
+	public function getChangePassword()
+	{
+		$title = 'Cambiar password';
+
+		return View::make('users.changePassword')
+			->with(compact('title'));
+	}
+
+	public function postChangePassword()
+	{
+		$title = 'Cambiar password';
+		$input = Input::all();
+
+		try {
+			if(Auth::attempt(array('email' => Auth::user()->email, 'password' => $input['password0'])))
+			{
+				if($input['password1'] == $input['password2'])
+				{
+					Auth::user()->password = Hash::make($input['password1']);
+					Auth::user()->update();
+				} else {
+					Session::flash('message', 'Los passwords no coinciden.');
+
+					return Redirect::to('users/change-password');
+				}
+
+			} else {
+				Session::flash('message', 'Password actual incorrecto.');
+
+				return Redirect::to('users/change-password');
+			}
+
+		} catch (Exception $e) {
+
+			return Redirect::to('users/change-password');
+		}
+
+		Session::flash('message', 'Password cambiado con éxito.');
+
+		return Redirect::to('users/change-password');
+	}
+
 }
