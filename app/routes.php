@@ -11,21 +11,27 @@
 |
 */
 
-Route::get('/', 'UserController@getIndex');
+Route::get('/', function(){
+    $title = 'Inicio';
+
+    return View::make('inicio')
+    ->with('title', $title);
+});
+
+Route::get('login', 'UserController@getIndex');
+Route::get('logout', 'UserController@getLogout');
 
 Route::controller('users', 'UserController');
 
-/*
 Route::group(array('before' => 'auth'), function()
 {
-    Route::get('/', function()
-    {
-        // Has Auth Filter
-    });
-
-    Route::get('user/profile', function()
-    {
-        // Has Auth Filter
-    });
+    Route::controller('articles', 'ArticleController');
+    Route::controller('branches', 'BrancheController');
+    Route::controller('roles', 'RoleController');
 });
-*/
+
+Route::get('u', function() {
+    // $u = Auth::User()->first()->orderBy('created_at', 'desc')->first()->id;
+    $u = Auth::user()->roles()->first()->branch->name;
+    die(var_dump($u));
+});

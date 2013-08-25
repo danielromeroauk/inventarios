@@ -4,8 +4,7 @@
 	"keywords": ["framework", "laravel", "inventarios", "adsiar", "construimportados"],
 	"require": {
 		"laravel/framework": "4.0.*",
-		"way/generators": "dev-master",
-		"twitter/bootstrap": "v2.3.2"
+		"way/generators": "dev-master"
 	},
 	"autoload": {
 		"classmap": [
@@ -25,8 +24,7 @@
 			"php artisan clear-compiled"
 		],
 		"post-update-cmd": [
-			"php artisan optimize",
-			"php artisan asset:publish bootstrap --path=vendor/twitter/bootstrap/docs/assets/"
+			"php artisan optimize"
 		],
 		"post-create-project-cmd": [
 			"php artisan key:generate"
