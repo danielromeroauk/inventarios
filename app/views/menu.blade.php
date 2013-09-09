@@ -18,19 +18,22 @@
             {{ HTML::link('/', 'Inicio') }}
           </li>
 
-          @if(Auth::user()->permitido('administrador'))
 
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Artículo <b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li>
-                    {{ HTML::link('articles/add', 'Nuevo') }}
-                </li>
+                @if(Auth::user()->permitido('administrador') || Auth::user()->permitido('remisionero'))
+                  <li>
+                      {{ HTML::link('articles/add', 'Nuevo') }}
+                  </li>
+                @endif
                 <li>
                     {{ HTML::link('articles', 'Listado') }}
                 </li>
               </ul>
             </li>
+
+          @if(Auth::user()->permitido('administrador'))
 
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">Usuario <b class="caret"></b></a>
@@ -59,6 +62,10 @@
           @endif
 
         <li>
+          {{ HTML::link('cart', 'Carrito') }}
+        </li>
+
+        <li>
           {{ HTML::link('users/change-password', 'Cambiar password') }}
         </li>
 
@@ -76,6 +83,7 @@
         {{ Form::close() }}
 
       @endif
+
     </div><!--/.nav-collapse -->
 
   </div><!--/.container -->

@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @if($user->roles()->first()->name == 'administrador')
-    <?php die('Acceso restringido. <script type="text/javascript">window.location.replace("'. '../list' .'");</script>'); ?>
+    <?php die('Acceso restringido. <script type="text/javascript">window.location.replace("'. url('users/list') .'");</script>'); ?>
 @endif
 
 @section('content')

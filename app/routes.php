@@ -28,6 +28,7 @@ Route::group(array('before' => 'auth'), function()
     Route::controller('articles', 'ArticleController');
     Route::controller('branches', 'BrancheController');
     Route::controller('roles', 'RoleController');
+    Route::controller('cart', 'CartController');
 });
 
 Route::get('u', function() {
