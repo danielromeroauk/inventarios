@@ -41,4 +41,22 @@ class CartController extends BaseController {
             ->with(compact('title'));
     }
 
+    public function getClearItem($idArticle)
+    {
+        $title = 'Quitar item';
+        $cart = array();
+
+        if (Session::has('cart')) {
+            $cart = Session::get('cart');
+        }
+
+        unset($cart[$idArticle]);
+
+        Session::put('cart', $cart);
+
+        return View::make('carts.index')
+            ->with(compact('title'));
+
+    }
+
 }

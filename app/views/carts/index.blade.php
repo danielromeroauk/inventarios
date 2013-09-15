@@ -2,12 +2,7 @@
 
 @section('content')
 
-        @if(!Session::has('cart'))
-            Carrito vacío.
-            <script type="text/javascript">
-                window.location.replace("<?php echo url('articles'); ?>");
-            </script>
-        @endif
+    @include('plugins.cart')
 
     <table class="table table-stripped table-hover table-bordered">
         <thead>
@@ -39,6 +34,9 @@
                     </td>
                     <td>
                         {{ $item[0]->name }}
+                    </td>
+                    <td>
+                         {{ HTML::link('cart/clear-item/'. $item[0]->id, 'Quitar', array('class' => 'btn btn-warning')) }}
                     </td>
                 </tr>
             @endforeach

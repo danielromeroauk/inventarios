@@ -7,6 +7,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	{{ HTML::style( 'css/bootstrap.min.css') }}
 	{{ HTML::style( 'css/jumbotron.css') }}
+	{{ HTML::style( 'css/inventarios.css') }}
 
 </head>
 <body>

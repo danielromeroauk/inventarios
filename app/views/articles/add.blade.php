@@ -17,7 +17,10 @@
                 </tr>
                 <tr>
                     <td>
-                        {{ Form::select('unit', array('Unidades' => 'Unidades', 'Metros' => 'Metros'), '', array('class' => 'form-control', 'required')) }}
+                        <div class="input-group">
+                            <span class="input-group-addon">Medida:</span>
+                            {{ Form::select('unit', array('Unidades' => 'Unidades', 'Metros' => 'Metros'), '', array('class' => 'form-control', 'required')) }}
+                        </div>
                     </td>
                 </tr>
                 <tr>
