@@ -1,0 +1,8 @@
+div.panel-footer form {
+    display: inline;
+}
+
+div.panel-footer form input[type=number] {
+    display: inline-block;
+    width: 118px;
+}
