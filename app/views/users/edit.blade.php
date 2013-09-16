@@ -27,7 +27,7 @@
                 </tr>
                 <tr>
                     <td>
-                        {{ Form::label('branch', 'Sucursal', array('class' => 'label')) }}
+                        {{ Form::label('branch', 'Sucursal', array('class' => 'label label-default')) }}
                         <select name="branch" id="branch" class="form-control" required>
                             @foreach($branches as $branch)
                                 <option value="{{ $branch->id }}"
@@ -41,7 +41,7 @@
                 </tr>
                 <tr>
                     <td>
-                        {{ Form::label('rol', 'Rol', array('class' => 'label')) }}
+                        {{ Form::label('rol', 'Rol', array('class' => 'label label-default')) }}
                         {{ Form::select('rol', array('vendedor' => 'vendedor', 'remisionero' => 'remisionero', 'auditor' => 'auditor'), $user->roles()->first()->name, array('class' => 'form-control')) }}
                     </td>
                 </tr>
