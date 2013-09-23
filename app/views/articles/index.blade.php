@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <h1>Artículos</h1>
+    <h1>Informe de Artículos</h1>
     @foreach($articles as $article)
         <div class="panel panel-primary">
           <div class="panel-heading">

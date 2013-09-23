@@ -111,4 +111,22 @@ class BrancheController extends BaseController {
             ->with('message', 'Hay errores de validación.');
     }
 
+    public function getJson()
+    {
+        $branches = Branche::all();
+
+        return View::make('branches.json')
+                ->with(compact('branches'));
+    }
+
+    public function getSelect()
+    {
+        $title = "Sucursales";
+
+        $branches = Branche::all();
+
+        return View::make('branches.select')
+                ->with(compact('branches', 'title'));
+    }
+
 }

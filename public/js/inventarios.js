@@ -9,9 +9,6 @@
             'content': 'Use coma (,) como separador decimal.'
         });
 
-        // $(':text').popover();*
-
-        // alert($('select', articleForm).val());
     }
 
 })(jQuery);

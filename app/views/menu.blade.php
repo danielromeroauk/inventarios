@@ -37,6 +37,10 @@
           </ul>
         </li>
 
+        @if(Auth::user()->permitido('administrador') || Auth::user()->permitido('remisionero'))
+          <li> {{ HTML::link('purchases', 'Compras') }} </li>
+        @endif
+
       @endif
 
       @if(Auth::check() && Auth::user()->permitido('administrador'))
