@@ -24,15 +24,24 @@
 
       @if(Auth::check())
 
+        <li>
+          {{ '<a href="'. url('articles') .'">
+                  <span class="glyphicon glyphicon-list-alt"></span>
+                  Artículos
+              </a>' }}
+
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Artículo <b class="caret"></b></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Registrar <b class="caret"></b></a>
           <ul class="dropdown-menu">
 
             @if(Auth::user()->permitido('administrador') || Auth::user()->permitido('remisionero'))
-              <li> {{ HTML::link('articles/add', 'Nuevo') }} </li>
+              <li> {{ HTML::link('articles/add', 'Artículo') }} </li>
             @endif
 
-            <li> {{ HTML::link('articles', 'Listado') }}</li>
+            @if(Auth::user()->permitido('administrador'))
+              <li> {{ HTML::link('users/register', 'Usuario') }} </li>
+              <li> {{ HTML::link('branches/add', 'Sucursal') }} </li>
+            @endif
 
           </ul>
         </li>
@@ -41,45 +50,22 @@
           <li> {{ HTML::link('purchases', 'Compras') }} </li>
         @endif
 
-      @endif
 
-      @if(Auth::check() && Auth::user()->permitido('administrador'))
+        @if(Auth::user()->permitido('administrador'))
 
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Usuario <b class="caret"></b></a>
-          <ul class="dropdown-menu">
-            <li>
-              {{ HTML::link('users/register', 'Nuevo') }}
-            </li>
-            <li>
-              {{ HTML::link('users/list', 'Listado') }}
-            </li>
-          </ul>
-        </li>
+          <li> {{ HTML::link('users/list', 'Usuarios') }} </li>
+          <li> {{ HTML::link('branches', 'Sucursales') }} </li>
 
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Sucursal <b class="caret"></b></a>
-          <ul class="dropdown-menu">
-            <li>
-              {{ HTML::link('branches/add', 'Nuevo') }}
-            </li>
-            <li>
-              {{ HTML::link('branches', 'Listado') }}
-            </li>
-          </ul>
-        </li>
+        @endif
 
-      @endif
-
-      @if(Auth::check())
+        <li> {{ HTML::link('users/change-password', 'Cambiar password') }} </li>
 
         <li>
-            {{ HTML::link('cart', 'Carrito') }}
-          </li>
-
-          <li>
-            {{ HTML::link('users/change-password', 'Cambiar password') }}
-          </li>
+          {{ '<a href="'. url('cart') .'">
+                <span class="glyphicon glyphicon-shopping-cart"></span>
+                Ver Carrito
+            </a>' }}
+        </li>
 
       @endif
 

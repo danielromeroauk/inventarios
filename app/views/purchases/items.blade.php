@@ -24,7 +24,7 @@
                     </tr>
                     @foreach($pitems as $pitem)
                         <tr>
-                            <td>{{ $pitem->first()->amount .' '. $pitem->article->unit }}</td>
+                            <td>{{ $pitem->amount .' '. $pitem->article->unit }}</td>
                             <td>{{ $pitem->article->name }}</td>
                         </tr>
                     @endforeach

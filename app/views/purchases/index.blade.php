@@ -21,7 +21,7 @@
             <div class="panel-footer">
                 {{ '<a href="'. url('purchases/items') .'/'. $purchase->id .'" class="btn btn-info btn-sm">
                     <span class="glyphicon glyphicon-list"></span>
-                    Ver items
+                    Ver más detalles
                 </a>' }}
             </div>
         </div>
