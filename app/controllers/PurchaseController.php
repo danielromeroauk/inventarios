@@ -85,7 +85,9 @@ class PurchaseController extends BaseController {
     {
         try {
 
-            $articleStock = Stock::where('article_id', '=', $idArticle, 'and', 'branch_id', '=', $idBranch)->first();
+            // $articleStock = Stock::whereRaw("article_id='". $idArticle ."' and branch_id='". $idBranch ."'")->first();
+            // $articleStock = Stock::where('article_id', '=', $idArticle)->where('branch_id', '=', $idBranch)->first();
+            $articleStock = Stock::where('article_id', $idArticle)->where('branch_id', $idBranch)->first();
 
             if(!empty($articleStock)) {
                 $articleStock->stock += $amount;
