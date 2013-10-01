@@ -1,5 +1,23 @@
 @extends('layouts.master')
 
+@section('head')
+
+    <script>
+        (function($){
+
+            $(document).on('ready', iniciar);
+
+            function iniciar() {
+                $('.pagination').addClass('btn-toolbar');
+                $('.pagination ul').addClass('btn-group');
+                $('.pagination ul li').addClass('btn btn-default');
+            }
+
+        })(jQuery);
+    </script>
+
+@stop
+
 @section('content')
 
     @foreach($purchases as $purchase)
@@ -26,5 +44,7 @@
             </div>
         </div>
     @endforeach
+
+    <?php echo $purchases->links(); ?>
 
 @stop

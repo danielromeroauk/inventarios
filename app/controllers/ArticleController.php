@@ -13,7 +13,7 @@ class ArticleController extends BaseController {
 	{
 		$title = "Artículos";
 
-        $articles = Article::all();
+        $articles = Article::orderBy('name', 'asc')->paginate(5);
 
 		return View::make('articles.index')
 				->with(compact('articles', 'title'));

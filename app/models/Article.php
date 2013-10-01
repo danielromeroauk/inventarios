@@ -20,4 +20,9 @@ class Article extends Eloquent {
         'iva.required' => 'El IVA es requerido.'
     );
 
+    public function stocks()
+    {
+        return $this->hasMany('Stock');
+    }
+
 }

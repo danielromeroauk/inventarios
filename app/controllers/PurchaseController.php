@@ -12,7 +12,7 @@ class PurchaseController extends BaseController {
     public function getIndex()
     {
         $title = 'Compras';
-        $purchases = Purchase::orderBy('id', 'desc')->get();
+        $purchases = Purchase::orderBy('id', 'desc')->paginate(5);
 
         return View::make('purchases.index')
                 ->with(compact('title', 'purchases'));
@@ -32,7 +32,6 @@ class PurchaseController extends BaseController {
 
         foreach ($cart as $item) {
             self::saveInPurchaseItemTable($item[0]->id, $item[1]);
-            self::saveInStockTable($input['branch_id'], $item[0]->id, $item[1]);
         } #foreach $cart as $item
 
         Session::forget('cart');
@@ -118,4 +117,52 @@ class PurchaseController extends BaseController {
             ->with(compact('title', 'purchase', 'pitems'));
     }
 
-}
+    public function postPurchaseStore()
+    {
+        try {
+
+            $input = Input::all();
+            $cart = array();
+
+            if (Session::has('cart')) {
+                $cart = Session::get('cart');
+            }
+
+            foreach ($cart as $item) {
+                self::saveInStockTable($input['branch_id'], $item[0]->id, $item[1]);
+            } #foreach $cart as $item
+
+            $purchaseStore = new PurchaseStore();
+            $ps['id'] = $input['purchase'];
+            $ps['user_id'] = Auth::user()->id;
+            $ps['comments'] = $input['comments'];
+            $purchaseStore->create($ps);
+
+            /*Cambiar el status en la tabla purchase a finalizado*/
+            $purchase = Purchase::find($input['purchase']);
+            $purchase->status = 'finalizado';
+            $purchase->update();
+
+            return Redirect::to('purchases');
+
+        } catch (Exception $e) {
+            die('No se pudo aumentar el stock.');
+        }
+    } #postPurchaseStore
+
+    public function getCancel($idPurchase)
+    {
+        try {
+
+            $purchase = Purchase::find($idPurchase);
+            $purchase->status = 'cancelado';
+            $purchase->update();
+
+            return Redirect::to('purchases');
+
+        } catch (Exception $e) {
+            die('No fue posible cancelar la compra.');
+        }
+    }
+
+} #PurchaseController
