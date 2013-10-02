@@ -11,7 +11,8 @@
 
             function iniciar() {
                convertirBotones();
-               cargarBranches();
+               cargarBranches1();
+               cargarBranches2();
             } //iniciar
 
         })(jQuery);
@@ -23,19 +24,38 @@
             $('.button', contexto).button();
         }
 
-        function cargarBranches() {
-            $('#examinar').on('click', function(){
-                $('#branchesModal .modal-body').load( "{{  url('branches/select') }}" );
+        function cargarBranches1()
+        {
+            $('#examinar1').on('click', function(){
+                $('#branchesModal .modal-body').load( "{{  url('branches/select?campo1=branch&campo2=branch_id') }}" );
             });
-        }
+        } // cargarBranches1
 
-        function validarPurchase() {
+        function cargarBranches2()
+        {
+            $('#examinar2').on('click', function(){
+                $('#branchesModal .modal-body').load( "{{  url('branches/select?campo1=branch2&campo2=branch_id2') }}" );
+            });
+        } // cargarBranches2
+
+        function validarPurchase()
+        {
             if ($('#branch_id').val() != '') {
                 $('#purchaseForm').submit();
             } else {
                 alert('Faltan campos por diligenciar');
             }
         }
+
+        function validarSale()
+        {
+            if ($('#branch_id2').val() != '') {
+                $('#saleForm').submit();
+            } else {
+                alert('Faltan campos por diligenciar');
+            }
+        }
+
     </script>
 
 @stop
@@ -100,7 +120,7 @@
                         <div class="input-group">
                             <span class="input-group-addon">Sucursal: </span>
                             {{ Form::text('branch', '', array('id' => 'branch', 'class' => 'form-control', 'placeholder' => 'Especifique la sucursal que debe recibir el contenido del carrito.', 'title' => 'Sucursal', 'maxlength' => '255', 'required', 'readonly')) }}
-                            <a href="#branchesModal" class="input-group-addon btn btn-success" id="examinar" data-toggle="modal">Examinar</a>
+                            <a href="#branchesModal" class="input-group-addon btn btn-success" id="examinar1" data-toggle="modal">Examinar</a>
                         </div> <!-- /input-group -->
                         {{ Form::input('hidden', 'branch_id', '', array('id' => 'branch_id')) }}
                         {{ Form::textarea('comments', '', array('rows' => '3', 'class' => 'form-control', 'placeholder' => 'Datos adicionales de la compra...', 'maxlength' => '255')) }}
@@ -115,8 +135,24 @@
 
               </div><!-- /#tab1 -->
               <div id="tab2">
-                Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
-                Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+
+                {{ Form::open(array('url' => 'sales/add', 'id' => 'saleForm')) }}
+                        <div class="input-group">
+                            <span class="input-group-addon">Sucursal: </span>
+                            {{ Form::text('branch', '', array('id' => 'branch2', 'class' => 'form-control', 'placeholder' => 'Especifique la sucursal que debe entregar el contenido del carrito.', 'title' => 'Sucursal', 'maxlength' => '255', 'required', 'readonly')) }}
+                            <a href="#branchesModal" class="input-group-addon btn btn-success" id="examinar2" data-toggle="modal">Examinar</a>
+                        </div> <!-- /input-group -->
+                        {{ Form::input('hidden', 'branch_id', '', array('id' => 'branch_id2')) }}
+                        {{ Form::textarea('comments', '', array('rows' => '3', 'class' => 'form-control', 'placeholder' => 'Datos adicionales de la venta...', 'maxlength' => '255')) }}
+                        <p> </p>
+
+                        <a href="#purchaseModal" class="button" data-toggle="modal">
+                            <span class="glyphicon glyphicon-floppy-save"></span>
+                            Enviar venta
+                        </a>
+                        {{ Form::submit('Enviar', array('class' => 'hidden')) }}
+                {{ Form::close() }}
+
               </div>
               <div id="tab3">
                 Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
@@ -157,6 +193,25 @@
             <div class="modal-footer">
               <a href="#" class="btn btn-danger" data-dismiss="modal">No</a>
               <a href="javascript:validarPurchase();" class="btn btn-primary">Sí</a>
+            </div>
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+      </div><!-- /.modal -->
+
+      <!-- Modal -->
+      <div class="modal fade" id="saleModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
+              <h4 class="modal-title">Confirmar</h4>
+            </div>
+            <div class="modal-body">
+              ¿Está seguro que desea enviar la venta con el contenido actual del carrito?
+            </div>
+            <div class="modal-footer">
+              <a href="#" class="btn btn-danger" data-dismiss="modal">No</a>
+              <a href="javascript:validarSale();" class="btn btn-primary">Sí</a>
             </div>
           </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->

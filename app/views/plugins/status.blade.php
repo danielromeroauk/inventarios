@@ -8,8 +8,8 @@
 @endif
 
 @if(Session::has('message'))
-	<div class="alert alert-error">
-		<a class="close" href="#" data-dismiss="alert">x</a>
+	<div class="alert alert-dismissable alert-danger">
+	  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 		{{ Session::get('message') }}
 	</div>
 @endif

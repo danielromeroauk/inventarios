@@ -2,13 +2,6 @@
 
 class PurchaseController extends BaseController {
 
-	protected $rol;
-
-	public function __construct(Purchase $rol)
-	{
-		$this->rol = $rol;
-	}
-
     public function getIndex()
     {
         $title = 'Compras';
@@ -94,7 +87,7 @@ class PurchaseController extends BaseController {
             } else {
                 $StockTable = new Stock();
 
-                $stock['branch_id'] =$idBranch;
+                $stock['branch_id'] = $idBranch;
                 $stock['article_id'] = $idArticle;
                 $stock['stock'] = $amount;
                 $stock['minstock'] = 0;
@@ -122,15 +115,12 @@ class PurchaseController extends BaseController {
         try {
 
             $input = Input::all();
-            $cart = array();
 
-            if (Session::has('cart')) {
-                $cart = Session::get('cart');
-            }
+            $pitems = PurchaseItem::where('purchase_id', '=', $input['purchase'])->get();
 
-            foreach ($cart as $item) {
-                self::saveInStockTable($input['branch_id'], $item[0]->id, $item[1]);
-            } #foreach $cart as $item
+            foreach ($pitems as $pitem) {
+                self::saveInStockTable($input['branch_id'], $pitem->article->id, $pitem->amount);
+            } #foreach
 
             $purchaseStore = new PurchaseStore();
             $ps['id'] = $input['purchase'];

@@ -23,7 +23,24 @@
 
 @section('content')
 
-    <h1>Informe de Artículos</h1>
+    <h1>
+        Informe de Artículos
+        {{ Form::open(array('url' => 'articles/search')) }}
+            <div class="input-group">
+              {{ Form::text('search', '', array('placeholder' => 'Buscar...', 'class' => 'form-control')) }}
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="submit">Buscar</button>
+              </span>
+            </div><!-- /input-group -->
+        {{ Form::close() }}
+    </h1>
+
+        @if(Session::has('filtro'))
+            <div class="alert alert-dismissable alert-info">
+              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+              {{ Session::get('filtro') }}
+            </div>
+        @endif
 
     @foreach($articles as $article)
 
@@ -76,6 +93,7 @@
             </div> <!-- /#tabs -->
 
           </div> <!-- /.panel-body -->
+
           <div class="panel-footer">
              {{ Form::open(array('url' => 'cart/add')) }}
                     {{ Form::text('id', $article->id, array('class' => 'hidden')) }}

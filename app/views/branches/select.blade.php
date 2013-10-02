@@ -22,11 +22,13 @@
         @endforeach
     </tbody>
 </table>
-<script>
-    $('.auk-select').on('click', function(){
-        $this = $(this);
+@if(isset($_GET['campo1'], $_GET['campo2']))
+    <script>
+        $('.auk-select').on('click', function(){
+            $this = $(this);
 
-        $('#branch').val($this.attr('auk-branch'));
-        $('#branch_id').val($this.attr('id'));
-    });
-</script>
+            $('#'+"{{ $_GET['campo1'] }}").val($this.attr('auk-branch'));
+            $('#'+"{{ $_GET['campo2'] }}").val($this.attr('id'));
+        });
+    </script>
+@endif
