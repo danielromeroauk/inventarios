@@ -35,7 +35,7 @@
 
         <div class="panel panel-info">
             <div class="panel-heading">
-                <span class="glyphicon glyphicon-leaf"></span>
+                <span class="glyphicon glyphicon-flash"></span>
                 Código de entrega inmediata: {{ $instant->id }}
             </div>
             <div class="panel-body">
@@ -61,9 +61,13 @@
                 </table>
             </div><!-- /.panel-body -->
             <div class="panel-footer">
-                @if(isset($instant->SaleStore->comments))
+                @if(isset($instant->InstantStore->comments))
 
-                    <p><strong>Comentarios de bodega:</strong> {{ $instant->SaleStore->comments }}</p>
+                    <p class="label label-info">Finalizado por {{ $instant->InstantStore->user->name }}</p>
+                    <p class="alert alert-success">
+                        <span class="glyphicon glyphicon-comment"></span>
+                        {{ $instant->InstantStore->comments }}
+                    </p>
 
                 @elseif((Auth::user()->permitido('bodeguero') || Auth::user()->permitido('remisionero') || Auth::user()->permitido('administrador')) && $instant->status == 'pendiente')
 

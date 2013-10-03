@@ -64,7 +64,11 @@
             <div class="panel-footer">
                 @if(isset($sale->SaleStore->comments))
 
-                    <p><strong>Comentarios de bodega:</strong> {{ $sale->SaleStore->comments }}</p>
+                    <p class="label label-info">Finalizado por {{ $sale->SaleStore->user->name }}</p>
+                    <p class="alert alert-success">
+                        <span class="glyphicon glyphicon-comment"></span>
+                        {{ $sale->SaleStore->comments }}
+                    </p>
 
                 @elseif((Auth::user()->permitido('bodeguero') || Auth::user()->permitido('remisionero') || Auth::user()->permitido('administrador')) && $sale->status == 'pendiente')
 

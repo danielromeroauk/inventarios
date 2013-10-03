@@ -64,7 +64,11 @@
             <div class="panel-footer">
                 @if(isset($purchase->PurchaseStore->comments))
 
-                    <p><strong>Comentarios de bodega:</strong> {{ $purchase->PurchaseStore->comments }}</p>
+                    <p class="label label-info">Finalizado por {{ $purchase->PurchaseStore->user->name }}</p>
+                    <p class="alert alert-success">
+                        <span class="glyphicon glyphicon-comment"></span>
+                        {{ $purchase->PurchaseStore->comments }}
+                    </p>
 
                 @elseif((Auth::user()->permitido('bodeguero') || Auth::user()->permitido('remisionero') || Auth::user()->permitido('administrador')) && $purchase->status == 'pendiente')
 

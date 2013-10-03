@@ -64,7 +64,11 @@
             <div class="panel-footer">
                 @if(isset($damage->DamageStore->comments))
 
-                    <p><strong>Comentarios de bodega:</strong> {{ $damage->DamageStore->comments }}</p>
+                    <p class="label label-info">Finalizado por {{ $damage->DamageStore->user->name }}</p>
+                    <p class="alert alert-success">
+                        <span class="glyphicon glyphicon-comment"></span>
+                        {{ $damage->DamageStore->comments }}
+                    </p>
 
                 @elseif((Auth::user()->permitido('bodeguero') || Auth::user()->permitido('remisionero') || Auth::user()->permitido('administrador')) && $damage->status == 'pendiente')
 
