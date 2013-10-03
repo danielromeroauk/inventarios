@@ -19,7 +19,7 @@ class CreateInstantItemsTable extends Migration {
 			$table->increments('id');
 			$table->integer('instant_id')->unsigned();
 			$table->integer('article_id')->unsigned();
-			$table->decimal('ammount', 16, 2)->unsigned();
+			$table->decimal('amount', 16, 2)->unsigned();
 
 			$table->timestamps();
 

@@ -47,7 +47,16 @@
         </li>
 
         @if(Auth::user()->permitido('administrador') || Auth::user()->permitido('remisionero'))
-          <li> {{ HTML::link('purchases', 'Compras') }} </li>
+          <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Informes <b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <li> {{ HTML::link('purchases', 'Compras') }} </li>
+            <li> {{ HTML::link('sales', 'Ventas') }} </li>
+            <li> {{ HTML::link('damages', 'Daños') }} </li>
+            <li> {{ HTML::link('instants', 'Entregas inmediatas') }} </li>
+            <li> {{ HTML::link('articles', 'Rotaciones') }} </li>
+          </ul>
+        </li>
         @endif
 
 

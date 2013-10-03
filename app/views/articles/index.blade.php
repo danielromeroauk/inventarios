@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('head')
-    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/start/jquery-ui.css" />
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
     <script>
         (function($){
@@ -13,7 +13,7 @@
                 $('.pagination ul').addClass('btn-group');
                 $('.pagination ul li').addClass('btn btn-default');
 
-                $('.tabs').tabs();
+                $('.tabs').tabs({ active: 1 });
             }
 
         })(jQuery);
@@ -44,9 +44,9 @@
 
     @foreach($articles as $article)
 
-        <div class="panel panel-success">
+        <div class="panel panel-primary">
           <div class="panel-heading">
-                <span class="glyphicon glyphicon-ok"></span>
+                <span class="glyphicon glyphicon-send"></span>
                 {{ $article->name }}
           </div>
           <div class="panel-body">

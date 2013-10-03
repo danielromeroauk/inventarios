@@ -24,7 +24,7 @@ class PurchaseController extends BaseController {
         self::saveInPurchaseTable();
 
         foreach ($cart as $item) {
-            self::saveInPurchaseItemTable($item[0]->id, $item[1]);
+            self::saveInPurchaseItemTable($item['article']->id, $item['amount']);
         } #foreach $cart as $item
 
         Session::forget('cart');

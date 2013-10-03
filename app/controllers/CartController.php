@@ -23,7 +23,7 @@ class CartController extends BaseController {
             $cart = Session::get('cart');
         }
 
-        $cart[$article->id] = array($article, $cantidad);
+        $cart[$article->id] = array('article' => $article, 'amount' => $cantidad);
 
         Session::put('cart', $cart);
 

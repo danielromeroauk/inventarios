@@ -2,7 +2,7 @@
 
 @section('head')
 
-    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/start/jquery-ui.css" />
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.css" />
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
     <script>
         (function($){
@@ -11,8 +11,7 @@
 
             function iniciar() {
                convertirBotones();
-               cargarBranches1();
-               cargarBranches2();
+               cargarBranches();
             } //iniciar
 
         })(jQuery);
@@ -24,26 +23,32 @@
             $('.button', contexto).button();
         }
 
-        function cargarBranches1()
+        function cargarBranches()
         {
             $('#examinar1').on('click', function(){
                 $('#branchesModal .modal-body').load( "{{  url('branches/select?campo1=branch&campo2=branch_id') }}" );
             });
-        } // cargarBranches1
 
-        function cargarBranches2()
-        {
             $('#examinar2').on('click', function(){
                 $('#branchesModal .modal-body').load( "{{  url('branches/select?campo1=branch2&campo2=branch_id2') }}" );
             });
-        } // cargarBranches2
+
+            $('#examinar3').on('click', function(){
+                $('#branchesModal .modal-body').load( "{{  url('branches/select?campo1=branch3&campo2=branch_id3') }}" );
+            });
+
+            $('#examinar4').on('click', function(){
+                $('#branchesModal .modal-body').load( "{{  url('branches/select?campo1=branch4&campo2=branch_id4') }}" );
+            });
+
+        } // cargarBranches1
 
         function validarPurchase()
         {
             if ($('#branch_id').val() != '') {
                 $('#purchaseForm').submit();
             } else {
-                alert('Faltan campos por diligenciar');
+                alert('Faltan campos de la compra por diligenciar.');
             }
         }
 
@@ -52,7 +57,25 @@
             if ($('#branch_id2').val() != '') {
                 $('#saleForm').submit();
             } else {
-                alert('Faltan campos por diligenciar');
+                alert('Faltan campos de la venta por diligenciar.');
+            }
+        }
+
+        function validarDamage()
+        {
+            if ($('#branch_id3').val() != '') {
+                $('#damageForm').submit();
+            } else {
+                alert('Faltan campos de daño por diligenciar.');
+            }
+        }
+
+        function validarInstant()
+        {
+            if ($('#instants-comments').val() != '') {
+                $('#instantForm').submit();
+            } else {
+                alert('Faltan campos de la entrega inmediata por diligenciar.');
             }
         }
 
@@ -69,14 +92,10 @@
             <table class="table table-stripped table-hover table-bordered">
                 <thead>
                     <tr>
+                        <th>Cantidad</th>
+                        <th>Artículo</th>
                         <th>
-                            Cantidad
-                        </th>
-                        <th>
-                            Artículo
-                        </th>
-                        <th>
-                            {{ '<a href="'. url('cart/clear') .'" class="btn btn-danger btn-sm">
+                            {{ '<a href="'. url('cart/clear') .'" class="btn btn-danger btn-xs">
                                 <span class="glyphicon glyphicon-floppy-remove"></span>
                                 Vaciar carrito
                             </a>' }}
@@ -86,15 +105,10 @@
                 <tbody>
                     @foreach(Session::get('cart') as $item)
                         <tr>
+                            <td>{{ $item['amount'] .' '. $item['article']->unit }}</td>
+                            <td>{{ $item['article']->name }}</td>
                             <td>
-                                {{ $item[1] }}
-                                {{ $item[0]->unit }}
-                            </td>
-                            <td>
-                                {{ $item[0]->name }}
-                            </td>
-                            <td>
-                                {{ '<a href="'. url('cart/clear-item/'. $item[0]->id) .'">
+                                {{ '<a href="'. url('cart/clear-item/'. $item['article']->id) .'">
                                     <button class="btn btn-warning btn-xs">
                                         <span class="glyphicon glyphicon-remove"></span>
                                         Quitar
@@ -112,8 +126,10 @@
               <ul>
                 <li><a href="#tab1"><span>Compra</span></a></li>
                 <li><a href="#tab2"><span>Venta</span></a></li>
-                <li><a href="#tab3"><span>Rotación</span></a></li>
+                <li><a href="#tab3"><span>Daño</span></a></li>
+                <li><a href="#tab4"><span>Entrega inmediata</span></a></li>
               </ul>
+
               <div id="tab1">
 
                 {{ Form::open(array('url' => 'purchases/add', 'id' => 'purchaseForm')) }}
@@ -123,7 +139,7 @@
                             <a href="#branchesModal" class="input-group-addon btn btn-success" id="examinar1" data-toggle="modal">Examinar</a>
                         </div> <!-- /input-group -->
                         {{ Form::input('hidden', 'branch_id', '', array('id' => 'branch_id')) }}
-                        {{ Form::textarea('comments', '', array('rows' => '3', 'class' => 'form-control', 'placeholder' => 'Datos adicionales de la compra...', 'maxlength' => '255')) }}
+                        {{ Form::textarea('comments', '', array('rows' => '3', 'class' => 'form-control', 'placeholder' => 'Datos adicionales de la compra.', 'maxlength' => '255')) }}
                         <p> </p>
 
                         <a href="#purchaseModal" class="button" data-toggle="modal">
@@ -134,6 +150,7 @@
                 {{ Form::close() }}
 
               </div><!-- /#tab1 -->
+
               <div id="tab2">
 
                 {{ Form::open(array('url' => 'sales/add', 'id' => 'saleForm')) }}
@@ -143,23 +160,55 @@
                             <a href="#branchesModal" class="input-group-addon btn btn-success" id="examinar2" data-toggle="modal">Examinar</a>
                         </div> <!-- /input-group -->
                         {{ Form::input('hidden', 'branch_id', '', array('id' => 'branch_id2')) }}
-                        {{ Form::textarea('comments', '', array('rows' => '3', 'class' => 'form-control', 'placeholder' => 'Datos adicionales de la venta...', 'maxlength' => '255')) }}
+                        {{ Form::textarea('comments', '', array('rows' => '3', 'class' => 'form-control', 'placeholder' => 'Datos adicionales de la venta.', 'maxlength' => '255')) }}
                         <p> </p>
 
-                        <a href="#purchaseModal" class="button" data-toggle="modal">
+                        <a href="#saleModal" class="button" data-toggle="modal">
                             <span class="glyphicon glyphicon-floppy-save"></span>
                             Enviar venta
                         </a>
                         {{ Form::submit('Enviar', array('class' => 'hidden')) }}
                 {{ Form::close() }}
 
-              </div>
+              </div><!-- /#tab2 -->
+
               <div id="tab3">
-                Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
-                Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
-                Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
-              </div>
-            </div>
+
+                {{ Form::open(array('url' => 'damages/add', 'id' => 'damageForm')) }}
+                        <div class="input-group">
+                            <span class="input-group-addon">Sucursal: </span>
+                            {{ Form::text('branch', '', array('id' => 'branch3', 'class' => 'form-control', 'placeholder' => 'Especifique la sucursal donde sucedió el daño.', 'title' => 'Sucursal', 'maxlength' => '255', 'required', 'readonly')) }}
+                            <a href="#branchesModal" class="input-group-addon btn btn-success" id="examinar3" data-toggle="modal">Examinar</a>
+                        </div> <!-- /input-group -->
+                        {{ Form::input('hidden', 'branch_id', '', array('id' => 'branch_id3')) }}
+                        {{ Form::textarea('comments', '', array('rows' => '3', 'class' => 'form-control', 'placeholder' => 'Datos adicionales de daño.', 'maxlength' => '255')) }}
+                        <p> </p>
+
+                        <a href="#damageModal" class="button" data-toggle="modal">
+                            <span class="glyphicon glyphicon-floppy-save"></span>
+                            Enviar daño
+                        </a>
+                        {{ Form::submit('Enviar', array('class' => 'hidden')) }}
+                {{ Form::close() }}
+
+              </div><!-- /#tab3 -->
+
+              <div id="tab4">
+
+                {{ Form::open(array('url' => 'instants/add', 'id' => 'instantForm')) }}
+                        {{ Form::textarea('comments', '', array('id' => 'instants-comments', 'rows' => '3', 'class' => 'form-control', 'placeholder' => 'Datos adicionales de la entrega inmediata.', 'maxlength' => '255')) }}
+                        <p> </p>
+
+                        <a href="#instantModal" class="button" data-toggle="modal">
+                            <span class="glyphicon glyphicon-floppy-save"></span>
+                            Enviar daño
+                        </a>
+                        {{ Form::submit('Enviar', array('class' => 'hidden')) }}
+                {{ Form::close() }}
+
+              </div><!-- /#tab4 -->
+
+            </div><!-- /#tabs -->
 
         </div><!-- /.panel-footer -->
     </div><!-- /.panel -->
@@ -188,7 +237,7 @@
               <h4 class="modal-title">Confirmar</h4>
             </div>
             <div class="modal-body">
-              ¿Está seguro que desea enviar la remisión con el contenido actual del carrito?
+              ¿Deseas enviar la remisión con el contenido actual del carrito?
             </div>
             <div class="modal-footer">
               <a href="#" class="btn btn-danger" data-dismiss="modal">No</a>
@@ -207,11 +256,49 @@
               <h4 class="modal-title">Confirmar</h4>
             </div>
             <div class="modal-body">
-              ¿Está seguro que desea enviar la venta con el contenido actual del carrito?
+              ¿Deseas enviar la venta con el contenido actual del carrito?
             </div>
             <div class="modal-footer">
               <a href="#" class="btn btn-danger" data-dismiss="modal">No</a>
               <a href="javascript:validarSale();" class="btn btn-primary">Sí</a>
+            </div>
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+      </div><!-- /.modal -->
+
+      <!-- Modal -->
+      <div class="modal fade" id="damageModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
+              <h4 class="modal-title">Confirmar</h4>
+            </div>
+            <div class="modal-body">
+              ¿Deseas enviar el daño con el contenido actual del carrito?
+            </div>
+            <div class="modal-footer">
+              <a href="#" class="btn btn-danger" data-dismiss="modal">No</a>
+              <a href="javascript:validarDamage();" class="btn btn-primary">Sí</a>
+            </div>
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+      </div><!-- /.modal -->
+
+      <!-- Modal -->
+      <div class="modal fade" id="instantModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
+              <h4 class="modal-title">Confirmar</h4>
+            </div>
+            <div class="modal-body">
+              ¿Deseas registrar la entrega inmediata con el contenido actual del carrito? Si haces clic en <strong>Sí</strong> el stock de la sucursal a la que estás asignado disminuirá inmediatamente.
+            </div>
+            <div class="modal-footer">
+              <a href="#" class="btn btn-danger" data-dismiss="modal">No</a>
+              <a href="javascript:validarInstant();" class="btn btn-primary">Sí</a>
             </div>
           </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->

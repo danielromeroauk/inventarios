@@ -21,17 +21,45 @@ class SaleController extends BaseController {
             $cart = Session::get('cart');
         }
 
+        foreach ($cart as $item) {
+            $check = self::checkStock($item['article']->id, $input['branch_id'], $item['amount']);
+
+            /*Comprueba si hay suficiente stock en la sucursal*/
+            if ($check != 'Ok') {
+                Session::flash('message', $check);
+
+                return Redirect::to('cart');
+            }
+        }
+
+        /*Crea el registro en la tabla sales*/
         self::saveInSaleTable();
 
+        /*Crea los registros en la tabla sale_items*/
         foreach ($cart as $item) {
-            self::saveInSaleItemTable($item[0]->id, $item[1]);
+            self::saveInSaleItemTable($item['article']->id, $item['amount']);
         } #foreach $cart as $item
 
+        /*Vacía el carrito*/
         Session::forget('cart');
 
         return Redirect::to('sales');
 
     } #postSale
+
+    private function checkStock($idArticle, $idBranch, $amount)
+    {
+        $articleStock = Stock::whereRaw("article_id='". $idArticle ."' and branch_id='". $idBranch ."'")->first();
+
+        $articulo = Article::find($idArticle);
+        $sucursal = Branche::find($idBranch);
+
+        if (empty($articleStock) || $articleStock->stock < $amount) {
+            return 'El stock del artículo <strong>'. $articulo->name .'</strong> en la sucursal <strong>'. $sucursal->name .'</strong> es insuficiente para realizar la venta.';
+        } else {
+            return 'Ok';
+        }
+    }
 
     private function saveInSaleTable()
     {
@@ -59,16 +87,16 @@ class SaleController extends BaseController {
 
             $sale_id = Sale::first()->orderBy('created_at', 'desc')->first()->id;
 
-            $saleItemsTable = new SaleItem(); /* pit */
+            $saleItemsTable = new SaleItem(); /* sit */
 
-            $pit['sale_id'] = $sale_id;
-            $pit['article_id'] = $idArticle;
-            $pit['amount'] = $amount;
+            $sit['sale_id'] = $sale_id;
+            $sit['article_id'] = $idArticle;
+            $sit['amount'] = $amount;
 
-            $saleItemsTable->create($pit);
+            $saleItemsTable->create($sit);
 
         } catch (Exception $e) {
-            die('No se pudo guardar el articulo '. $idArticle .' como item de la venta.');
+            die($e .'No se pudo guardar el articulo '. $idArticle .' como item de la venta.');
         }
 
     } #saveInSaleItemTable
@@ -82,17 +110,8 @@ class SaleController extends BaseController {
             $articleStock = Stock::where('article_id', $idArticle)->where('branch_id', $idBranch)->first();
 
             if(!empty($articleStock)) {
-                $articleStock->stock += $amount;
+                $articleStock->stock -= $amount;
                 $articleStock->update();
-            } else {
-                $StockTable = new Stock();
-
-                $stock['branch_id'] = $idBranch;
-                $stock['article_id'] = $idArticle;
-                $stock['stock'] = $amount;
-                $stock['minstock'] = 0;
-
-                $StockTable->create($stock);
             } #if !empty($ArticleStock)
 
         } catch (Exception $e) {
@@ -102,12 +121,12 @@ class SaleController extends BaseController {
 
     public function getItems($idSale)
     {
-        $title = 'Items de sale';
+        $title = 'Items de la venta';
         $sale = Sale::find($idSale);
-        $pitems = SaleItem::where('sale_id', '=', $idSale)->get();
+        $sitems = SaleItem::where('sale_id', '=', $idSale)->get();
 
         return View::make('sales.items')
-            ->with(compact('title', 'sale', 'pitems'));
+            ->with(compact('title', 'sale', 'sitems'));
     }
 
     public function postSaleStore()
@@ -116,17 +135,17 @@ class SaleController extends BaseController {
 
             $input = Input::all();
 
-            $pitems = SaleItem::where('sale_id', '=', $input['sale'])->get();
+            $sales = SaleItem::where('sale_id', '=', $input['sale'])->get();
 
-            foreach ($pitems as $pitem) {
-                self::saveInStockTable($input['branch_id'], $pitem->article->id, $pitem->amount);
+            foreach ($sales as $sale) {
+                self::saveInStockTable($input['branch_id'], $sale->article->id, $sale->amount);
             } #foreach
 
             $saleStore = new SaleStore();
-            $ps['id'] = $input['sale'];
-            $ps['user_id'] = Auth::user()->id;
-            $ps['comments'] = $input['comments'];
-            $saleStore->create($ps);
+            $ss['id'] = $input['sale'];
+            $ss['user_id'] = Auth::user()->id;
+            $ss['comments'] = $input['comments'];
+            $saleStore->create($ss);
 
             /*Cambiar el status en la tabla sale a finalizado*/
             $sale = Sale::find($input['sale']);
@@ -136,7 +155,7 @@ class SaleController extends BaseController {
             return Redirect::to('sales');
 
         } catch (Exception $e) {
-            die('No se pudo aumentar el stock.');
+            die('No se pudo disminuir el stock.');
         }
     } #postSaleStore
 

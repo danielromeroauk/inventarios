@@ -30,6 +30,9 @@ Route::group(array('before' => 'auth'), function()
     Route::controller('roles', 'RoleController');
     Route::controller('cart', 'CartController');
     Route::controller('purchases', 'PurchaseController');
+    Route::controller('sales', 'SaleController');
+    Route::controller('damages', 'DamageController');
+    Route::controller('instants', 'InstantController');
 });
 
 Route::get('u', function() {

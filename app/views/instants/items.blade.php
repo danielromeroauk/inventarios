@@ -22,9 +22,9 @@
 
         function validar() {
             if ($('#comments').val() != '') {
-                $('#purchaseStoreForm').submit();
+                $('#instantStoreForm').submit();
             } else {
-                alert('Faltan campos por diligenciar');
+                alert('Faltan campos por diligenciar.');
             }
         }
     </script>
@@ -33,46 +33,45 @@
 
 @section('content')
 
-        <div class="panel panel-success">
+        <div class="panel panel-info">
             <div class="panel-heading">
-                <span class="glyphicon glyphicon-list-alt"></span>
-                Código de compra: {{ $purchase->id }}
+                <span class="glyphicon glyphicon-leaf"></span>
+                Código de entrega inmediata: {{ $instant->id }}
             </div>
             <div class="panel-body">
-                <ul class="purchase">
-                    <li><strong>Estado:</strong> {{ $purchase->status }}</li>
-                    <li><strong>Fecha de creación:</strong> {{ $purchase->created_at }}</li>
-                    <li><strong>Para la sucursal:</strong> {{ $purchase->branch->name }}</li>
-                    <li><strong>Usuario:</strong> {{ $purchase->user->name }}</li>
-                    <li><strong>Fecha de modificación:</strong> {{ $purchase->updated_at }}</li>
+                <ul class="instant">
+                    <li><strong>Fecha de creación:</strong> {{ $instant->created_at }}</li>
+                    <li><strong>Para la sucursal:</strong> {{ $instant->branch->name }}</li>
+                    <li><strong>Usuario:</strong> {{ $instant->user->name }}</li>
+                    <li><strong>Fecha de modificación:</strong> {{ $instant->updated_at }}</li>
                 </ul>
-                <p><strong>Comentarios del remisionero:</strong> {{ $purchase->comments }}</p>
+                <p><strong>Comentarios del remisionero:</strong> {{ $instant->comments }}</p>
 
                 <table class="table table-striped table-bordered">
                     <tr>
                         <th>Cantidad</th>
                         <th>Artículo</th>
                     </tr>
-                    @foreach($pitems as $pitem)
+                    @foreach($iitems as $iitem)
                         <tr>
-                            <td>{{ $pitem->amount .' '. $pitem->article->unit }}</td>
-                            <td>{{ $pitem->article->name }}</td>
+                            <td>{{ $iitem->amount .' '. $iitem->article->unit }}</td>
+                            <td>{{ $iitem->article->name }}</td>
                         </tr>
                     @endforeach
                 </table>
             </div><!-- /.panel-body -->
             <div class="panel-footer">
-                @if(isset($purchase->PurchaseStore->comments))
+                @if(isset($instant->SaleStore->comments))
 
-                    <p><strong>Comentarios de bodega:</strong> {{ $purchase->PurchaseStore->comments }}</p>
+                    <p><strong>Comentarios de bodega:</strong> {{ $instant->SaleStore->comments }}</p>
 
-                @elseif((Auth::user()->permitido('bodeguero') || Auth::user()->permitido('remisionero') || Auth::user()->permitido('administrador')) && $purchase->status == 'pendiente')
+                @elseif((Auth::user()->permitido('bodeguero') || Auth::user()->permitido('remisionero') || Auth::user()->permitido('administrador')) && $instant->status == 'pendiente')
 
-                    {{ Form::open(array('url' => 'purchases/purchase-store', 'id' => 'purchaseStoreForm')) }}
-                        {{ Form::input('hidden', 'purchase', $purchase->id) }}
-                        {{ Form::input('hidden', 'branch_id', $purchase->branch->id) }}
+                    {{ Form::open(array('url' => 'instants/instant-store', 'id' => 'instantStoreForm')) }}
+                        {{ Form::input('hidden', 'instant', $instant->id) }}
+                        {{ Form::input('hidden', 'branch_id', $instant->branch->id) }}
                         {{ Form::textarea('comments', '', array('id' => 'comments', 'rows' => '3', 'class' => 'form-control', 'placeholder' => 'Comentarios del bodeguero.', 'maxlength' => '255', 'required')) }}
-                         <a href="#purchaseStoreModal" class="button" data-toggle="modal">
+                         <a href="#instantStoreModal" class="button" data-toggle="modal">
                             <span class="glyphicon glyphicon-floppy-save"></span>
                             Finalizar compra
                         </a>
@@ -81,7 +80,7 @@
 
                     @if(Auth::user()->permitido('remisionero') || Auth::user()->permitido('administrador'))
 
-                            {{ '<a href="'. url('purchases/cancel/'. $purchase->id) .'" class="btn btn-danger btn-sm">
+                            {{ '<a href="'. url('instants/cancel/'. $instant->id) .'" class="btn btn-danger btn-sm">
                                 <span class="glyphicon glyphicon-minus-sign"></span>
                                 Cancelar remisión
                             </a>' }}
@@ -93,7 +92,7 @@
         </div><!-- /.panel -->
 
       <!-- Modal -->
-      <div class="modal fade" id="purchaseStoreModal">
+      <div class="modal fade" id="instantStoreModal">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
@@ -101,7 +100,7 @@
               <h4 class="modal-title">Confirmar</h4>
             </div>
             <div class="modal-body">
-              ¿Deseas finalizar la compra? Si haces clic en <strong>Sí</strong> el stock aumentará.
+              ¿Deseas finalizar la entrega inmediata? Si haces clic en <strong>Sí</strong> el stock disminuirá.
             </div>
             <div class="modal-footer">
               <a href="#" class="btn btn-danger" data-dismiss="modal">No</a>

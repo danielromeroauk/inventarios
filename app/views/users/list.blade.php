@@ -25,7 +25,7 @@
                         </td>
                         <td>
                             @foreach($user->roles as $rol)
-                                {{ $rol->name }}
+                                {{ $rol->name }} en {{ $rol->branch->name }}
                             @endforeach
                         </td>
                         <td>
