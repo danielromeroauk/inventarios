@@ -18,7 +18,8 @@ class CreateRotationStoresTable extends Migration {
 
 			$table->increments('id');
 			$table->integer('user_id')->unsigned();
-			$table->string('comments');
+			$table->string('comments_from');
+			$table->string('comments_to');
 
 			$table->timestamps();
 

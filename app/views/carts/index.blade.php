@@ -38,7 +38,11 @@
             });
 
             $('#examinar4').on('click', function(){
-                $('#branchesModal .modal-body').load( "{{  url('branches/select?campo1=branch4&campo2=branch_id4') }}" );
+                $('#branchesModal .modal-body').load( "{{  url('branches/select?campo1=branch_from_name&campo2=branch_from') }}" );
+            });
+
+            $('#examinar5').on('click', function(){
+                $('#branchesModal .modal-body').load( "{{  url('branches/select?campo1=branch_to_name&campo2=branch_to') }}" );
             });
 
         } // cargarBranches1
@@ -72,10 +76,19 @@
 
         function validarInstant()
         {
-            if ($('#instants-comments').val() != '') {
+            if ($('#instant-comments').val() != '') {
                 $('#instantForm').submit();
             } else {
                 alert('Faltan campos de la entrega inmediata por diligenciar.');
+            }
+        }
+
+        function validarRotation()
+        {
+            if ($('#rotation-comments').val() != '' && $('#branch_from').val() != '' && $('#branch_to').val() != '') {
+                $('#rotationForm').submit();
+            } else {
+                alert('Faltan campos de la rotación por diligenciar.');
             }
         }
 
@@ -128,6 +141,7 @@
                 <li><a href="#tab2"><span>Venta</span></a></li>
                 <li><a href="#tab3"><span>Daño</span></a></li>
                 <li><a href="#tab4"><span>Entrega inmediata</span></a></li>
+                <li><a href="#tab5"><span>Rotación</span></a></li>
               </ul>
 
               <div id="tab1">
@@ -196,7 +210,7 @@
               <div id="tab4">
 
                 {{ Form::open(array('url' => 'instants/add', 'id' => 'instantForm')) }}
-                        {{ Form::textarea('comments', '', array('id' => 'instants-comments', 'rows' => '3', 'class' => 'form-control', 'placeholder' => 'Datos adicionales de la entrega inmediata.', 'maxlength' => '255')) }}
+                        {{ Form::textarea('comments', '', array('id' => 'instant-comments', 'rows' => '3', 'class' => 'form-control', 'placeholder' => 'Datos adicionales de la entrega inmediata.', 'maxlength' => '255')) }}
                         <p> </p>
 
                         <a href="#instantModal" class="button" data-toggle="modal">
@@ -207,6 +221,35 @@
                 {{ Form::close() }}
 
               </div><!-- /#tab4 -->
+
+              <div id="tab5">
+
+                {{ Form::open(array('url' => 'rotations/add', 'id' => 'rotationForm')) }}
+                        <div class="input-group">
+                            <span class="input-group-addon">Sucursal origen: </span>
+                            {{ Form::text('branch_from_name', '', array('id' => 'branch_from_name', 'class' => 'form-control', 'placeholder' => 'Especifique la sucursal origen.', 'title' => 'Sucursal', 'maxlength' => '255', 'required', 'readonly')) }}
+                            <a href="#branchesModal" class="input-group-addon btn btn-success" id="examinar4" data-toggle="modal">Examinar</a>
+                        </div> <!-- /input-group -->
+                        {{ Form::input('hidden', 'branch_from', '', array('id' => 'branch_from')) }}
+
+                        <div class="input-group">
+                            <span class="input-group-addon">Sucursal destino: </span>
+                            {{ Form::text('branch_to_name', '', array('id' => 'branch_to_name', 'class' => 'form-control', 'placeholder' => 'Especifique la sucursal destino.', 'title' => 'Sucursal', 'maxlength' => '255', 'required', 'readonly')) }}
+                            <a href="#branchesModal" class="input-group-addon btn btn-success" id="examinar5" data-toggle="modal">Examinar</a>
+                        </div> <!-- /input-group -->
+                        {{ Form::input('hidden', 'branch_to', '', array('id' => 'branch_to')) }}
+
+                        {{ Form::textarea('comments', '', array('rows' => '3', 'class' => 'form-control', 'placeholder' => 'Datos adicionales de la rotación.', 'maxlength' => '255')) }}
+                        <p> </p>
+
+                        <a href="#rotationModal" class="button" data-toggle="modal">
+                            <span class="glyphicon glyphicon-floppy-save"></span>
+                            Enviar rotación
+                        </a>
+                        {{ Form::submit('Enviar', array('class' => 'hidden')) }}
+                {{ Form::close() }}
+
+              </div><!-- /#tab5 -->
 
             </div><!-- /#tabs -->
 
@@ -299,6 +342,25 @@
             <div class="modal-footer">
               <a href="#" class="btn btn-danger" data-dismiss="modal">No</a>
               <a href="javascript:validarInstant();" class="btn btn-primary">Sí</a>
+            </div>
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+      </div><!-- /.modal -->
+
+      <!-- Modal -->
+      <div class="modal fade" id="rotationModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
+              <h4 class="modal-title">Confirmar</h4>
+            </div>
+            <div class="modal-body">
+              ¿Deseas registrar la rotación con el contenido actual del carrito?
+            </div>
+            <div class="modal-footer">
+              <a href="#" class="btn btn-danger" data-dismiss="modal">No</a>
+              <a href="javascript:validarRotation();" class="btn btn-primary">Sí</a>
             </div>
           </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->

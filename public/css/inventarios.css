@@ -11,7 +11,7 @@ div.panel-footer form input[type=number] {
     font-size: .875em;
 }
 
-ul.purchase, ul.sale, ul.damage, ul.instant {
+ul.purchase, ul.sale, ul.damage, ul.instant, ul.rotation {
     list-style-type: none;
     margin: 0;
     padding: 0 0 1em 0;

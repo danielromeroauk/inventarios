@@ -78,7 +78,7 @@
                         {{ Form::textarea('comments', '', array('id' => 'comments', 'rows' => '3', 'class' => 'form-control', 'placeholder' => 'Comentarios del bodeguero.', 'maxlength' => '255', 'required')) }}
                          <a href="#saleStoreModal" class="button" data-toggle="modal">
                             <span class="glyphicon glyphicon-floppy-save"></span>
-                            Finalizar compra
+                            Finalizar venta
                         </a>
                         {{ Form::submit('Enviar', array('class' => 'hidden')) }}
                     {{ Form::close() }}

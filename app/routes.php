@@ -33,6 +33,7 @@ Route::group(array('before' => 'auth'), function()
     Route::controller('sales', 'SaleController');
     Route::controller('damages', 'DamageController');
     Route::controller('instants', 'InstantController');
+    Route::controller('rotations', 'RotationController');
 });
 
 Route::get('u', function() {

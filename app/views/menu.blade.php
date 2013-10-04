@@ -54,7 +54,7 @@
             <li> {{ HTML::link('sales', 'Ventas') }} </li>
             <li> {{ HTML::link('damages', 'Daños') }} </li>
             <li> {{ HTML::link('instants', 'Entregas inmediatas') }} </li>
-            <li> {{ HTML::link('articles', 'Rotaciones') }} </li>
+            <li> {{ HTML::link('rotations', 'Rotaciones') }} </li>
           </ul>
         </li>
         @endif
