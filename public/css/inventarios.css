@@ -16,3 +16,10 @@ ul.purchase, ul.sale, ul.damage, ul.instant, ul.rotation {
     margin: 0;
     padding: 0 0 1em 0;
 }
+
+.article-image, .article-image img {
+    display:inline-block;
+    max-height:150px;
+    max-width:150px;
+    vertical-align:top;
+}

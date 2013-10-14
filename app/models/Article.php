@@ -10,6 +10,7 @@ class Article extends Eloquent {
         'name' => 'required',
         'unit' => 'required',
         'price' => 'required',
+        'cost' => 'required',
         'iva' => 'required',
     );
 
@@ -17,12 +18,23 @@ class Article extends Eloquent {
         'name.required' => 'El nombre es requerido.',
         'unit.required' => 'La unidad de medida es requerida.',
         'price.required' => 'El precio es requerido.',
+        'cost.required' => 'El costo es requerido.',
         'iva.required' => 'El IVA es requerido.'
     );
 
     public function stocks()
     {
         return $this->hasMany('Stock');
+    }
+
+    public function image()
+    {
+        return $this->hasOne('ArticleImage', 'id');
+    }
+
+    public function changes()
+    {
+        return $this->hasMany('ArticleChange', 'id');
     }
 
     /**

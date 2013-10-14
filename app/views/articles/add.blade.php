@@ -26,9 +26,16 @@
                 <tr>
                     <td>
                         <div class="input-group">
+                            <span class="input-group-addon">Costo: $</span>
+                            {{ Form::input('number', 'cost', '1000.00', array('class' => 'form-control', 'min' => '0.01', 'step' => '0.01', 'max' => '99999999999999.99', 'title' => 'Costo', 'required')) }}
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="input-group">
                             <span class="input-group-addon">Precio: $</span>
-                            {{ Form::input('number', 'price', '1000', array('class' => 'form-control', 'min' => '0', 'max' => '99999999999999.99', 'title' => 'Precio', 'required')) }}
-                            <span class="input-group-addon">.00</span>
+                            {{ Form::input('number', 'price', '1000.00', array('class' => 'form-control', 'min' => '0.01', 'step' => '0.01', 'max' => '99999999999999.99', 'title' => 'Precio', 'required')) }}
                         </div>
                     </td>
                 </tr>

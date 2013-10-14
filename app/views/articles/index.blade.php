@@ -18,6 +18,11 @@
                 $('.acordion').accordion({
                     heightStyle: "content"
                 });
+
+                $('.auk-imagen').on('click', function(){
+                    var url = "{{ url('articles/image') }}" + "/" + $(this).attr('id') ;
+                    $('#imagenModal .modal-body').load( url );
+                });
             }
 
         })(jQuery);
@@ -67,12 +72,14 @@
                     <tr>
                         <th>Código</th>
                         <th>Medida</th>
+                        <th>Costo</th>
                         <th>Precio</th>
                         <th>IVA</th>
                     </tr>
                     <tr>
                         <td>{{ $article->id }}</td>
                         <td>{{ $article->unit }}</td>
+                        <td>{{ $article->cost }}</td>
                         <td>{{ $article->price }}</td>
                         <td>{{ $article->iva }}%</td>
                     </tr>
@@ -81,8 +88,12 @@
               </div> <!-- /#tab1 -->
 
               <div id="tab2-{{ $article->id }}">
-                <div style="align:right; display:inline-block; vertical-align:top;">
-                    <img src="http://placehold.it/150x150" />
+                <div class="article-image">
+                    @if(isset($article->image()->first()->image))
+                        {{ '<img src="img/articles/'. $article->image()->first()->image .'">' }}
+                    @else
+                        <img src="http://placehold.it/150x150" />
+                    @endif
                 </div>
                 <div style="display:inline-block;">
                     <table class="table table-stripped table-hover">
@@ -153,11 +164,34 @@
                         Editar
                     </a>' }}
                 @endif
-          </div>
+
+                @if(Auth::check() && (Auth::user()->permitido('administrador') || Auth::user()->permitido('remisionero')))
+                    {{ '<a href="#imagenModal" data-toggle="modal" class="btn btn-danger btn-sm auk-imagen" id="'. $article->id .'">
+                        <span class="glyphicon glyphicon-picture"></span>
+                        Cambiar imagen
+                    </a>' }}
+                @endif
+
+          </div> <!-- /.panel.footer -->
         </div> <!-- /.panel.panel-primary -->
 
     @endforeach
 
     <?php echo $articles->links(); ?>
+
+    <!-- Modal -->
+      <div class="modal fade" id="imagenModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
+              <h4 class="modal-title">Cambiar imagen</h4>
+            </div>
+            <div class="modal-body">
+              No se ha podido cargar el formulario para cambiar la imagen.
+            </div>
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+      </div><!-- /.modal -->
 
 @stop

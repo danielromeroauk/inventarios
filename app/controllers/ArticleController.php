@@ -60,7 +60,7 @@ class ArticleController extends BaseController {
 	            ->withErrors($v)
 	            ->with('message');
 		}
-	}
+	} #postAdd
 
 	public function getEdit($id)
     {
@@ -78,7 +78,7 @@ class ArticleController extends BaseController {
 	        return View::make('articles.edit')
 	        	->with(compact('title', 'article'));
 	    }
-    }
+    } #getEdit
 
 	public function postUpdate()
     {
@@ -111,7 +111,7 @@ class ArticleController extends BaseController {
             ->withInput()
             ->withErrors($v)
             ->with('message', 'Hay errores de validación.');
-    }
+    } #postUpdate
 
     public function postSearch()
     {
@@ -126,6 +126,70 @@ class ArticleController extends BaseController {
 
         return View::make('articles.index')
                 ->with(compact('articles', 'title', 'branches'));
-    }
+    } #postSearch
+
+    public function getImage($idArticle)
+    {
+        $title = 'Imagen';
+
+        $article = Article::find($idArticle);
+
+        return View::make('articles.changeImage')
+            ->with(compact('title', 'article'));
+    } #getImage
+
+    public function postImage()
+    {
+        $file = Input::file("image");
+        $idArticle = Input::get('idArticle');
+
+        $dataUpload = array(
+            "image" => $file
+        );
+
+        $rules = array(
+            'image' => 'required|image:jpg,gif,png|max:1000'
+        );
+
+        $messages = array(
+            'required' => 'El campo :attribute es obligatorio.',
+            'image.max' => 'El archivo no puede ser mayor de 1 MB.',
+        );
+
+        $validation = Validator::make(Input::all(), $rules, $messages);
+
+        if ($validation->fails())
+        {
+            return Redirect::to('articles')->withErrors($validation);
+
+        }else{
+
+            $articleImage = ArticleImage::find($idArticle);
+            $filename = $file->getClientOriginalName();
+            $fileInfo = new SplFileInfo($filename);
+            $filename = $idArticle .'.'. $fileInfo->getExtension();
+
+            $ai['id'] = $idArticle;
+            $ai['user_id'] = Auth::user()->id;
+            $ai['image'] = $filename;
+
+            if(empty($articleImage)){
+
+                $articleImage = new ArticleImage();
+                $articleImage->create($ai);
+
+                $file->move("img/articles", $filename);
+
+                return Redirect::to('articles')->with(array('messageOk' => 'Imagen subida con éxito.'));
+
+            } elseif($articleImage->update($ai)) {
+
+                $file->move("img/articles", $filename);
+
+                return Redirect::to('articles')->with(array('messageOk' => 'Imagen actualizada con éxito.'));
+            }
+        }
+
+    } #postImage
 
 }
