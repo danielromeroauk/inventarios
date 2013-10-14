@@ -18,7 +18,8 @@ class CreateArticlesTable extends Migration {
             $table->increments('id');
             $table->string('name')->unique();
             $table->string('unit');
-            $table->integer('price')->unsigned();
+            $table->decimal('cost', 16, 2)->unsigned();
+            $table->decimal('price', 16, 2)->unsigned();
             $table->decimal('iva', 4, 2)->unsigned();
             $table->string('comments')->nullable();
 
