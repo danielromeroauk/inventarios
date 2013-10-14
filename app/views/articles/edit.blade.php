@@ -58,7 +58,7 @@
                     <td>
                         {{ Form::submit('Modificar', array('class' => 'btn btn-primary hidden', 'id' => 'modificar')) }}
                         {{ HTML::link('#myModal', 'Modificar', array('class' => 'btn btn-primary', 'data-toggle' => 'modal')) }}
-                        {{ HTML::link('articles/index', 'Cancelar', array('class' => 'btn btn-danger cancelar')) }}
+                        {{ HTML::link('articles', 'Cancelar', array('class' => 'btn btn-danger cancelar')) }}
                     </td>
                 </tr>
             </tbody>

@@ -5,6 +5,11 @@ class CartController extends BaseController {
     public function getIndex()
     {
         $title = 'Carrito';
+        $cart = array();
+
+        if (!Session::has('cart')) {
+            return Redirect::to('articles');
+        }
 
         return View::make('carts.index')
             ->with(compact('title'));
@@ -34,11 +39,9 @@ class CartController extends BaseController {
 
     public function getClear()
     {
-        $title = 'Vaciar carrito';
         Session::forget('cart');
 
-        return View::make('carts.index')
-            ->with(compact('title'));
+        return Redirect::to('cart');
     }
 
     public function getClearItem($idArticle)

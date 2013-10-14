@@ -52,7 +52,7 @@ class ArticleController extends BaseController {
         			->withInput();
 	        	}
 
-	            return Redirect::to('articles/index');
+	            return Redirect::to('articles');
 	        }
 
 	        return Redirect::to('articles/add')
@@ -72,7 +72,7 @@ class ArticleController extends BaseController {
 
 	        if (is_null($article))
 	        {
-	            return Redirect::to('articles/index');
+	            return Redirect::to('articles');
 	        }
 
 	        return View::make('articles.edit')
@@ -191,5 +191,89 @@ class ArticleController extends BaseController {
         }
 
     } #postImage
+
+    public function getExcelByArticle($idArticle)
+    {
+        $article = Article::find($idArticle);
+
+        if(empty($article))
+        {
+            return Redirect::to('articles');
+        }
+
+        /** Error reporting */
+        error_reporting(E_ALL);
+        ini_set('display_errors', TRUE);
+        ini_set('display_startup_errors', TRUE);
+        date_default_timezone_set('America/Bogota');
+
+        if (PHP_SAPI == 'cli')
+            die('Este archivo corre únicamente desde un navegador web.');
+
+        /** Include PHPExcel */
+        require_once app_path() . '\..\vendor\phpoffice\phpexcel\Classes\PHPExcel.php';
+
+
+        // Create new PHPExcel object
+        $objPHPExcel = new PHPExcel();
+
+        // Set document properties
+        $objPHPExcel->getProperties()->setCreator(Auth::user()->name)
+                                     ->setLastModifiedBy(Auth::user()->name)
+                                     ->setTitle("Informe de artículo")
+                                     ->setSubject("Artículo ". $article->name)
+                                     ->setDescription("Este documento contiene el stock por sucursal del artículo ". $article->name)
+                                     ->setKeywords("artículo, sucursal, ". $article->name)
+                                     ->setCategory("Archivo generado");
+
+
+        // Datos de sucursal
+        $objPHPExcel->setActiveSheetIndex(0)
+                    ->setCellValue('A1', 'Código de artículo')
+                    ->setCellValue('B1', $article->id)
+                    ->setCellValue('A2', 'Precio unitario')
+                    ->setCellValue('B2', $article->price)
+                    ->setCellValue('A3', 'Costo unitario')
+                    ->setCellValue('B3', $article->cost);
+
+        // Encabezados con UTF-8
+        $objPHPExcel->setActiveSheetIndex(0)
+                    ->setCellValue('A4', 'Código de sucursal')
+                    ->setCellValue('B4', 'Nombre de sucursal')
+                    ->setCellValue('C4', 'Stock')
+                    ->setCellValue('D4', 'Precio neto')
+                    ->setCellValue('E4', 'Costo neto');
+
+        $stocks = Stock::where('article_id', '=', $article->id)->get();
+        $fila = 5;
+        foreach ($stocks as $stock) {
+
+            $objPHPExcel->setActiveSheetIndex(0)
+                    ->setCellValue('A'. $fila, $stock->branch->id)
+                    ->setCellValue('B'. $fila, $stock->branch->name)
+                    ->setCellValue('C'. $fila, $stock->stock)
+                    ->setCellValue('D'. $fila, ($stock->article->price * $stock->stock))
+                    ->setCellValue('E'. $fila, ($stock->article->cost * $stock->stock));
+            $fila++;
+        }
+
+
+        // Rename worksheet
+        $objPHPExcel->getActiveSheet()->setTitle($article->name . date('Y-m-d'));
+
+
+        // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+        $objPHPExcel->setActiveSheetIndex(0);
+
+
+        // Redirect output to a client’s web browser (Excel2007)
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="'. $article->name . date('_Y-m-d_His') .'.xlsx"');
+        header('Cache-Control: max-age=0');
+
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+        $objWriter->save('php://output');
+        exit;
+    } #getExcelByArticle
 
 }

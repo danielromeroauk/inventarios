@@ -19,4 +19,9 @@ class Branche extends Eloquent {
         return $this->hasMany('Role');
     }
 
+    public function stocks()
+    {
+        return $this->hasMany('Stock');
+    }
+
 }

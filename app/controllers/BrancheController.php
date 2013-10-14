@@ -129,4 +129,91 @@ class BrancheController extends BaseController {
                 ->with(compact('branches', 'title'));
     }
 
+    public function getExcelByBranch($idBranch)
+    {
+        $branch = Branche::find($idBranch);
+
+        if(empty($branch))
+        {
+            return Redirect::to('branches');
+        }
+
+        /** Error reporting */
+        error_reporting(E_ALL);
+        ini_set('display_errors', TRUE);
+        ini_set('display_startup_errors', TRUE);
+        date_default_timezone_set('America/Bogota');
+
+        if (PHP_SAPI == 'cli')
+            die('Este archivo corre únicamente desde un navegador web.');
+
+        /** Include PHPExcel */
+        require_once app_path() . '\..\vendor\phpoffice\phpexcel\Classes\PHPExcel.php';
+
+
+        // Create new PHPExcel object
+        $objPHPExcel = new PHPExcel();
+
+        // Set document properties
+        $objPHPExcel->getProperties()->setCreator(Auth::user()->name)
+                                     ->setLastModifiedBy(Auth::user()->name)
+                                     ->setTitle("Informe de artículos")
+                                     ->setSubject("Sucursal ". $branch->name)
+                                     ->setDescription("Este documento contiene la lista de artículos de la sucursal ". $branch->name)
+                                     ->setKeywords("artículos, sucursal, ". $branch->name)
+                                     ->setCategory("Archivo generado");
+
+
+        // Datos de sucursal
+        $objPHPExcel->setActiveSheetIndex(0)
+                    ->setCellValue('A1', 'Código de sucursal')
+                    ->setCellValue('B1', $branch->id)
+                    ->setCellValue('A2', 'Nombre de sucursal')
+                    ->setCellValue('B2', $branch->name);
+
+        // Encabezados con UTF-8
+        $objPHPExcel->setActiveSheetIndex(0)
+                    ->setCellValue('A3', 'Código de artículo')
+                    ->setCellValue('B3', 'Nombre de artículo')
+                    ->setCellValue('C3', 'Stock')
+                    ->setCellValue('D3', 'Precio unitario')
+                    ->setCellValue('E3', 'Costo unitario')
+                    ->setCellValue('F3', 'Precio neto')
+                    ->setCellValue('G3', 'Costo neto');
+
+        $stocks = Stock::where('branch_id', '=', $branch->id)->get();
+        $fila = 4;
+        foreach ($stocks as $stock) {
+            // $article = Article::find($stock->article->id);
+
+            $objPHPExcel->setActiveSheetIndex(0)
+                    ->setCellValue('A'. $fila, $stock->article->id)
+                    ->setCellValue('B'. $fila, $stock->article->name)
+                    ->setCellValue('C'. $fila, $stock->stock)
+                    ->setCellValue('D'. $fila, $stock->article->price)
+                    ->setCellValue('E'. $fila, $stock->article->cost)
+                    ->setCellValue('F'. $fila, ($stock->article->price * $stock->stock))
+                    ->setCellValue('G'. $fila, ($stock->article->cost * $stock->stock));
+            $fila++;
+        }
+
+
+        // Rename worksheet
+        $objPHPExcel->getActiveSheet()->setTitle($branch->name . date('Y-m-d'));
+
+
+        // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+        $objPHPExcel->setActiveSheetIndex(0);
+
+
+        // Redirect output to a client’s web browser (Excel2007)
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="'. $branch->name . date('_Y-m-d_His') .'.xlsx"');
+        header('Cache-Control: max-age=0');
+
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+        $objWriter->save('php://output');
+        exit;
+    } #getExcelByBranch
+
 }

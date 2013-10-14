@@ -46,7 +46,6 @@
           </ul>
         </li>
 
-        @if(Auth::user()->permitido('administrador') || Auth::user()->permitido('remisionero'))
           <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Informes <b class="caret"></b></a>
           <ul class="dropdown-menu">
@@ -57,8 +56,6 @@
             <li> {{ HTML::link('rotations', 'Rotaciones') }} </li>
           </ul>
         </li>
-        @endif
-
 
         @if(Auth::user()->permitido('administrador'))
 
@@ -70,10 +67,17 @@
         <li> {{ HTML::link('users/change-password', 'Cambiar password') }} </li>
 
         <li>
-          {{ '<a href="'. url('cart') .'">
+            @if(Session::has('cart'))
+
+              <?php $carrito = Session::get('cart'); ?>
+
+              {{ '<a href="'. url('cart') .'">
                 <span class="glyphicon glyphicon-shopping-cart"></span>
                 Ver Carrito
-            </a>' }}
+                <span class="badge">'. count($carrito) .'</span>
+                </a>' }}
+
+            @endif
         </li>
 
       @endif

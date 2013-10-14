@@ -9,22 +9,16 @@
                 <th>Código</th>
                 <th>Nombre</th>
                 <th>Comentarios</th>
+                <th>Stocks</th>
             </thead>
             <tbody>
                 @foreach($branches as $branch)
                     <tr>
-                        <td>
-                            {{ $branch->id }}
-                        </td>
-                        <td>
-                            {{ $branch->name }}
-                        </td>
-                        <td>
-                            {{ $branch->comments }}
-                        </td>
-                        <td>
-                            {{ HTML::link('branches/edit/'. $branch->id, 'Editar') }}
-                        </td>
+                        <td>{{ $branch->id }}</td>
+                        <td>{{ $branch->name }}</td>
+                        <td>{{ $branch->comments }}</td>
+                        <td>{{ HTML::link('branches/excel-by-branch/'. $branch->id, 'Descargar') }}</td>
+                        <td>{{ HTML::link('branches/edit/'. $branch->id, 'Editar') }}</td>
                     </tr>
                 @endforeach
             </tbody>

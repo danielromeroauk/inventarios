@@ -159,17 +159,22 @@
                 {{ Form::close() }}
 
                 @if(Auth::check() && (Auth::user()->permitido('administrador') || Auth::user()->permitido('remisionero')))
+
                     {{ '<a href="'. url('articles/edit/'. $article->id) .'" class="btn btn-warning btn-sm">
                         <span class="glyphicon glyphicon-edit"></span>
                         Editar
                     </a>' }}
-                @endif
 
-                @if(Auth::check() && (Auth::user()->permitido('administrador') || Auth::user()->permitido('remisionero')))
                     {{ '<a href="#imagenModal" data-toggle="modal" class="btn btn-danger btn-sm auk-imagen" id="'. $article->id .'">
                         <span class="glyphicon glyphicon-picture"></span>
                         Cambiar imagen
                     </a>' }}
+
+                    {{ '<a href="'. url('articles/excel-by-article/'. $article->id) .'" class="btn btn-info btn-sm auk-imagen" id="'. $article->id .'">
+                        <span class="glyphicon glyphicon-download-alt"></span>
+                        Descargar stock
+                    </a>' }}
+
                 @endif
 
           </div> <!-- /.panel.footer -->
