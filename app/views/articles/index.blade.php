@@ -14,6 +14,10 @@
                 $('.pagination ul li').addClass('btn btn-default');
 
                 $('.tabs').tabs({ active: 1 });
+
+                $('.acordion').accordion({
+                    heightStyle: "content"
+                });
             }
 
         })(jQuery);
@@ -54,7 +58,8 @@
             <div class="tabs">
               <ul>
                 {{ '<li><a href="#tab1-'. $article->id .'"><span>Datos generales</span></a></li>' }}
-                {{ '<li><a href="#tab2-'. $article->id .'"><span>Stock físico</span></a></li>' }}
+                {{ '<li><a href="#tab2-'. $article->id .'"><span>Stock disponible</span></a></li>' }}
+                {{ '<li><a href="#tab3-'. $article->id .'"><span>Stock en movimientos pendientes</span></a></li>' }}
               </ul>
 
               <div id="tab1-{{ $article->id }}">
@@ -76,19 +81,57 @@
               </div> <!-- /#tab1 -->
 
               <div id="tab2-{{ $article->id }}">
-                <table class="table table-stripped table-hover">
-                    <tr>
-                        <th>Sucursal</th>
-                        <th>Stock</th>
-                    </tr>
-                    @foreach($article->stocks as $stock)
+                <div style="align:right; display:inline-block; vertical-align:top;">
+                    <img src="http://placehold.it/150x150" />
+                </div>
+                <div style="display:inline-block;">
+                    <table class="table table-stripped table-hover">
                         <tr>
-                            <td>{{ $stock->branch->name }}</td>
-                            <td>{{ $stock->stock }}</td>
+                            <th>Sucursal</th>
+                            <th>Stock disponible</th>
                         </tr>
-                    @endforeach
-                </table>
+                        @foreach($article->stocks as $stock)
+                            <tr>
+                                <td>{{ $stock->branch->name }}</td>
+                                <td>{{ $article->disponible($stock->branch) .' '. $article->unit }}</td>
+                            </tr>
+                        @endforeach
+                    </table>
+                </div>
               </div> <!-- /#tab2 -->
+
+              <div id="tab3-{{ $article->id }}">
+                <div class="acordion">
+                    @foreach($branches as $branch)
+                        <h3>{{ $branch->name }}</h3>
+                        <div>
+                            <table class="table table-stripped table-hover">
+                                <tr>
+                                    <th>Tipo de movimiento</th>
+                                    <th>Cantidad pendiente</th>
+                                </tr>
+                                <tr>
+                                    <td>Compra</td>
+                                    <td>{{ $article->inPurchases($branch) .' '. $article->unit }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Venta</td>
+                                    <td>{{ $article->inSales($branch) .' '. $article->unit }}</td>
+                                </tr>
+                                    <td>Origen de rotación</td>
+                                    <td>{{ $article->inRotationsFrom($branch) .' '. $article->unit }}</td>
+                                </tr>
+                                    <td>Destino de rotación</td>
+                                    <td>{{ $article->inRotationsTo($branch) .' '. $article->unit }}</td>
+                                </tr>
+                                    <td>Daño</td>
+                                    <td>{{ $article->inDamages($branch) .' '. $article->unit }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    @endforeach
+                </div> <!-- /.acordion -->
+              </div> <!-- /#tab3 -->
 
             </div> <!-- /#tabs -->
 
@@ -97,7 +140,7 @@
           <div class="panel-footer">
              {{ Form::open(array('url' => 'cart/add')) }}
                     {{ Form::text('id', $article->id, array('class' => 'hidden')) }}
-                    {{ Form::input('number', 'cantidad', '1.00', array('class' => 'form-control', 'min' => '0.00', 'step' => '0.01', 'max' => '99999999999999.99', 'title' => 'Cantidad', 'required')) }}
+                    {{ Form::input('number', 'cantidad', '1.00', array('class' => 'form-control', 'min' => '0.01', 'step' => '0.01', 'max' => '99999999999999.99', 'title' => 'Cantidad', 'required')) }}
                     <button type="submit" class="btn btn-success btn-sm">
                         <span class="glyphicon glyphicon-shopping-cart"></span>
                         Al carrito

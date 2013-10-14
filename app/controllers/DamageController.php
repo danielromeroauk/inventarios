@@ -21,8 +21,13 @@ class DamageController extends BaseController {
             $cart = Session::get('cart');
         }
 
+        if (empty($cart)) {
+            return Redirect::to('damages');
+        }
+
         foreach ($cart as $item) {
-            $check = self::checkStock($item['article']->id, $input['branch_id'], $item['amount']);
+
+            $check = Article::checkStock($item['article'], $input['branch_id'], $item['amount'], 'daño');
 
             /*Comprueba si hay suficiente stock en la sucursal*/
             if ($check != 'Ok') {
@@ -46,20 +51,6 @@ class DamageController extends BaseController {
         return Redirect::to('damages');
 
     } #postDamage
-
-    private function checkStock($idArticle, $idBranch, $amount)
-    {
-        $articleStock = Stock::whereRaw("article_id='". $idArticle ."' and branch_id='". $idBranch ."'")->first();
-
-        $articulo = Article::find($idArticle);
-        $sucursal = Branche::find($idBranch);
-
-        if (empty($articleStock) || $articleStock->stock < $amount) {
-            return 'El stock del artículo <strong>'. $articulo->name .'</strong> en la sucursal <strong>'. $sucursal->name .'</strong> es insuficiente para registrar el daño.';
-        } else {
-            return 'Ok';
-        }
-    }
 
     private function saveInDamageTable()
     {

@@ -1,21 +1,22 @@
 @extends('layouts.master')
 
+@section('head')
+
+	{{ HTML::style('css/signin.css') }}
+
+@stop
+
 @section('content')
 
-	<div class="row">
-		<div class="span4 offset4">
+	<div class="container">
 
-			<div class="well">
-				<legend>Por favor, identifíquese</legend>
-				{{ Form::open(array('url' => 'users/index')) }}
-					{{ Form::email('email', (isset($email) ? $email : ''), array('class' => 'span3', 'placeholder' => 'Email', 'required')) }}
-					{{ Form::password('password', array('class' => 'span3', 'placeholder' => 'Password', 'required')) }}
-					{{ Form::submit('Entrar', array('class' => 'btn btn-success')) }}
-					{{ HTML::link('users/register', 'Registrar', array('class' => 'btn btn-primary')) }}
-				{{ Form::close() }}
-			</div>
+	  {{ Form::open(array('url' => 'users/index', 'class' => 'form-signin')) }}
+        <h2 class="form-signin-heading">¿Quién eres?</h2>
+		{{ Form::email('email', (isset($email) ? $email : ''), array('class' => 'form-control', 'placeholder' => 'Email', 'required')) }}
+		{{ Form::password('password', array('class' => 'form-control', 'placeholder' => 'Password', 'required')) }}
+		{{ Form::submit('Entrar', array('class' => 'btn btn-lg btn-primary btn-block')) }}
+	  {{ Form::close() }}
 
-		</div>
-	</div>
+    </div> <!-- /container -->
 
 @stop

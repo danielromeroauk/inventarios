@@ -215,7 +215,7 @@
 
                         <a href="#instantModal" class="button" data-toggle="modal">
                             <span class="glyphicon glyphicon-floppy-save"></span>
-                            Enviar daño
+                            Registrar entrega inmediata
                         </a>
                         {{ Form::submit('Enviar', array('class' => 'hidden')) }}
                 {{ Form::close() }}

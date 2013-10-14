@@ -15,8 +15,10 @@ class ArticleController extends BaseController {
 
         $articles = Article::orderBy('name', 'asc')->paginate(5);
 
+        $branches = Branche::all();
+
 		return View::make('articles.index')
-				->with(compact('articles', 'title'));
+				->with(compact('articles', 'title', 'branches'));
 	}
 
 	public function getAdd()
@@ -120,8 +122,10 @@ class ArticleController extends BaseController {
 
         $articles = Article::whereRaw("id = '". $input['search'] ."' OR name like '%". $input['search'] ."%'")->orderBy('name', 'asc')->paginate(5);
 
+        $branches = Branche::all();
+
         return View::make('articles.index')
-                ->with(compact('articles', 'title'));
+                ->with(compact('articles', 'title', 'branches'));
     }
 
 }

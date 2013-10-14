@@ -21,6 +21,10 @@ class PurchaseController extends BaseController {
             $cart = Session::get('cart');
         }
 
+        if (empty($cart)) {
+            return Redirect::to('purchases');
+        }
+
         self::saveInPurchaseTable();
 
         foreach ($cart as $item) {

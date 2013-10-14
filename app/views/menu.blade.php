@@ -94,7 +94,7 @@
 
       {{ Form::open(array('url' => 'users/index', 'class' => 'navbar-form navbar-right')) }}
         <div class="form-group">
-          {{ Form::email('email', (isset($email) ? $email : ''), array('class' => 'form-control', 'placeholder' => 'Email', 'required')) }}
+          {{ Form::email('email', (isset($email) ? $email : ''), array('class' => 'form-control', 'placeholder' => 'Email', 'required', 'autofocus')) }}
           {{ Form::password('password', array('class' => 'form-control', 'placeholder' => 'Password', 'required')) }}
         </div>
         {{ Form::submit('Entrar', array('class' => 'btn btn-primary')) }}
