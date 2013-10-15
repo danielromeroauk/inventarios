@@ -44,10 +44,10 @@
         {{ Form::close() }}
     </h1>
 
-        @if(Session::has('filtro'))
+        @if(isset($filtro))
             <div class="alert alert-dismissable alert-info">
               <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-              {{ Session::get('filtro') }}
+              {{ $filtro }}
             </div>
         @endif
 
@@ -90,7 +90,7 @@
               <div id="tab2-{{ $article->id }}">
                 <div class="article-image">
                     @if(isset($article->image()->first()->image))
-                        {{ '<img src="img/articles/'. $article->image()->first()->image .'">' }}
+                        {{ '<img src="'. url('img/articles/'. $article->image()->first()->image) .'">' }}
                     @else
                         <img src="http://placehold.it/150x150" />
                     @endif

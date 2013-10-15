@@ -159,4 +159,100 @@ class PurchaseController extends BaseController {
         }
     }
 
+    public function postFilterByStatus()
+    {
+        $title = 'Compras';
+
+        $purchases = Purchase::where('status', '=', Input::get('estado'))->orderBy('id', 'desc')->paginate(5);
+
+        $filterPurchase = 'Resultados con <strong>estado = '. Input::get('estado') .'</strong>';
+
+        return View::make('purchases.index')
+                ->with(compact('title', 'purchases', 'filterPurchase'));
+    } #postFilterByStatus
+
+    public function postFilterById()
+    {
+        $title = 'Compras';
+
+        $purchases = Purchase::where('id', '=', Input::get('idPurchase'))->orderBy('id', 'desc')->paginate(5);
+
+        $filterPurchase = 'Resultados con <strong>código de compra = '. Input::get('idPurchase') .'</strong>';
+
+        return View::make('purchases.index')
+                ->with(compact('title', 'purchases', 'filterPurchase'));
+    } #postFilterById
+
+    public function postFilterByArticle()
+    {
+        $title = 'Compras';
+        $idsPurchase = '0';
+
+        $articles = Article::whereRaw("id = '". Input::get('article') ."' OR name like '%". Input::get('article') ."%'")->get();
+
+        foreach ($articles as $article) {
+            foreach ($article->purchaseItems as $pitems) {
+                $idsPurchase += $pitems->purchase->id .',';
+            }
+        }
+
+        $idsPurchase = trim($idsPurchase, ',');
+
+        $purchases = Purchase::whereRaw('id in ('. $idsPurchase .')')->orderBy('id', 'desc')->paginate(5);
+
+        $filterPurchase = 'Resultados con <strong>código o parte del nombre del articulo = '. Input::get('article') .'</strong>';
+
+        return View::make('purchases.index')
+                ->with(compact('title', 'purchases', 'filterPurchase'));
+    } #postFilterByArticle
+
+    public function postFilterByDates()
+    {
+        $title = 'Compras';
+
+        $purchases = Purchase::whereRaw('created_at BETWEEN "'. Input::get('fecha1') .'" AND "'. Input::get('fecha2') .'"')->orderBy('id', 'desc')->paginate(5);
+
+        $filterPurchase = 'Resultados con <strong>fecha entre '. Input::get('fecha1') .' y '. Input::get('fecha2') .'</strong>';
+
+        return View::make('purchases.index')
+                ->with(compact('title', 'purchases', 'filterPurchase'));
+    } #postFilterByDates
+
+    public function postFilterByArticleDates()
+    {
+        $title = 'Compras';
+        $idsPurchase = '0';
+
+        $articles = Article::whereRaw("id = '". Input::get('article') ."' OR name like '%". Input::get('article') ."%'")->get();
+
+        foreach ($articles as $article) {
+            foreach ($article->purchaseItems as $pitems) {
+                $idsPurchase += $pitems->purchase->id .',';
+            }
+        }
+
+        $idsPurchase = trim($idsPurchase, ',');
+
+        $purchases = Purchase::whereRaw('id in ('. $idsPurchase .')')
+            ->whereRaw('created_at BETWEEN "'. Input::get('fecha1') .'" AND "'. Input::get('fecha2') .'"')
+            ->orderBy('id', 'desc')->paginate(5);
+
+        $filterPurchase = 'Resultados con código o parte del nombre del articulo = <strong>'. Input::get('article') .'</strong> en las compras realizadas entre '. Input::get('fecha1') .' y '. Input::get('fecha2');
+
+        return View::make('purchases.index')
+                ->with(compact('title', 'purchases', 'filterPurchase'));
+    } #postFilterByArticleDates
+
+     public function postFilterByComments()
+    {
+        $title = 'Compras';
+
+        $purchases = Purchase::whereRaw("comments like '%". Input::get('comments') ."%'")->orderBy('id', 'desc')->paginate(5);
+
+        $filterPurchase = 'Resultados con comentarios que contienen <strong>'. Input::get('comments') .'</strong>';
+
+        return View::make('purchases.index')
+                ->with(compact('title', 'purchases', 'filterPurchase'));
+    } #postFilterByComments
+
 } #PurchaseController

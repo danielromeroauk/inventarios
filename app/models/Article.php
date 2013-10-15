@@ -37,6 +37,11 @@ class Article extends Eloquent {
         return $this->hasMany('ArticleChange', 'id');
     }
 
+    public function purchaseItems()
+    {
+        return $this->hasMany('PurchaseItem');
+    }
+
     /**
      * Devuelve la cantidad involucrada en compras pendientes.
      * @param  Branche $branch

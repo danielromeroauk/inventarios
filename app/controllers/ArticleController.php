@@ -118,14 +118,14 @@ class ArticleController extends BaseController {
         $title = "Artículos";
         $input = Input::all();
 
-        Session::flash('filtro', 'Resultados con <strong>'. $input['search'] .'</strong>');
+        $filtro = 'Resultados con <strong>'. $input['search'] .'</strong>';
 
         $articles = Article::whereRaw("id = '". $input['search'] ."' OR name like '%". $input['search'] ."%'")->orderBy('name', 'asc')->paginate(5);
 
         $branches = Branche::all();
 
         return View::make('articles.index')
-                ->with(compact('articles', 'title', 'branches'));
+                ->with(compact('articles', 'title', 'branches', 'filtro'));
     } #postSearch
 
     public function getImage($idArticle)
