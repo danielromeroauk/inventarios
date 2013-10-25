@@ -30,13 +30,11 @@
                   Artículos
               </a>' }}
 
+      @if(Auth::user()->permitido('administrador') || Auth::user()->permitido('remisionero'))
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Registrar <b class="caret"></b></a>
           <ul class="dropdown-menu">
-
-            @if(Auth::user()->permitido('administrador') || Auth::user()->permitido('remisionero'))
-              <li> {{ HTML::link('articles/add', 'Artículo') }} </li>
-            @endif
+            <li> {{ HTML::link('articles/add', 'Artículo') }} </li>
 
             @if(Auth::user()->permitido('administrador'))
               <li> {{ HTML::link('users/register', 'Usuario') }} </li>
@@ -45,6 +43,7 @@
 
           </ul>
         </li>
+      @endif
 
           <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Informes <b class="caret"></b></a>
@@ -88,8 +87,11 @@
 
       <ul class="nav navbar-nav navbar-right">
         <li>
+          <a><span class="glyphicon glyphicon-user"></span> {{ Auth::user()->email }}</a>
+        </li>
+        <li>
           <a href="{{ url('users/logout') }}" class="btn btn-link">
-            <span class="glyphicon glyphicon-user"></span> Cerrar sesión
+            <span class="glyphicon glyphicon-log-out"></span> Salir
           </a>
         </li>
       </ul>

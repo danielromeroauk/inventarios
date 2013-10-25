@@ -83,37 +83,76 @@
 
                 @endif
 
-
-                @if((Auth::user()->permitido('bodeguero') || Auth::user()->permitido('remisionero') || Auth::user()->permitido('administrador')) && strpos($rotation->status, 'pendiente') !== false)
+                @if( $rotation->status == 'pendiente en origen' && ( Auth::user()->permitido('bodeguero') && Auth::user()->roles()->first()->branch->id == $rotation->branch_from()->first()->id ) )
 
                     {{ Form::open(array('url' => 'rotations/rotation-store', 'id' => 'rotationStoreForm')) }}
                         {{ Form::input('hidden', 'rotation', $rotation->id) }}
 
-                        @if($rotation->status == 'pendiente en origen')
-                            {{ Form::input('hidden', 'branch_from', $rotation->branch_from()->first()->id) }}
-                            {{ Form::textarea('comments_from', '', array('id' => 'comments', 'rows' => '3', 'class' => 'form-control', 'placeholder' => 'Comentarios del bodeguero en origen.', 'maxlength' => '255', 'required')) }}
-                        @elseif($rotation->status == 'pendiente en destino')
-                            {{ Form::input('hidden', 'branch_to', $rotation->branch_to()->first()->id) }}
-                            {{ Form::textarea('comments_to', '', array('id' => 'comments', 'rows' => '3', 'class' => 'form-control', 'placeholder' => 'Comentarios del bodeguero en destino.', 'maxlength' => '255', 'required')) }}
-                        @endif
+                        {{ Form::input('hidden', 'branch_from', $rotation->branch_from()->first()->id) }}
+                        {{ Form::textarea('comments_from', '', array('id' => 'comments', 'rows' => '3', 'class' => 'form-control', 'placeholder' => 'Comentarios del bodeguero en origen.', 'maxlength' => '255', 'required')) }}
 
-                         <a href="#rotationStoreModal" class="button" data-toggle="modal">
+                        <a href="#rotationStoreModal" class="button" data-toggle="modal">
                             <span class="glyphicon glyphicon-floppy-save"></span>
-                            Rotar
+                            Rotar desde origen
+                        </a>
+
+                        {{ Form::submit('Enviar', array('class' => 'hidden')) }}
+                    {{ Form::close() }}
+
+                @elseif( $rotation->status == 'pendiente en destino' && ( Auth::user()->permitido('bodeguero') && Auth::user()->roles()->first()->branch->id == $rotation->branch_to()->first()->id ) )
+
+                    {{ Form::open(array('url' => 'rotations/rotation-store', 'id' => 'rotationStoreForm')) }}
+                        {{ Form::input('hidden', 'rotation', $rotation->id) }}
+
+                        {{ Form::input('hidden', 'branch_to', $rotation->branch_to()->first()->id) }}
+                        {{ Form::textarea('comments_to', '', array('id' => 'comments', 'rows' => '3', 'class' => 'form-control', 'placeholder' => 'Comentarios del bodeguero en destino.', 'maxlength' => '255', 'required')) }}
+
+                        <a href="#rotationStoreModal" class="button" data-toggle="modal">
+                            <span class="glyphicon glyphicon-floppy-save"></span>
+                            Finalizar rotación
+                        </a>
+
+                        {{ Form::submit('Enviar', array('class' => 'hidden')) }}
+                    {{ Form::close() }}
+
+                @elseif( $rotation->status =='pendiente en origen' && ( Auth::user()->permitido('remisionero') || Auth::user()->permitido('administrador') ) )
+
+                    {{ Form::open(array('url' => 'rotations/rotation-store', 'id' => 'rotationStoreForm')) }}
+                        {{ Form::input('hidden', 'rotation', $rotation->id) }}
+
+                        {{ Form::input('hidden', 'branch_from', $rotation->branch_from()->first()->id) }}
+                        {{ Form::textarea('comments_from', '', array('id' => 'comments', 'rows' => '3', 'class' => 'form-control', 'placeholder' => 'Comentarios del bodeguero en origen.', 'maxlength' => '255', 'required')) }}
+
+                        <a href="#rotationStoreModal" class="button" data-toggle="modal">
+                            <span class="glyphicon glyphicon-floppy-save"></span>
+                            Rotar desde origen
+                        </a>
+
+                        {{ '<a href="'. url('rotations/cancel/'. $rotation->id) .'" class="btn btn-danger btn-sm">
+                        <span class="glyphicon glyphicon-minus-sign"></span>
+                        Cancelar remisión
+                        </a>' }}
+
+                        {{ Form::submit('Enviar', array('class' => 'hidden')) }}
+                    {{ Form::close() }}
+
+                @elseif( $rotation->status =='pendiente en destino' && ( Auth::user()->permitido('remisionero') || Auth::user()->permitido('administrador') ) )
+
+                    {{ Form::open(array('url' => 'rotations/rotation-store', 'id' => 'rotationStoreForm')) }}
+                        {{ Form::input('hidden', 'rotation', $rotation->id) }}
+
+                        {{ Form::input('hidden', 'branch_to', $rotation->branch_to()->first()->id) }}
+                        {{ Form::textarea('comments_to', '', array('id' => 'comments', 'rows' => '3', 'class' => 'form-control', 'placeholder' => 'Comentarios del bodeguero en destino.', 'maxlength' => '255', 'required')) }}
+
+                        <a href="#rotationStoreModal" class="button" data-toggle="modal">
+                            <span class="glyphicon glyphicon-floppy-save"></span>
+                            Finalizar rotación
                         </a>
                         {{ Form::submit('Enviar', array('class' => 'hidden')) }}
                     {{ Form::close() }}
 
-                    @if((Auth::user()->permitido('remisionero') || Auth::user()->permitido('administrador')) && $rotation->status != 'pendiente en destino')
-
-                            {{ '<a href="'. url('rotations/cancel/'. $rotation->id) .'" class="btn btn-danger btn-sm">
-                                <span class="glyphicon glyphicon-minus-sign"></span>
-                                Cancelar remisión
-                            </a>' }}
-
-                    @endif
-
                 @endif
+
             </div><!-- /.panel-footer -->
         </div><!-- /.panel -->
 

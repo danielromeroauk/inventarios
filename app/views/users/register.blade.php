@@ -33,7 +33,7 @@
                 <tr>
                     <td>
                         {{ Form::label('rol', 'Rol', array('class' => 'label label-default')) }}
-                        {{ Form::select('rol', array('vendedor' => 'vendedor', 'remisionero' => 'remisionero', 'auditor' => 'auditor'), '', array('class' => 'form-control')) }}
+                        {{ Form::select('rol', array('vendedor' => 'Vendedor', 'remisionero' => 'Remisionero', 'auditor' => 'Auditor', 'bodeguero' => 'Bodeguero'), '', array('class' => 'form-control')) }}
                     </td>
                 </tr>
                 <tr>

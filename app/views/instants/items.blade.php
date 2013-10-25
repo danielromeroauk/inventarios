@@ -69,28 +69,6 @@
                         {{ $instant->InstantStore->comments }}
                     </p>
 
-                @elseif((Auth::user()->permitido('bodeguero') || Auth::user()->permitido('remisionero') || Auth::user()->permitido('administrador')) && $instant->status == 'pendiente')
-
-                    {{ Form::open(array('url' => 'instants/instant-store', 'id' => 'instantStoreForm')) }}
-                        {{ Form::input('hidden', 'instant', $instant->id) }}
-                        {{ Form::input('hidden', 'branch_id', $instant->branch->id) }}
-                        {{ Form::textarea('comments', '', array('id' => 'comments', 'rows' => '3', 'class' => 'form-control', 'placeholder' => 'Comentarios del bodeguero.', 'maxlength' => '255', 'required')) }}
-                         <a href="#instantStoreModal" class="button" data-toggle="modal">
-                            <span class="glyphicon glyphicon-floppy-save"></span>
-                            Finalizar entrega inmediata
-                        </a>
-                        {{ Form::submit('Enviar', array('class' => 'hidden')) }}
-                    {{ Form::close() }}
-
-                    @if(Auth::user()->permitido('remisionero') || Auth::user()->permitido('administrador'))
-
-                            {{ '<a href="'. url('instants/cancel/'. $instant->id) .'" class="btn btn-danger btn-sm">
-                                <span class="glyphicon glyphicon-minus-sign"></span>
-                                Cancelar remisión
-                            </a>' }}
-
-                    @endif
-
                 @endif
             </div><!-- /.panel-footer -->
         </div><!-- /.panel -->

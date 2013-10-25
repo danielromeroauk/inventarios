@@ -42,7 +42,7 @@
                 <tr>
                     <td>
                         {{ Form::label('rol', 'Rol', array('class' => 'label label-default')) }}
-                        {{ Form::select('rol', array('vendedor' => 'vendedor', 'remisionero' => 'remisionero', 'auditor' => 'auditor'), $user->roles()->first()->name, array('class' => 'form-control')) }}
+                        {{ Form::select('rol', array('vendedor' => 'Vendedor', 'remisionero' => 'Remisionero', 'auditor' => 'Auditor', 'bodeguero' => 'Bodeguero'), $user->roles()->first()->name, array('class' => 'form-control')) }}
                     </td>
                 </tr>
                 <tr>

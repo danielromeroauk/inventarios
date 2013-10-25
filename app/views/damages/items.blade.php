@@ -70,7 +70,7 @@
                         {{ $damage->DamageStore->comments }}
                     </p>
 
-                @elseif((Auth::user()->permitido('bodeguero') || Auth::user()->permitido('remisionero') || Auth::user()->permitido('administrador')) && $damage->status == 'pendiente')
+                @elseif( ( (Auth::user()->permitido('bodeguero') && $damage->branch->id == Auth::user()->roles()->first()->branch->id) || Auth::user()->permitido('remisionero') || Auth::user()->permitido('administrador') ) && $damage->status == 'pendiente')
 
                     {{ Form::open(array('url' => 'damages/damage-store', 'id' => 'damageStoreForm')) }}
                         {{ Form::input('hidden', 'damage', $damage->id) }}

@@ -148,17 +148,18 @@
 
           </div> <!-- /.panel-body -->
 
-          <div class="panel-footer">
-             {{ Form::open(array('url' => 'cart/add')) }}
-                    {{ Form::text('id', $article->id, array('class' => 'hidden')) }}
-                    {{ Form::input('number', 'cantidad', '1.00', array('class' => 'form-control', 'min' => '0.01', 'step' => '0.01', 'max' => '99999999999999.99', 'title' => 'Cantidad', 'required')) }}
-                    <button type="submit" class="btn btn-success btn-sm">
-                        <span class="glyphicon glyphicon-shopping-cart"></span>
-                        Al carrito
-                    </button>
-                {{ Form::close() }}
+            @if(Auth::check() && (Auth::user()->permitido('administrador') || Auth::user()->permitido('remisionero')))
 
-                @if(Auth::check() && (Auth::user()->permitido('administrador') || Auth::user()->permitido('remisionero')))
+              <div class="panel-footer">
+                 {{ Form::open(array('url' => 'cart/add')) }}
+                        {{ Form::text('id', $article->id, array('class' => 'hidden')) }}
+                        {{ Form::input('number', 'cantidad', '1.00', array('class' => 'form-control', 'min' => '0.01', 'step' => '0.01', 'max' => '99999999999999.99', 'title' => 'Cantidad', 'required')) }}
+                        <button type="submit" class="btn btn-success btn-sm">
+                            <span class="glyphicon glyphicon-shopping-cart"></span>
+                            Al carrito
+                        </button>
+                    {{ Form::close() }}
+
 
                     {{ '<a href="'. url('articles/edit/'. $article->id) .'" class="btn btn-warning btn-sm">
                         <span class="glyphicon glyphicon-edit"></span>
@@ -175,9 +176,10 @@
                         Descargar stock
                     </a>' }}
 
-                @endif
+              </div> <!-- /.panel.footer -->
 
-          </div> <!-- /.panel.footer -->
+            @endif
+
         </div> <!-- /.panel.panel-primary -->
 
     @endforeach

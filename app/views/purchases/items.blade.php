@@ -70,7 +70,7 @@
                         {{ $purchase->PurchaseStore->comments }}
                     </p>
 
-                @elseif((Auth::user()->permitido('bodeguero') || Auth::user()->permitido('remisionero') || Auth::user()->permitido('administrador')) && $purchase->status == 'pendiente')
+                @elseif( ( (Auth::user()->permitido('bodeguero') && $purchase->branch->id == Auth::user()->roles()->first()->branch->id) || Auth::user()->permitido('remisionero') || Auth::user()->permitido('administrador') ) && $purchase->status == 'pendiente')
 
                     {{ Form::open(array('url' => 'purchases/purchase-store', 'id' => 'purchaseStoreForm')) }}
                         {{ Form::input('hidden', 'purchase', $purchase->id) }}

@@ -70,7 +70,7 @@
                         {{ $sale->SaleStore->comments }}
                     </p>
 
-                @elseif((Auth::user()->permitido('bodeguero') || Auth::user()->permitido('remisionero') || Auth::user()->permitido('administrador')) && $sale->status == 'pendiente')
+                @elseif( ( (Auth::user()->permitido('bodeguero') && $sale->branch->id == Auth::user()->roles()->first()->branch->id) || Auth::user()->permitido('remisionero') || Auth::user()->permitido('administrador') ) && $sale->status == 'pendiente')
 
                     {{ Form::open(array('url' => 'sales/sale-store', 'id' => 'saleStoreForm')) }}
                         {{ Form::input('hidden', 'sale', $sale->id) }}
