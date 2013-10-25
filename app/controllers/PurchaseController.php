@@ -5,11 +5,14 @@ class PurchaseController extends BaseController {
     public function getIndex()
     {
         $title = 'Compras';
-        $purchases = Purchase::orderBy('id', 'desc')->paginate(5);
+        $purchases = Purchase::where('status', '=', 'pendiente')->where('branch_id', '=', Auth::user()->roles()->first()->branch->id)->orderBy('id', 'desc')->paginate(5);
+
+        $filterPurchase = 'Resultados con estado = <strong>pendiente</strong> en la sucursal <strong>'. Auth::user()->roles()->first()->branch->name .'</strong>';
 
         return View::make('purchases.index')
-                ->with(compact('title', 'purchases'));
-    }
+                ->with(compact('title', 'purchases', 'filterPurchase'));
+
+    } #getIndex
 
     public function postAdd()
     {
@@ -170,6 +173,20 @@ class PurchaseController extends BaseController {
         return View::make('purchases.index')
                 ->with(compact('title', 'purchases', 'filterPurchase'));
     } #postFilterByStatus
+
+    public function postFilterByStatusBranch()
+    {
+        $title = 'Compras';
+
+        $branch = Branche::find(Input::get('branch_id'));
+
+        $purchases = Purchase::where('status', '=', Input::get('estado'))->where('branch_id', '=', Input::get('branch_id'))->orderBy('id', 'desc')->paginate(5);
+
+        $filterPurchase = 'Resultados con estado = <strong>'. Input::get('estado') .'</strong> en la sucursal <strong>'. $branch->name .'</strong>';
+
+        return View::make('purchases.index')
+                ->with(compact('title', 'purchases', 'filterPurchase'));
+    } #postFilterByStatusBranch
 
     public function postFilterById()
     {

@@ -125,7 +125,7 @@
 
                         <a href="#rotationStoreModal" class="button" data-toggle="modal">
                             <span class="glyphicon glyphicon-floppy-save"></span>
-                            Rotar desde origen
+                            Rotar desde origenst
                         </a>
 
                         {{ '<a href="'. url('rotations/cancel/'. $rotation->id) .'" class="btn btn-danger btn-sm">
