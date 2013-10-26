@@ -85,6 +85,10 @@
                     </tr>
                 </table>
                 <p>{{ $article->comments }}</p>
+                <a href="{{ url('articles/show-changes/'. $article->id) }}" class="link">
+                    <span class="glyphicon glyphicon-road"></span>
+                    Ver historial de cambios
+                </a>
               </div> <!-- /#tab1 -->
 
               <div id="tab2-{{ $article->id }}">
@@ -172,8 +176,8 @@
                     </a>' }}
 
                     {{ '<a href="'. url('articles/excel-by-article/'. $article->id) .'" class="btn btn-info btn-sm auk-imagen" id="'. $article->id .'">
-                        <span class="glyphicon glyphicon-download-alt"></span>
-                        Descargar stock
+                        <span class="glyphicon glyphicon-export"></span>
+                        Exportar stock
                     </a>' }}
 
               </div> <!-- /.panel.footer -->

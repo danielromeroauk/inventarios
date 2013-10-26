@@ -43,6 +43,10 @@ class ArticleController extends BaseController {
 	        	try {
 	            $this->article->create($input);
 
+                $input['id'] = Article::first()->orderBy('created_at', 'desc')->first()->id;
+
+                self::logChanges(array_except($input, '_token'));
+
 	        	} catch (Exception $e) {
 	        		// $message = $e->getMessage();
 	        		$message = 'No se ha podido guardar el nuevo artículo, quizá exista otro artículo con ese nombre.';
@@ -94,6 +98,7 @@ class ArticleController extends BaseController {
 
         	try {
             	$article->update($input);
+                self::logChanges(array_except($input, '_token'));
 
         	} catch (Exception $e) {
         		// $message = $e->getMessage();
@@ -112,6 +117,32 @@ class ArticleController extends BaseController {
             ->withErrors($v)
             ->with('message', 'Hay errores de validación.');
     } #postUpdate
+
+    private function logChanges($input)
+    {
+
+        $log = json_encode($input);
+
+        DB::table('article_changes')->insert(
+            array(
+                'article_id' => $input['id'],
+                'log' => $log,
+                'user_id' => Auth::user()->id,
+                'created_at' => new Datetime())
+        );
+    } #logChanges
+
+    public function getShowChanges($idArticle)
+    {
+        $article = DB::table('article_changes')
+            ->where('article_id', '=', $idArticle)
+            ->orderBy('created_at', 'desc')
+            ->paginate(5);
+
+        return View::make('articles.changes')
+            ->with(compact('article'));
+
+    } #getShowChanges
 
     public function postSearch()
     {

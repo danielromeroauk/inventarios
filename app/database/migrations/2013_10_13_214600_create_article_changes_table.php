@@ -17,6 +17,7 @@ class CreateArticleChangesTable extends Migration {
 			$table->engine = 'innoDB';
 
 			$table->increments('id');
+			$table->integer('article_id')->unsigned();
 			$table->integer('user_id')->unsigned();
 			$table->string('log', 2000);
 
@@ -27,7 +28,7 @@ class CreateArticleChangesTable extends Migration {
 				  ->onDelete('NO ACTION')
 				  ->onUpdate('cascade');
 
-			$table->foreign('id')
+			$table->foreign('article_id')
 				  ->references('id')->on('articles')
 				  ->onDelete('NO ACTION')
 				  ->onUpdate('cascade');
