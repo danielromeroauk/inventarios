@@ -5,10 +5,12 @@ class SaleController extends BaseController {
     public function getIndex()
     {
         $title = 'Ventas';
-        $sales = Sale::orderBy('id', 'desc')->paginate(5);
+        $sales = Sale::where('status', '=', 'pendiente')->where('branch_id', '=', Auth::user()->roles()->first()->branch->id)->orderBy('id', 'desc')->paginate(5);
+
+        $filterSale = 'Resultados con estado = <strong>pendiente</strong> en la sucursal <strong>'. Auth::user()->roles()->first()->branch->name .'</strong>';
 
         return View::make('sales.index')
-                ->with(compact('title', 'sales'));
+                ->with(compact('title', 'sales', 'filterSale'));
     }
 
     public function postAdd()
@@ -165,5 +167,115 @@ class SaleController extends BaseController {
             die('No fue posible cancelar la venta.');
         }
     }
+
+    public function postFilterByStatus()
+    {
+        $title = 'Ventas';
+
+        $sales = Sale::where('status', '=', Input::get('estado'))->orderBy('id', 'desc')->paginate(5);
+
+        $filterSale = 'Resultados con estado = <strong>'. Input::get('estado') .'</strong>';
+
+        return View::make('sales.index')
+                ->with(compact('title', 'sales', 'filterSale'));
+    } #postFilterByStatus
+
+    public function postFilterByStatusBranch()
+    {
+        $title = 'Ventas';
+
+        $branch = Branche::find(Input::get('branch_id'));
+
+        $sales = Sale::where('status', '=', Input::get('estado'))->where('branch_id', '=', Input::get('branch_id'))->orderBy('id', 'desc')->paginate(5);
+
+        $filterSale = 'Resultados con estado = <strong>'. Input::get('estado') .'</strong> en la sucursal <strong>'. $branch->name .'</strong>';
+
+        return View::make('sales.index')
+                ->with(compact('title', 'sales', 'filterSale'));
+    } #postFilterByStatusBranch
+
+    public function postFilterById()
+    {
+        $title = 'Ventas';
+
+        $sales = Sale::where('id', '=', Input::get('idSale'))->orderBy('id', 'desc')->paginate(5);
+
+        $filterSale = 'Resultado con código de venta = <strong>'. Input::get('idSale') .'</strong>';
+
+        return View::make('sales.index')
+                ->with(compact('title', 'sales', 'filterSale'));
+    } #postFilterById
+
+    public function postFilterByArticle()
+    {
+        $title = 'Ventas';
+        $idsSale = '0';
+
+        $articles = Article::whereRaw("id = '". Input::get('article') ."' OR name like '%". Input::get('article') ."%'")->get();
+
+        foreach ($articles as $article) {
+            foreach ($article->saleItems as $sitems) {
+                $idsSale += $sitems->sale->id .',';
+            }
+        }
+
+        $idsSale = trim($idsSale, ',');
+
+        $sales = Sale::whereRaw('id in ('. $idsSale .')')->orderBy('id', 'desc')->paginate(5);
+
+        $filterSale = 'Resultados con código o parte del nombre del articulo = <strong>'. Input::get('article') .'</strong>';
+
+        return View::make('sales.index')
+                ->with(compact('title', 'sales', 'filterSale'));
+    } #postFilterByArticle
+
+    public function postFilterByDates()
+    {
+        $title = 'Ventas';
+
+        $sales = Sale::whereRaw('created_at BETWEEN "'. Input::get('fecha1') .'" AND "'. Input::get('fecha2') .'"')->orderBy('id', 'desc')->paginate(5);
+
+        $filterSale = 'Resultados con fecha entre <strong>'. Input::get('fecha1') .' y '. Input::get('fecha2') .'</strong>';
+
+        return View::make('sales.index')
+                ->with(compact('title', 'sales', 'filterSale'));
+    } #postFilterByDates
+
+    public function postFilterByArticleDates()
+    {
+        $title = 'Ventas';
+        $idsSale = '0';
+
+        $articles = Article::whereRaw("id = '". Input::get('article') ."' OR name like '%". Input::get('article') ."%'")->get();
+
+        foreach ($articles as $article) {
+            foreach ($article->saleItems as $sitems) {
+                $idsSale += $sitems->sale->id .',';
+            }
+        }
+
+        $idsSale = trim($idsSale, ',');
+
+        $sales = Sale::whereRaw('id in ('. $idsSale .')')
+            ->whereRaw('created_at BETWEEN "'. Input::get('fecha1') .'" AND "'. Input::get('fecha2') .'"')
+            ->orderBy('id', 'desc')->paginate(5);
+
+        $filterSale = 'Resultados con código o parte del nombre del articulo = <strong>'. Input::get('article') .'</strong> en las compras realizadas entre '. Input::get('fecha1') .' y '. Input::get('fecha2');
+
+        return View::make('sales.index')
+                ->with(compact('title', 'sales', 'filterSale'));
+    } #postFilterByArticleDates
+
+    public function postFilterByComments()
+    {
+        $title = 'Ventas';
+
+        $sales = Sale::whereRaw("comments like '%". Input::get('comments') ."%'")->orderBy('id', 'desc')->paginate(5);
+
+        $filterSale = 'Resultados con comentarios que contienen <strong>'. Input::get('comments') .'</strong>';
+
+        return View::make('sales.index')
+                ->with(compact('title', 'sales', 'filterSale'));
+    } #postFilterByComments
 
 } #SaleController

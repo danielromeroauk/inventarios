@@ -163,6 +163,7 @@
         </div>
     @endif
     <p> &nbsp; </p>
+
     @foreach($purchases as $purchase)
         <div class="panel panel-success">
             <div class="panel-heading">

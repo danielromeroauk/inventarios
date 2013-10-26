@@ -260,7 +260,7 @@ class PurchaseController extends BaseController {
                 ->with(compact('title', 'purchases', 'filterPurchase'));
     } #postFilterByArticleDates
 
-     public function postFilterByComments()
+    public function postFilterByComments()
     {
         $title = 'Compras';
 
