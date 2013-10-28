@@ -13,7 +13,7 @@ class UsersTableSeeder extends Seeder {
 			),
 			array(
 				'name' => 'Nilso Ortiz',
-				'email' => 'yamidcolmenares@hotmail.com',
+				'email' => 'yamitcolmenares@hotmail.com',
 				'password' => Hash::make('123')
 			)
 		);

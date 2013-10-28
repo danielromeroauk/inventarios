@@ -176,10 +176,11 @@ class BrancheController extends BaseController {
                     ->setCellValue('A3', 'Código de artículo')
                     ->setCellValue('B3', 'Nombre de artículo')
                     ->setCellValue('C3', 'Stock')
-                    ->setCellValue('D3', 'Precio unitario')
-                    ->setCellValue('E3', 'Costo unitario')
-                    ->setCellValue('F3', 'Precio neto')
-                    ->setCellValue('G3', 'Costo neto');
+                    ->setCellValue('D3', 'Unidad de medida')
+                    ->setCellValue('E3', 'Precio unitario')
+                    ->setCellValue('F3', 'Costo unitario')
+                    ->setCellValue('G3', 'Precio neto')
+                    ->setCellValue('H3', 'Costo neto');
 
         $stocks = Stock::where('branch_id', '=', $branch->id)->get();
         $fila = 4;
@@ -190,10 +191,11 @@ class BrancheController extends BaseController {
                     ->setCellValue('A'. $fila, $stock->article->id)
                     ->setCellValue('B'. $fila, $stock->article->name)
                     ->setCellValue('C'. $fila, $stock->stock)
-                    ->setCellValue('D'. $fila, $stock->article->price)
-                    ->setCellValue('E'. $fila, $stock->article->cost)
-                    ->setCellValue('F'. $fila, ($stock->article->price * $stock->stock))
-                    ->setCellValue('G'. $fila, ($stock->article->cost * $stock->stock));
+                    ->setCellValue('D'. $fila, $stock->article->unit)
+                    ->setCellValue('E'. $fila, $stock->article->price)
+                    ->setCellValue('F'. $fila, $stock->article->cost)
+                    ->setCellValue('G'. $fila, ($stock->article->price * $stock->stock))
+                    ->setCellValue('H'. $fila, ($stock->article->cost * $stock->stock));
             $fila++;
         }
 

@@ -93,11 +93,11 @@
                 </div><!-- /input-group -->
             {{ Form::close() }}
         </div>
-        <h3>Filtro por código o parte del nombre de un artículo</h3>
+        <h3>Filtro por código de artículo</h3>
         <div>
             {{ Form::open(array('url' => 'purchases/filter-by-article')) }}
                 <div class="input-group">
-                    {{ Form::text('article', '', array('class' => 'form-control', 'title' => 'Código o parte del nombre del artículo', 'placeholder' => 'Código o parte del nombre del artículo.', 'required')) }}
+                    {{ Form::input('number', 'article', '', array('class' => 'form-control', 'min' => '1', 'step' => '1', 'max' => '99999999999999.99', 'title' => 'Código de artículo', 'placeholder' => 'Código de artículo', 'required')) }}
                     <span class="input-group-btn">
                         <button class="btn btn-primary" type="submit">Aplicar</button>
                     </span>
@@ -122,13 +122,12 @@
                 </div><!-- /input-group -->
             {{ Form::close() }}
         </div>
-        <h3>Filtro por artículo y rango de fechas</h3>
+        <h3>Filtro por código de artículo y rango de fechas</h3>
         <div>
             {{ Form::open(array('url' => 'purchases/filter-by-article-dates')) }}
 
-                    {{ Form::text('article', '', array('class' => 'form-control', 'title' => 'Código o parte del nombre del artículo', 'placeholder' => 'Código o parte del nombre del artículo.', 'required')) }}
-
                 <div class="input-group">
+                    {{ Form::input('number', 'article', '', array('class' => 'form-control', 'min' => '1', 'step' => '1', 'max' => '99999999999999.99', 'title' => 'Código de artículo', 'placeholder' => 'Código de artículo', 'required')) }}
 
                     <span class="input-group-addon">Fecha inicio:</span>
                     <input type="date" name="fecha1" class="form-control", title="Fecha inicio" required />
@@ -151,6 +150,24 @@
                     <span class="input-group-btn">
                         <button class="btn btn-primary" type="submit">Aplicar</button>
                     </span>
+                </div><!-- /input-group -->
+            {{ Form::close() }}
+        </div>
+        <h3>Filtro por código de artículo y comentarios de remisionero</h3>
+        <div>
+            {{ Form::open(array('url' => 'purchases/filter-by-article-comments')) }}
+                <div class="input-group">
+
+                    {{ Form::input('number', 'article', '', array('class' => 'form-control', 'min' => '1', 'step' => '1', 'max' => '99999999999999.99', 'title' => 'Código de artículo', 'placeholder' => 'Código de artículo', 'required')) }}
+
+                    <span class="input-group-addon">Comentarios: </span>
+
+                    {{ Form::text('comments', '', array('class' => 'form-control', 'title' => 'Parte del comentario de la compra', 'placeholder' => 'Parte del comentario de la compra.', 'required')) }}
+
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" type="submit">Aplicar</button>
+                    </span>
+
                 </div><!-- /input-group -->
             {{ Form::close() }}
         </div>

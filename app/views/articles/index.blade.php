@@ -23,6 +23,14 @@
                     var url = "{{ url('articles/image') }}" + "/" + $(this).attr('id') ;
                     $('#imagenModal .modal-body').load( url );
                 });
+
+                $('#examinar1').on('click', function(){
+                    $('#branchesModal .modal-body').load( "{{  url('branches/select?campo1=branch&campo2=branch_id') }}" );
+                });
+
+                $("#btnFiltrar").on('click', function(){
+                    $(".acordion").toggle("slow");
+                });
             }
 
         })(jQuery);
@@ -32,17 +40,23 @@
 
 @section('content')
 
-    <h1>
-        Informe de Artículos
+    <h1>Informe de Artículos</h1>
+    <div style="margin-bottom:1em;">
         {{ Form::open(array('url' => 'articles/search')) }}
             <div class="input-group">
+              <span class="input-group-addon">
+                <input type="radio" name="filterBy" value="name" checked /> Por nombre
+              </span>
+              <span class="input-group-addon">
+                <input type="radio" name="filterBy" value="id" /> Por código
+              </span>
+
               {{ Form::text('search', '', array('placeholder' => 'Buscar...', 'class' => 'form-control')) }}
               <span class="input-group-btn">
                 <button class="btn btn-default" type="submit">Buscar</button>
               </span>
             </div><!-- /input-group -->
         {{ Form::close() }}
-    </h1>
 
         @if(isset($filtro))
             <div class="alert alert-dismissable alert-info">
@@ -50,6 +64,7 @@
               {{ $filtro }}
             </div>
         @endif
+    </div>
 
     @foreach($articles as $article)
 

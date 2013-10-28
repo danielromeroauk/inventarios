@@ -148,15 +148,29 @@ class ArticleController extends BaseController {
     {
         $title = "Artículos";
         $input = Input::all();
+        $articles = null;
+        $filtro = '';
 
-        $filtro = 'Resultados con <strong>'. $input['search'] .'</strong>';
+        if($input['filterBy'] == 'id') {
 
-        $articles = Article::whereRaw("id = '". $input['search'] ."' OR name like '%". $input['search'] ."%'")->orderBy('name', 'asc')->paginate(5);
+            $filtro = 'Artículo con código <strong>'. $input['search'] .'</strong>.';
+
+            $articles = Article::whereRaw("id = '". $input['search'] ."'")->paginate(5);
+
+        } else { // Se asume que el filtro es por nombre.
+
+            $filtro = 'Artículos que contienen en el nombre <strong>'. $input['search'] .'</strong>.';
+
+            $articles = Article::whereRaw("name like '%". $input['search'] ."%'")->orderBy('name', 'asc')->paginate(5);
+
+        }
+
 
         $branches = Branche::all();
 
         return View::make('articles.index')
                 ->with(compact('articles', 'title', 'branches', 'filtro'));
+
     } #postSearch
 
     public function getImage($idArticle)
@@ -262,21 +276,25 @@ class ArticleController extends BaseController {
         $objPHPExcel->setActiveSheetIndex(0)
                     ->setCellValue('A1', 'Código de artículo')
                     ->setCellValue('B1', $article->id)
-                    ->setCellValue('A2', 'Precio unitario')
-                    ->setCellValue('B2', $article->price)
-                    ->setCellValue('A3', 'Costo unitario')
-                    ->setCellValue('B3', $article->cost);
+                    ->setCellValue('A2', 'Nombre de artículo')
+                    ->setCellValue('B2', $article->name)
+                    ->setCellValue('A3', 'Unidad de medida')
+                    ->setCellValue('B3', $article->unit)
+                    ->setCellValue('A4', 'Precio unitario')
+                    ->setCellValue('B4', $article->price)
+                    ->setCellValue('A5', 'Costo unitario')
+                    ->setCellValue('B5', $article->cost);
 
         // Encabezados con UTF-8
         $objPHPExcel->setActiveSheetIndex(0)
-                    ->setCellValue('A4', 'Código de sucursal')
-                    ->setCellValue('B4', 'Nombre de sucursal')
-                    ->setCellValue('C4', 'Stock')
-                    ->setCellValue('D4', 'Precio neto')
-                    ->setCellValue('E4', 'Costo neto');
+                    ->setCellValue('A6', 'Código de sucursal')
+                    ->setCellValue('B6', 'Nombre de sucursal')
+                    ->setCellValue('C6', 'Stock')
+                    ->setCellValue('D6', 'Precio neto')
+                    ->setCellValue('E6', 'Costo neto');
 
         $stocks = Stock::where('article_id', '=', $article->id)->get();
-        $fila = 5;
+        $fila = 7;
         foreach ($stocks as $stock) {
 
             $objPHPExcel->setActiveSheetIndex(0)
