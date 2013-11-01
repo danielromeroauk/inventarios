@@ -166,7 +166,7 @@ class Article extends Eloquent {
 
         foreach ($damagesPendientes as $damage) {
 
-            foreach ($damage->rotationItems as $item) {
+            foreach ($damage->damageItems as $item) {
                 if ($this->id == $item->article->id) {
                     $cantidad += $item->amount;
                 }

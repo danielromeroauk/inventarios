@@ -144,7 +144,7 @@ class ArticleController extends BaseController {
 
     } #getShowChanges
 
-    public function postSearch()
+    public function getSearch()
     {
         $title = "Artículos";
         $input = Input::all();
@@ -169,7 +169,7 @@ class ArticleController extends BaseController {
         $branches = Branche::all();
 
         return View::make('articles.index')
-                ->with(compact('articles', 'title', 'branches', 'filtro'));
+                ->with(compact('articles', 'title', 'branches', 'filtro', 'input'));
 
     } #postSearch
 

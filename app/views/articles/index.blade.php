@@ -42,7 +42,7 @@
 
     <h1>Informe de Artículos</h1>
     <div style="margin-bottom:1em;">
-        {{ Form::open(array('url' => 'articles/search')) }}
+        {{ Form::open(array('url' => 'articles/search', 'method' => 'get')) }}
             <div class="input-group">
               <span class="input-group-addon">
                 <input type="radio" name="filterBy" value="name" checked /> Por nombre
@@ -203,7 +203,13 @@
 
     @endforeach
 
-    <?php echo $articles->links(); ?>
+    <?php
+        if(isset($input)) {
+            echo $articles->appends(array_except($input, 'page'))->links();
+        } else {
+            echo $articles->links();
+        }
+    ?>
 
     <!-- Modal -->
       <div class="modal fade" id="imagenModal">
