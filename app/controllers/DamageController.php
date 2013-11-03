@@ -5,11 +5,14 @@ class DamageController extends BaseController {
     public function getIndex()
     {
         $title = 'Daños';
-        $damages = Damage::orderBy('id', 'desc')->paginate(5);
+        $damages = Damage::where('status', '=', 'pendiente')->where('branch_id', '=', Auth::user()->roles()->first()->branch->id)->orderBy('id', 'desc')->paginate(5);
+
+        $filterDamage = 'Daños con estado <strong>pendiente</strong> en la sucursal <strong>'. Auth::user()->roles()->first()->branch->name .'</strong>.';
 
         return View::make('damages.index')
-                ->with(compact('title', 'damages'));
-    }
+                ->with(compact('title', 'damages', 'filterDamage'));
+
+    } #getIndex
 
     public function postAdd()
     {
@@ -164,5 +167,150 @@ class DamageController extends BaseController {
             die('No fue posible cancelar el daño.');
         }
     }
+
+    public function getFilterByStatus()
+    {
+        $title = 'Daños';
+        $input = Input::all();
+
+        $damages = Damage::where('status', '=', $input['estado'])->orderBy('id', 'desc')->paginate(5);
+
+        $filterDamage = 'Daños con estado <strong>'. $input['estado'] .'</strong>';
+
+        return View::make('damages.index')
+                ->with(compact('title', 'damages', 'filterDamage', 'input'));
+
+    } #getFilterByStatus
+
+    public function getFilterByStatusBranch()
+    {
+        $title = 'Daños';
+        $input = Input::all();
+
+        $branch = Branche::find($input['branch_id']);
+
+        $damages = Damage::where('status', '=', $input['estado'])->where('branch_id', '=', $input['branch_id'])->orderBy('id', 'desc')->paginate(5);
+
+        $filterDamage = 'Daños con estado <strong>'. $input['estado'] .'</strong> en la sucursal <strong>'. $branch->name .'</strong>';
+
+        return View::make('damages.index')
+                ->with(compact('title', 'damages', 'filterDamage', 'input'));
+
+    } #getFilterByStatusBranch
+
+    public function getFilterById()
+    {
+        $title = 'Daños';
+        $input = Input::all();
+
+        $damages = Damage::where('id', '=', $input['idDamage'])->orderBy('id', 'desc')->paginate(5);
+
+        $filterDamage = 'Daño con código '. $input['idDamage'] .'</strong>';
+
+        return View::make('damages.index')
+                ->with(compact('title', 'damages', 'filterDamage', 'input'));
+
+    } #getFilterById
+
+    public function getFilterByArticle()
+    {
+        $title = 'Daños';
+        $input = Input::all();
+        $idsDamage = '0';
+
+        $article = Article::find($input['article']);
+
+        foreach ($article->damageItems as $ditems) {
+            $idsDamage .= $ditems->damage->id .',';
+        }
+
+        $idsDamage = trim($idsDamage, ',');
+
+        $damages = Damage::whereRaw('id in ('. $idsDamage .')')->orderBy('id', 'desc')->paginate(5);
+
+        $filterDamage = 'Daños que contienen el artículo <strong>'. $input['article'] .'</strong>';
+
+        return View::make('damages.index')
+                ->with(compact('title', 'damages', 'filterDamage', 'input'));
+
+    } #getFilterByArticle
+
+    public function getFilterByDates()
+    {
+        $title = 'Daños';
+        $input = Input::all();
+
+        $damages = Damage::whereRaw('created_at BETWEEN "'. $input['fecha1'] .'" AND "'. $input['fecha2'] .'"')->orderBy('id', 'desc')->paginate(5);
+
+        $filterDamage = 'Daños con fecha de creación entre <strong>'. $input['fecha1'] .'</strong> y <strong>'. $input['fecha2'] .'</strong>';
+
+        return View::make('damages.index')
+                ->with(compact('title', 'damages', 'filterDamage', 'input'));
+
+    } #getFilterByDates
+
+    public function getFilterByArticleDates()
+    {
+        $title = 'Daños';
+        $input = Input::all();
+        $idsDamage = '0';
+
+        $article = Article::find($input['article']);
+
+        foreach ($article->damageItems as $ditems) {
+            $idsDamage .= $ditems->damage->id .',';
+        }
+
+        $idsDamage = trim($idsDamage, ',');
+
+        $damages = Damage::whereRaw('id in ('. $idsDamage .')')
+            ->whereRaw('created_at BETWEEN "'. $input['fecha1'] .'" AND "'. $input['fecha2'] .'"')
+            ->orderBy('id', 'desc')->paginate(5);
+
+        $filterDamage = 'Daños entre <strong>'. $input['fecha1'] .'</strong> y <strong>'. $input['fecha2'] .'</strong> que contienen el artículo <strong>'. $input['article'] .'</strong>';
+
+        return View::make('damages.index')
+                ->with(compact('title', 'damages', 'filterDamage', 'input'));
+
+    } #getFilterByArticleDates
+
+    public function getFilterByComments()
+    {
+        $title = 'Daños';
+        $input = Input::all();
+
+        $damages = Damage::whereRaw("comments like '%". $input['comments'] ."%'")->orderBy('id', 'desc')->paginate(5);
+
+        $filterDamage = 'Daños que contienen <strong>'. $input['comments'] .'</strong> en los comentarios del remisionero.';
+
+        return View::make('damages.index')
+                ->with(compact('title', 'damages', 'filterDamage', 'input'));
+
+    } #getFilterByComments
+
+    public function getFilterByArticleComments()
+    {
+        $title = 'Daños';
+        $input = Input::all();
+        $idsDamage = '0';
+
+        $article = Article::find($input['article']);
+
+        foreach ($article->damageItems as $ditems) {
+            $idsDamage .= $ditems->damage->id .',';
+        }
+
+        $idsDamage = trim($idsDamage, ',');
+
+        $damages = Damage::whereRaw('id in ('. $idsDamage .')')
+            ->whereRaw('comments like "%'. $input['comments'] .'%"')
+            ->orderBy('id', 'desc')->paginate(5);
+
+        $filterDamage = 'Daños que contienen el artículo <strong>'. $input['article'] .'</strong> y en los comentarios del remisionero <strong>'. $input['comments'] .'</strong>.';
+
+        return View::make('damages.index')
+                ->with(compact('title', 'damages', 'filterDamage', 'input'));
+
+    } #getFilterByArticleComments
 
 } #DamageController

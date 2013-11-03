@@ -53,7 +53,7 @@
     <div class="acordion">
         <h3>Filtro por estado y sucursal</h3>
         <div>
-            {{ Form::open(array('url' => 'purchases/filter-by-status-branch', 'id' => 'branchForm')) }}
+            {{ Form::open(array('url' => 'damages/filter-by-status-branch', 'id' => 'branchForm', 'method' => 'get')) }}
                 <div class="input-group">
 
                     <span class="input-group-addon">Estado:</span>
@@ -74,7 +74,7 @@
         </div>
         <h3>Filtro por estado</h3>
         <div>
-            {{ Form::open(array('url' => 'purchases/filter-by-status')) }}
+            {{ Form::open(array('url' => 'damages/filter-by-status', 'method' => 'get')) }}
                 <div class="input-group">
                     {{ Form::select('estado', array('pendiente' => 'Pendiente', 'cancelado' => 'Cancelado', 'finalizado' => 'Finalizado'), '', array('class' => 'form-control')) }}
                     <span class="input-group-btn">
@@ -85,9 +85,9 @@
         </div>
         <h3>Filtro por código de daño</h3>
         <div>
-            {{ Form::open(array('url' => 'purchases/filter-by-id')) }}
+            {{ Form::open(array('url' => 'damages/filter-by-id', 'method' => 'get')) }}
                 <div class="input-group">
-                    {{ Form::input('number', 'idPurchase', '', array('class' => 'form-control', 'min' => '1', 'step' => '1', 'max' => '99999999999999.99', 'title' => 'Código de compra', 'placeholder' => 'Código de compra', 'required')) }}
+                    {{ Form::input('number', 'idDamage', '', array('class' => 'form-control', 'min' => '1', 'step' => '1', 'max' => '99999999999999.99', 'title' => 'Código de daño', 'placeholder' => 'Código de daño', 'required')) }}
                     <span class="input-group-btn">
                         <button class="btn btn-primary" type="submit">Aplicar</button>
                     </span>
@@ -96,7 +96,7 @@
         </div>
         <h3>Filtro por código de artículo</h3>
         <div>
-            {{ Form::open(array('url' => 'purchases/filter-by-article')) }}
+            {{ Form::open(array('url' => 'damages/filter-by-article', 'method' => 'get')) }}
                 <div class="input-group">
                     {{ Form::input('number', 'article', '', array('class' => 'form-control', 'min' => '1', 'step' => '1', 'max' => '99999999999999.99', 'title' => 'Código de artículo', 'placeholder' => 'Código de artículo', 'required')) }}
                     <span class="input-group-btn">
@@ -107,7 +107,7 @@
         </div>
         <h3>Filtro por rango de fechas</h3>
         <div>
-            {{ Form::open(array('url' => 'purchases/filter-by-dates')) }}
+            {{ Form::open(array('url' => 'damages/filter-by-dates', 'method' => 'get')) }}
                 <div class="input-group">
 
                     <span class="input-group-addon">Fecha inicio:</span>
@@ -125,7 +125,7 @@
         </div>
         <h3>Filtro por código de artículo y rango de fechas</h3>
         <div>
-            {{ Form::open(array('url' => 'purchases/filter-by-article-dates')) }}
+            {{ Form::open(array('url' => 'damages/filter-by-article-dates', 'method' => 'get')) }}
 
                 <div class="input-group">
                     {{ Form::input('number', 'article', '', array('class' => 'form-control', 'min' => '1', 'step' => '1', 'max' => '99999999999999.99', 'title' => 'Código de artículo', 'placeholder' => 'Código de artículo', 'required')) }}
@@ -145,9 +145,9 @@
         </div>
         <h3>Filtro por comentarios de remisionero</h3>
         <div>
-            {{ Form::open(array('url' => 'purchases/filter-by-comments')) }}
+            {{ Form::open(array('url' => 'damages/filter-by-comments', 'method' => 'get')) }}
                 <div class="input-group">
-                    {{ Form::text('comments', '', array('class' => 'form-control', 'title' => 'Parte del comentario de la compra', 'placeholder' => 'Parte del comentario de la compra.', 'required')) }}
+                    {{ Form::text('comments', '', array('class' => 'form-control', 'title' => 'Parte del comentario del daño', 'placeholder' => 'Parte del comentario del daño.', 'required')) }}
                     <span class="input-group-btn">
                         <button class="btn btn-primary" type="submit">Aplicar</button>
                     </span>
@@ -156,14 +156,14 @@
         </div>
         <h3>Filtro por código de artículo y comentarios de remisionero</h3>
         <div>
-            {{ Form::open(array('url' => 'purchases/filter-by-article-comments')) }}
+            {{ Form::open(array('url' => 'damages/filter-by-article-comments', 'method' => 'get')) }}
                 <div class="input-group">
 
                     {{ Form::input('number', 'article', '', array('class' => 'form-control', 'min' => '1', 'step' => '1', 'max' => '99999999999999.99', 'title' => 'Código de artículo', 'placeholder' => 'Código de artículo', 'required')) }}
 
                     <span class="input-group-addon">Comentarios: </span>
 
-                    {{ Form::text('comments', '', array('class' => 'form-control', 'title' => 'Parte del comentario de la compra', 'placeholder' => 'Parte del comentario de la compra.', 'required')) }}
+                    {{ Form::text('comments', '', array('class' => 'form-control', 'title' => 'Parte del comentario del daño', 'placeholder' => 'Parte del comentario del daño.', 'required')) }}
 
                     <span class="input-group-btn">
                         <button class="btn btn-primary" type="submit">Aplicar</button>
@@ -174,10 +174,10 @@
         </div>
     </div> <!-- /.acordion -->
 
-    @if(isset($filterPurchase))
+    @if(isset($filterDamage))
         <div class="alert alert-dismissable alert-info">
           <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-          {{ $filterPurchase }}
+          {{ $filterDamage }}
         </div>
     @endif
     <p> &nbsp; </p>
@@ -207,6 +207,27 @@
         </div>
     @endforeach
 
-    <?php echo $damages->links(); ?>
+    <?php
+        if(isset($input)) {
+            echo $damages->appends(array_except($input, 'page'))->links();
+        } else {
+            echo $damages->links();
+        }
+    ?>
+
+    <!-- Modal -->
+    <div class="modal fade" id="branchesModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
+              <h4 class="modal-title">Sucursales</h4>
+            </div>
+            <div class="modal-body">
+              Las sucursales no han podido mostrarse.
+            </div>
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 
 @stop

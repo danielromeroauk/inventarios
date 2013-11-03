@@ -171,7 +171,7 @@ class ArticleController extends BaseController {
         return View::make('articles.index')
                 ->with(compact('articles', 'title', 'branches', 'filtro', 'input'));
 
-    } #postSearch
+    } #getSearch
 
     public function getImage($idArticle)
     {

@@ -5,11 +5,14 @@ class InstantController extends BaseController {
     public function getIndex()
     {
         $title = 'Entregas inmediatas';
-        $instants = Instant::orderBy('id', 'desc')->paginate(5);
+        $instants = Instant::where('branch_id', '=', Auth::user()->roles()->first()->branch->id)->orderBy('id', 'desc')->paginate(5);
+
+        $filterInstant = 'Entregas inmediatas de la sucursal <strong>'. Auth::user()->roles()->first()->branch->name .'</strong>.';
 
         return View::make('instants.index')
-                ->with(compact('title', 'instants'));
-    }
+                ->with(compact('title', 'instants', 'filterInstant'));
+
+    } #getIndex
 
     public function postAdd()
     {
@@ -164,6 +167,137 @@ class InstantController extends BaseController {
         } catch (Exception $e) {
             die('No fue posible cancelar la venta.');
         }
-    }
+    } #getCancel
+
+    public function getFilterByBranch()
+    {
+        $title = 'Entregas inmediatas';
+        $input = Input::all();
+
+        $branch = Branche::find($input['branch_id']);
+
+        $instants = Instant::where('branch_id', '=', $input['branch_id'])->orderBy('id', 'desc')->paginate(5);
+
+        $filterInstant = 'Entregas inmediatas de la sucursal <strong>'. $branch->name .'</strong>';
+
+        return View::make('instants.index')
+                ->with(compact('title', 'instants', 'filterInstant', 'input'));
+
+    } #getFilterByStatusBranch
+
+    public function getFilterById()
+    {
+        $title = 'Entrega inmediata';
+        $input = Input::all();
+
+        $instants = Instant::where('id', '=', $input['idInstant'])->orderBy('id', 'desc')->paginate(5);
+
+        $filterInstant = 'Entrega inmediata con código '. $input['idInstant'] .'</strong>';
+
+        return View::make('instants.index')
+                ->with(compact('title', 'instants', 'filterInstant', 'input'));
+
+    } #getFilterById
+
+    public function getFilterByArticle()
+    {
+        $title = 'Entregas inmediatas';
+        $input = Input::all();
+        $idsInstant = '0';
+
+        $article = Article::find($input['article']);
+
+        foreach ($article->instantItems as $iitems) {
+            $idsInstant .= $iitems->instant->id .',';
+        }
+
+        $idsInstant = trim($idsInstant, ',');
+
+        $instants = Instant::whereRaw('id in ('. $idsInstant .')')->orderBy('id', 'desc')->paginate(5);
+
+        $filterInstant = 'Entregas inmediatas que contienen el artículo <strong>'. $input['article'] .'</strong>';
+
+        return View::make('instants.index')
+                ->with(compact('title', 'instants', 'filterInstant', 'input'));
+
+    } #getFilterByArticle
+
+    public function getFilterByDates()
+    {
+        $title = 'Entregas inmediatas';
+        $input = Input::all();
+
+        $instants = Instant::whereRaw('created_at BETWEEN "'. $input['fecha1'] .'" AND "'. $input['fecha2'] .'"')->orderBy('id', 'desc')->paginate(5);
+
+        $filterInstant = 'Entregas inmediatas con fecha de creación entre <strong>'. $input['fecha1'] .'</strong> y <strong>'. $input['fecha2'] .'</strong>';
+
+        return View::make('instants.index')
+                ->with(compact('title', 'instants', 'filterInstant', 'input'));
+
+    } #getFilterByDates
+
+    public function getFilterByArticleDates()
+    {
+        $title = 'Entregas inmediatas';
+        $input = Input::all();
+        $idsInstant = '0';
+
+        $article = Article::find($input['article']);
+
+        foreach ($article->instantItems as $iitems) {
+            $idsInstant .= $iitems->instant->id .',';
+        }
+
+        $idsInstant = trim($idsInstant, ',');
+
+        $instants = Instant::whereRaw('id in ('. $idsInstant .')')
+            ->whereRaw('created_at BETWEEN "'. $input['fecha1'] .'" AND "'. $input['fecha2'] .'"')
+            ->orderBy('id', 'desc')->paginate(5);
+
+        $filterInstant = 'Entregas inmediatas entre <strong>'. $input['fecha1'] .'</strong> y <strong>'. $input['fecha2'] .'</strong> que contienen el artículo <strong>'. $input['article'] .'</strong>';
+
+        return View::make('instants.index')
+                ->with(compact('title', 'instants', 'filterInstant', 'input'));
+
+    } #getFilterByArticleDates
+
+    public function getFilterByComments()
+    {
+        $title = 'Entregas inmediatas';
+        $input = Input::all();
+
+        $instants = Instant::whereRaw("comments like '%". $input['comments'] ."%'")->orderBy('id', 'desc')->paginate(5);
+
+        $filterInstant = 'Entregas inmediatas que contienen <strong>'. $input['comments'] .'</strong> en los comentarios del remisionero.';
+
+        return View::make('instants.index')
+                ->with(compact('title', 'instants', 'filterInstant', 'input'));
+
+    } #getFilterByComments
+
+    public function getFilterByArticleComments()
+    {
+        $title = 'Entregas inmediatas';
+        $input = Input::all();
+        $idsInstant = '0';
+
+        $article = Article::find($input['article']);
+
+        foreach ($article->instantItems as $iitems) {
+            $idsInstant .= $iitems->instant->id .',';
+        }
+
+        $idsInstant = trim($idsInstant, ',');
+
+        $instants = Instant::whereRaw('id in ('. $idsInstant .')')
+            ->whereRaw('comments like "%'. $input['comments'] .'%"')
+            ->orderBy('id', 'desc')->paginate(5);
+
+        $filterInstant = 'Entregas inmediatas que contienen el artículo <strong>'. $input['article'] .'</strong> y en los comentarios del remisionero <strong>'. $input['comments'] .'</strong>.';
+
+        return View::make('instants.index')
+                ->with(compact('title', 'instants', 'filterInstant', 'input'));
+
+    } #getFilterByArticleComments
 
 } #InstantController

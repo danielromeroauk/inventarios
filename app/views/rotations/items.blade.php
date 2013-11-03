@@ -51,19 +51,21 @@
 
                 <table class="table table-striped table-bordered">
                     <tr>
+                        <th>Cód. Artículo</th>
+                        <th>Nombre del artículo</th>
                         <th>Cantidad</th>
-                        <th>Artículo</th>
                     </tr>
                     @foreach($ritems as $ritem)
                         <tr>
-                            <td>{{ $ritem->amount .' '. $ritem->article->unit }}</td>
+                            <td>{{ $ritem->article->id }}</td>
                             <td>{{ $ritem->article->name }}</td>
+                            <td>{{ $ritem->amount .' '. $ritem->article->unit }}</td>
                         </tr>
                     @endforeach
                 </table>
             </div><!-- /.panel-body -->
             <div class="panel-footer">
-                @if(isset($rotation->RotationStore->comments_from))
+                @if(isset($rotation->RotationStore->comments_from) && $rotation->RotationStore->comments_from != '')
 
                     <p class="label label-info">Desde origen por {{ $rotation->RotationStore->user->name }}</p>
                     <p class="alert alert-success">
@@ -125,7 +127,7 @@
 
                         <a href="#rotationStoreModal" class="button" data-toggle="modal">
                             <span class="glyphicon glyphicon-floppy-save"></span>
-                            Rotar desde origenst
+                            Rotar desde origen
                         </a>
 
                         {{ '<a href="'. url('rotations/cancel/'. $rotation->id) .'" class="btn btn-danger btn-sm">

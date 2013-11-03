@@ -50,13 +50,15 @@
 
                 <table class="table table-striped table-bordered">
                     <tr>
+                        <th>Cód. Artículo</th>
+                        <th>Nombre de artículo</th>
                         <th>Cantidad</th>
-                        <th>Artículo</th>
                     </tr>
                     @foreach($sitems as $sitem)
                         <tr>
-                            <td>{{ $sitem->amount .' '. $sitem->article->unit }}</td>
+                            <td>{{ $sitem->article->id }}</td>
                             <td>{{ $sitem->article->name }}</td>
+                            <td>{{ $sitem->amount .' '. $sitem->article->unit }}</td>
                         </tr>
                     @endforeach
                 </table>

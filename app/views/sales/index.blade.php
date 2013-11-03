@@ -52,7 +52,7 @@
     <div class="acordion">
         <h3>Filtro por estado y sucursal</h3>
         <div>
-            {{ Form::open(array('url' => 'sales/filter-by-status-branch', 'id' => 'branchForm')) }}
+            {{ Form::open(array('url' => 'sales/filter-by-status-branch', 'id' => 'branchForm', 'method' => 'get')) }}
                 <div class="input-group">
 
                     <span class="input-group-addon">Estado:</span>
@@ -73,7 +73,7 @@
         </div>
         <h3>Filtro por estado</h3>
         <div>
-            {{ Form::open(array('url' => 'sales/filter-by-status')) }}
+            {{ Form::open(array('url' => 'sales/filter-by-status', 'method' => 'get')) }}
                 <div class="input-group">
                     {{ Form::select('estado', array('pendiente' => 'Pendiente', 'cancelado' => 'Cancelado', 'finalizado' => 'Finalizado'), '', array('class' => 'form-control')) }}
                     <span class="input-group-btn">
@@ -84,7 +84,7 @@
         </div>
         <h3>Filtro por código de venta</h3>
         <div>
-            {{ Form::open(array('url' => 'sales/filter-by-id')) }}
+            {{ Form::open(array('url' => 'sales/filter-by-id', 'method' => 'get')) }}
                 <div class="input-group">
                     {{ Form::input('number', 'idSale', '', array('class' => 'form-control', 'min' => '1', 'step' => '1', 'max' => '99999999999999.99', 'title' => 'Código de venta', 'placeholder' => 'Código de venta', 'required')) }}
                     <span class="input-group-btn">
@@ -93,11 +93,11 @@
                 </div><!-- /input-group -->
             {{ Form::close() }}
         </div>
-        <h3>Filtro por código o parte del nombre de un artículo</h3>
+        <h3>Filtro por código de artículo</h3>
         <div>
-            {{ Form::open(array('url' => 'sales/filter-by-article')) }}
+            {{ Form::open(array('url' => 'sales/filter-by-article', 'method' => 'get')) }}
                 <div class="input-group">
-                    {{ Form::text('article', '', array('class' => 'form-control', 'title' => 'Código o parte del nombre del artículo', 'placeholder' => 'Código o parte del nombre del artículo.', 'required')) }}
+                    {{ Form::text('article', '', array('class' => 'form-control', 'title' => 'Código del artículo', 'placeholder' => 'Código del artículo.', 'required')) }}
                     <span class="input-group-btn">
                         <button class="btn btn-primary" type="submit">Aplicar</button>
                     </span>
@@ -106,7 +106,7 @@
         </div>
         <h3>Filtro por rango de fechas</h3>
         <div>
-            {{ Form::open(array('url' => 'sales/filter-by-dates')) }}
+            {{ Form::open(array('url' => 'sales/filter-by-dates', 'method' => 'get')) }}
                 <div class="input-group">
 
                     <span class="input-group-addon">Fecha inicio:</span>
@@ -122,13 +122,12 @@
                 </div><!-- /input-group -->
             {{ Form::close() }}
         </div>
-        <h3>Filtro por artículo y rango de fechas</h3>
+        <h3>Filtro por código de artículo y rango de fechas</h3>
         <div>
-            {{ Form::open(array('url' => 'sales/filter-by-article-dates')) }}
-
-                    {{ Form::text('article', '', array('class' => 'form-control', 'title' => 'Código o parte del nombre del artículo', 'placeholder' => 'Código o parte del nombre del artículo.', 'required')) }}
+            {{ Form::open(array('url' => 'sales/filter-by-article-dates', 'method' => 'get')) }}
 
                 <div class="input-group">
+                    {{ Form::input('number', 'article', '', array('class' => 'form-control', 'min' => '1', 'step' => '1', 'max' => '99999999999999.99', 'title' => 'Código de artículo', 'placeholder' => 'Código de artículo', 'required')) }}
 
                     <span class="input-group-addon">Fecha inicio:</span>
                     <input type="date" name="fecha1" class="form-control", title="Fecha inicio" required />
@@ -145,12 +144,30 @@
         </div>
         <h3>Filtro por comentarios de remisionero</h3>
         <div>
-            {{ Form::open(array('url' => 'sales/filter-by-comments')) }}
+            {{ Form::open(array('url' => 'sales/filter-by-comments', 'method' => 'get')) }}
                 <div class="input-group">
                     {{ Form::text('comments', '', array('class' => 'form-control', 'title' => 'Parte del comentario de la venta', 'placeholder' => 'Parte del comentario de la venta.', 'required')) }}
                     <span class="input-group-btn">
                         <button class="btn btn-primary" type="submit">Aplicar</button>
                     </span>
+                </div><!-- /input-group -->
+            {{ Form::close() }}
+        </div>
+        <h3>Filtro por código de artículo y comentarios de remisionero</h3>
+        <div>
+            {{ Form::open(array('url' => 'sales/filter-by-article-comments', 'method' => 'get')) }}
+                <div class="input-group">
+
+                    {{ Form::input('number', 'article', '', array('class' => 'form-control', 'min' => '1', 'step' => '1', 'max' => '99999999999999.99', 'title' => 'Código de artículo', 'placeholder' => 'Código de artículo', 'required')) }}
+
+                    <span class="input-group-addon">Comentarios: </span>
+
+                    {{ Form::text('comments', '', array('class' => 'form-control', 'title' => 'Parte del comentario de la venta', 'placeholder' => 'Parte del comentario de la venta.', 'required')) }}
+
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" type="submit">Aplicar</button>
+                    </span>
+
                 </div><!-- /input-group -->
             {{ Form::close() }}
         </div>
@@ -189,7 +206,13 @@
         </div>
     @endforeach
 
-    <?php echo $sales->links(); ?>
+    <?php
+        if(isset($input)) {
+            echo $sales->appends(array_except($input, 'page'))->links();
+        } else {
+            echo $sales->links();
+        }
+    ?>
 
     <!-- Modal -->
     <div class="modal fade" id="branchesModal">

@@ -176,7 +176,7 @@ class PurchaseController extends BaseController {
         return View::make('purchases.index')
                 ->with(compact('title', 'purchases', 'filterPurchase', 'input'));
 
-    } #postFilterByStatus
+    } #getFilterByStatus
 
     public function getFilterByStatusBranch()
     {
@@ -192,11 +192,11 @@ class PurchaseController extends BaseController {
         return View::make('purchases.index')
                 ->with(compact('title', 'purchases', 'filterPurchase', 'input'));
 
-    } #postFilterByStatusBranch
+    } #getFilterByStatusBranch
 
     public function getFilterById()
     {
-        $title = 'Compras';
+        $title = 'Compra';
         $input = Input::all();
 
         $purchases = Purchase::where('id', '=', $input['idPurchase'])->orderBy('id', 'desc')->paginate(5);
@@ -206,7 +206,7 @@ class PurchaseController extends BaseController {
         return View::make('purchases.index')
                 ->with(compact('title', 'purchases', 'filterPurchase', 'input'));
 
-    } #postFilterById
+    } #getFilterById
 
     public function getFilterByArticle()
     {
@@ -224,12 +224,12 @@ class PurchaseController extends BaseController {
 
         $purchases = Purchase::whereRaw('id in ('. $idsPurchase .')')->orderBy('id', 'desc')->paginate(5);
 
-        $filterPurchase = 'Compras que contienen el articulo <strong>'. $input['article'] .'</strong>';
+        $filterPurchase = 'Compras que contienen el artículo <strong>'. $input['article'] .'</strong>';
 
         return View::make('purchases.index')
                 ->with(compact('title', 'purchases', 'filterPurchase', 'input'));
 
-    } #postFilterByArticle
+    } #getFilterByArticle
 
     public function getFilterByDates()
     {
@@ -243,7 +243,7 @@ class PurchaseController extends BaseController {
         return View::make('purchases.index')
                 ->with(compact('title', 'purchases', 'filterPurchase', 'input'));
 
-    } #postFilterByDates
+    } #getFilterByDates
 
     public function getFilterByArticleDates()
     {
@@ -263,12 +263,12 @@ class PurchaseController extends BaseController {
             ->whereRaw('created_at BETWEEN "'. $input['fecha1'] .'" AND "'. $input['fecha2'] .'"')
             ->orderBy('id', 'desc')->paginate(5);
 
-        $filterPurchase = 'Compras entre <strong>'. $input['fecha1'] .'</strong> y <strong>'. $input['fecha2'] .'</strong> que contienen el articulo <strong>'. $input['article'] .'</strong>';
+        $filterPurchase = 'Compras entre <strong>'. $input['fecha1'] .'</strong> y <strong>'. $input['fecha2'] .'</strong> que contienen el artículo <strong>'. $input['article'] .'</strong>';
 
         return View::make('purchases.index')
                 ->with(compact('title', 'purchases', 'filterPurchase', 'input'));
 
-    } #postFilterByArticleDates
+    } #getFilterByArticleDates
 
     public function getFilterByComments()
     {
@@ -282,7 +282,7 @@ class PurchaseController extends BaseController {
         return View::make('purchases.index')
                 ->with(compact('title', 'purchases', 'filterPurchase', 'input'));
 
-    } #postFilterByComments
+    } #getFilterByComments
 
     public function getFilterByArticleComments()
     {
@@ -307,6 +307,6 @@ class PurchaseController extends BaseController {
         return View::make('purchases.index')
                 ->with(compact('title', 'purchases', 'filterPurchase', 'input'));
 
-    } #postFilterByCommentsArticle
+    } #getFilterByArticleComments
 
 } #PurchaseController
