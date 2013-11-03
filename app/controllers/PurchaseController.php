@@ -216,8 +216,12 @@ class PurchaseController extends BaseController {
 
         $article = Article::find($input['article']);
 
-        foreach ($article->purchaseItems as $pitems) {
-            $idsPurchase .= $pitems->purchase->id .',';
+        if (!empty($article)) {
+
+            foreach ($article->purchaseItems as $pitems) {
+                $idsPurchase .= $pitems->purchase->id .',';
+            }
+
         }
 
         $idsPurchase = trim($idsPurchase, ',');
@@ -253,8 +257,12 @@ class PurchaseController extends BaseController {
 
         $article = Article::find($input['article']);
 
-        foreach ($article->purchaseItems as $pitems) {
-            $idsPurchase .= $pitems->purchase->id .',';
+        if (!empty($article)) {
+
+            foreach ($article->purchaseItems as $pitems) {
+                $idsPurchase .= $pitems->purchase->id .',';
+            }
+
         }
 
         $idsPurchase = trim($idsPurchase, ',');
@@ -292,8 +300,12 @@ class PurchaseController extends BaseController {
 
         $article = Article::find($input['article']);
 
-        foreach ($article->purchaseItems as $pitems) {
-            $idsPurchase .= $pitems->purchase->id .',';
+        if (!empty($article)) {
+
+            foreach ($article->purchaseItems as $pitems) {
+                $idsPurchase .= $pitems->purchase->id .',';
+            }
+
         }
 
         $idsPurchase = trim($idsPurchase, ',');

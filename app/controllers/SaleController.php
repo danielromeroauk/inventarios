@@ -220,8 +220,12 @@ class SaleController extends BaseController {
 
         $article = Article::find($input['article']);
 
-        foreach ($article->saleItems as $sitems) {
-            $idsSale .= $sitems->sale->id .',';
+        if (!empty($article)) {
+
+            foreach ($article->saleItems as $sitems) {
+                $idsSale .= $sitems->sale->id .',';
+            }
+
         }
 
         $idsSale = trim($idsSale, ',');
@@ -257,8 +261,12 @@ class SaleController extends BaseController {
 
         $article = Article::find($input['article']);
 
-        foreach ($article->saleItems as $sitems) {
-            $idsSale .= $sitems->sale->id .',';
+        if (!empty($article)) {
+
+            foreach ($article->saleItems as $sitems) {
+                $idsSale .= $sitems->sale->id .',';
+            }
+
         }
 
         $idsSale = trim($idsSale, ',');
@@ -296,8 +304,12 @@ class SaleController extends BaseController {
 
         $article = Article::find($input['article']);
 
-        foreach ($article->saleItems as $sitems) {
-            $idsSale .= $sitems->sale->id .',';
+        if (!empty($article)) {
+
+            foreach ($article->saleItems as $sitems) {
+                $idsSale .= $sitems->sale->id .',';
+            }
+
         }
 
         $idsSale = trim($idsSale, ',');

@@ -257,8 +257,12 @@ class DamageController extends BaseController {
 
         $article = Article::find($input['article']);
 
-        foreach ($article->damageItems as $ditems) {
-            $idsDamage .= $ditems->damage->id .',';
+        if (!empty($article)) {
+
+            foreach ($article->damageItems as $ditems) {
+                $idsDamage .= $ditems->damage->id .',';
+            }
+
         }
 
         $idsDamage = trim($idsDamage, ',');
@@ -296,8 +300,12 @@ class DamageController extends BaseController {
 
         $article = Article::find($input['article']);
 
-        foreach ($article->damageItems as $ditems) {
-            $idsDamage .= $ditems->damage->id .',';
+        if (!empty($article)) {
+
+            foreach ($article->damageItems as $ditems) {
+                $idsDamage .= $ditems->damage->id .',';
+            }
+
         }
 
         $idsDamage = trim($idsDamage, ',');

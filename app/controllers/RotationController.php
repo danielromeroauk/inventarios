@@ -251,9 +251,14 @@ class RotationController extends BaseController {
 
         $article = Article::find($input['article']);
 
-        foreach ($article->rotationItems as $ritems) {
-            $idsRotation .= $ritems->rotation->id .',';
-        }
+        if (!empty($article)) {
+
+            foreach ($article->rotationItems as $ritems) {
+                $idsRotation .= $ritems->rotation->id .',';
+            }
+
+        } #if
+
 
         $idsRotation = trim($idsRotation, ',');
 
@@ -288,8 +293,12 @@ class RotationController extends BaseController {
 
         $article = Article::find($input['article']);
 
-        foreach ($article->rotationItems as $ritems) {
-            $idsRotation .= $ritems->rotation->id .',';
+        if (!empty($article)) {
+
+            foreach ($article->rotationItems as $ritems) {
+                $idsRotation .= $ritems->rotation->id .',';
+            }
+
         }
 
         $idsRotation = trim($idsRotation, ',');
@@ -327,9 +336,13 @@ class RotationController extends BaseController {
 
         $article = Article::find($input['article']);
 
-        foreach ($article->rotationItems as $ritems) {
-            $idsRotation .= $ritems->rotation->id .',';
-        }
+        if (!empty($article)) {
+
+            foreach ($article->rotationItems as $ritems) {
+                $idsRotation .= $ritems->rotation->id .',';
+            }
+
+        } #if
 
         $idsRotation = trim($idsRotation, ',');
 

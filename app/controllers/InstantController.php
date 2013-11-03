@@ -207,8 +207,12 @@ class InstantController extends BaseController {
 
         $article = Article::find($input['article']);
 
-        foreach ($article->instantItems as $iitems) {
-            $idsInstant .= $iitems->instant->id .',';
+        if (!empty($article)) {
+
+            foreach ($article->instantItems as $iitems) {
+                $idsInstant .= $iitems->instant->id .',';
+            }
+
         }
 
         $idsInstant = trim($idsInstant, ',');
@@ -244,8 +248,12 @@ class InstantController extends BaseController {
 
         $article = Article::find($input['article']);
 
-        foreach ($article->instantItems as $iitems) {
-            $idsInstant .= $iitems->instant->id .',';
+        if (!empty($article)) {
+
+            foreach ($article->instantItems as $iitems) {
+                $idsInstant .= $iitems->instant->id .',';
+            }
+
         }
 
         $idsInstant = trim($idsInstant, ',');
@@ -283,8 +291,12 @@ class InstantController extends BaseController {
 
         $article = Article::find($input['article']);
 
-        foreach ($article->instantItems as $iitems) {
-            $idsInstant .= $iitems->instant->id .',';
+        if (!empty($article)) {
+
+            foreach ($article->instantItems as $iitems) {
+                $idsInstant .= $iitems->instant->id .',';
+            }
+
         }
 
         $idsInstant = trim($idsInstant, ',');
