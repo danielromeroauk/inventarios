@@ -7,7 +7,7 @@ class BranchesTableSeeder extends Seeder {
 		// DB::table('branches')->truncate();
 		$branches = array(
 			array(
-				'name' => 'Contruimportados',
+				'name' => 'Construimportados',
 				'comments' => 'Sede principal',
 			),
 			array(

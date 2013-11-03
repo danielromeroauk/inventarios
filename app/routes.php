@@ -20,24 +20,18 @@ Route::get('/', function(){
 
 Route::get('login', 'UserController@getIndex');
 Route::get('logout', 'UserController@getLogout');
+Route::post('users/index', 'UserController@postIndex');
 
-Route::controller('users', 'UserController');
 
 Route::group(array('before' => 'auth'), function()
 {
+    Route::controller('users', 'UserController');
     Route::controller('articles', 'ArticleController');
     Route::controller('branches', 'BrancheController');
-    Route::controller('roles', 'RoleController');
     Route::controller('cart', 'CartController');
     Route::controller('purchases', 'PurchaseController');
     Route::controller('sales', 'SaleController');
     Route::controller('damages', 'DamageController');
     Route::controller('instants', 'InstantController');
     Route::controller('rotations', 'RotationController');
-});
-
-Route::get('u', function() {
-    // $u = Auth::User()->first()->orderBy('created_at', 'desc')->first()->id;
-    $u = Auth::user()->roles()->first()->branch->name;
-    die(var_dump($u));
 });

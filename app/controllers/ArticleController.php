@@ -185,54 +185,81 @@ class ArticleController extends BaseController {
 
     public function postImage()
     {
-        $file = Input::file("image");
-        $idArticle = Input::get('idArticle');
+        try {
 
-        $dataUpload = array(
-            "image" => $file
-        );
+            $extensiones = array('jpg', 'jpeg', 'gif', 'png', 'bmp');
 
-        $rules = array(
-            'image' => 'required|image:jpg,gif,png|max:1000'
-        );
+            $file = Input::file("image");
+            $extension = strtolower($file->getClientOriginalExtension());
+            $size = Input::file('image')->getClientOriginalExtension();
 
-        $messages = array(
-            'required' => 'El campo :attribute es obligatorio.',
-            'image.max' => 'El archivo no puede ser mayor de 1 MB.',
-        );
+            if(!in_array($extension, $extensiones)) {
 
-        $validation = Validator::make(Input::all(), $rules, $messages);
+                return Redirect::to('articles')
+                    ->with('message', 'Tipo de archivo inválido.');
 
-        if ($validation->fails())
-        {
-            return Redirect::to('articles')->withErrors($validation);
-
-        }else{
-
-            $articleImage = ArticleImage::find($idArticle);
-            $filename = $file->getClientOriginalName();
-            $fileInfo = new SplFileInfo($filename);
-            $filename = $idArticle .'.'. $fileInfo->getExtension();
-
-            $ai['id'] = $idArticle;
-            $ai['user_id'] = Auth::user()->id;
-            $ai['image'] = $filename;
-
-            if(empty($articleImage)){
-
-                $articleImage = new ArticleImage();
-                $articleImage->create($ai);
-
-                $file->move("img/articles", $filename);
-
-                return Redirect::to('articles')->with(array('messageOk' => 'Imagen subida con éxito.'));
-
-            } elseif($articleImage->update($ai)) {
-
-                $file->move("img/articles", $filename);
-
-                return Redirect::to('articles')->with(array('messageOk' => 'Imagen actualizada con éxito.'));
             }
+
+            if ($file->getSize() > 1000000) {
+
+                return Redirect::to('articles')
+                    ->with('message', 'El tamaño de la imagen no puede ser superior a 1MB.');
+            }
+
+            $idArticle = Input::get('idArticle');
+
+            $dataUpload = array(
+                "image" => $file
+            );
+
+            $rules = array(
+                /*'image' => 'required|image:jpg,jpeg,gif,png|max:1000'*/
+            );
+
+            $messages = array(
+                /*'required' => 'El campo :attribute es obligatorio.',
+                'image.max' => 'El archivo no puede ser mayor de 1 MB.'*/
+            );
+
+            $validation = Validator::make(Input::all(), $rules, $messages);
+
+
+            // $filename = $file->getClientOriginalName();
+            // $fileInfo = new SplFileInfo($filename);
+            // $filename = $idArticle .'.'. $fileInfo->getExtension();
+
+
+            if ($validation->fails())
+            {
+                return Redirect::to('articles')->withErrors($validation);
+
+            }else{
+
+                $articleImage = ArticleImage::find($idArticle);
+
+                $ai['id'] = $idArticle;
+                $ai['user_id'] = Auth::user()->id;
+                $ai['image'] = $idArticle .'.'. $extension;
+
+                if(empty($articleImage)){
+
+                    $articleImage = new ArticleImage();
+                    $articleImage->create($ai);
+
+                    $file->move("img/articles", $ai['image']);
+
+                    return Redirect::to('articles/search?filterBy=id&search='. $idArticle)->with(array('messageOk' => 'Imagen subida con éxito.'));
+
+                } elseif($articleImage->update($ai)) {
+
+                    $file->move("img/articles", $ai['image']);
+
+                    return Redirect::to('articles/search?filterBy=id&search='. $idArticle)->with(array('messageOk' => 'Imagen actualizada con éxito.'));
+                }
+            } #else
+
+        } catch (Exception $e) {
+            return Redirect::to('articles/search?filterBy=id&search='. $idArticle)->with(array('message' => '<p>La imagen no se pudo subir, revisa el formato (jpg,jpeg,gif,png) y el tamaño del archivo (max:1MB).</p>'));
         }
 
     } #postImage
@@ -254,10 +281,6 @@ class ArticleController extends BaseController {
 
         if (PHP_SAPI == 'cli')
             die('Este archivo corre únicamente desde un navegador web.');
-
-        /** Include PHPExcel */
-        require_once app_path() . '\..\vendor\phpoffice\phpexcel\Classes\PHPExcel.php';
-
 
         // Create new PHPExcel object
         $objPHPExcel = new PHPExcel();

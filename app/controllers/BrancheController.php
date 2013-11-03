@@ -147,10 +147,6 @@ class BrancheController extends BaseController {
         if (PHP_SAPI == 'cli')
             die('Este archivo corre únicamente desde un navegador web.');
 
-        /** Include PHPExcel */
-        require_once app_path() . '\..\vendor\phpoffice\phpexcel\Classes\PHPExcel.php';
-
-
         // Create new PHPExcel object
         $objPHPExcel = new PHPExcel();
 
