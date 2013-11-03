@@ -75,7 +75,7 @@ class PurchaseController extends BaseController {
             $purchaseItemsTable->create($pit);
 
         } catch (Exception $e) {
-            die('No se pudo guardar el articulo '. $idArticle .' como item de la compra.');
+            die('No se pudo guardar el artículo '. $idArticle .' como item de la compra.');
         }
 
     } #saveInPurchaseItemTable
@@ -153,8 +153,13 @@ class PurchaseController extends BaseController {
         try {
 
             $purchase = Purchase::find($idPurchase);
-            $purchase->status = 'cancelado';
-            $purchase->update();
+
+            if ($purchase->status != 'finalizado') {
+
+                $purchase->status = 'cancelado';
+                $purchase->update();
+
+            }
 
             return Redirect::to('purchases');
 

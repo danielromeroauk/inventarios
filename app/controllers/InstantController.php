@@ -94,7 +94,7 @@ class InstantController extends BaseController {
             $instantItemsTable->create($iit);
 
         } catch (Exception $e) {
-            die('No se pudo guardar el articulo '. $idArticle .' como item de la entrega inmediata.');
+            die('No se pudo guardar el artículo '. $idArticle .' como item de la entrega inmediata.');
         }
 
     } #saveInInstantItemTable
@@ -159,13 +159,18 @@ class InstantController extends BaseController {
         try {
 
             $instant = Instant::find($idInstant);
-            $instant->status = 'cancelado';
-            $instant->update();
+
+            if ($instant->status != 'finalizado') {
+
+                $instant->status = 'cancelado';
+                $instant->update();
+
+            }
 
             return Redirect::to('instants');
 
         } catch (Exception $e) {
-            die('No fue posible cancelar la venta.');
+            die('No fue posible cancelar la entrega inmediata.');
         }
     } #getCancel
 

@@ -97,7 +97,7 @@
         <div>
             {{ Form::open(array('url' => 'sales/filter-by-article', 'method' => 'get')) }}
                 <div class="input-group">
-                    {{ Form::text('article', '', array('class' => 'form-control', 'title' => 'Código del artículo', 'placeholder' => 'Código del artículo.', 'required')) }}
+                    {{ Form::input('number', 'article', '', array('class' => 'form-control', 'min' => '1', 'step' => '1', 'max' => '99999999999999.99', 'title' => 'Código de artículo', 'placeholder' => 'Código de artículo', 'required')) }}
                     <span class="input-group-btn">
                         <button class="btn btn-primary" type="submit">Aplicar</button>
                     </span>

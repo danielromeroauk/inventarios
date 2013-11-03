@@ -7,7 +7,7 @@ class SaleController extends BaseController {
         $title = 'Ventas';
         $sales = Sale::where('status', '=', 'pendiente')->where('branch_id', '=', Auth::user()->roles()->first()->branch->id)->orderBy('id', 'desc')->paginate(5);
 
-        $filterSale = 'Ventas con estado = <strong>pendiente</strong> en la sucursal <strong>'. Auth::user()->roles()->first()->branch->name .'</strong>';
+        $filterSale = 'Ventas con estado <strong>pendiente</strong> en la sucursal <strong>'. Auth::user()->roles()->first()->branch->name .'</strong>';
 
         return View::make('sales.index')
                 ->with(compact('title', 'sales', 'filterSale'));
@@ -158,8 +158,13 @@ class SaleController extends BaseController {
         try {
 
             $sale = Sale::find($idSale);
-            $sale->status = 'cancelado';
-            $sale->update();
+
+            if ($sale->status != 'finalizado') {
+
+                $sale->status = 'cancelado';
+                $sale->update();
+
+            }
 
             return Redirect::to('sales');
 
@@ -175,7 +180,7 @@ class SaleController extends BaseController {
 
         $sales = Sale::where('status', '=', $input['estado'])->orderBy('id', 'desc')->paginate(5);
 
-        $filterSale = 'Ventas con estado = <strong>'. $input['estado'] .'</strong>';
+        $filterSale = 'Ventas con estado <strong>'. $input['estado'] .'</strong>';
 
         return View::make('sales.index')
                 ->with(compact('title', 'sales', 'filterSale', 'input'));
@@ -191,7 +196,7 @@ class SaleController extends BaseController {
 
         $sales = Sale::where('status', '=', $input['estado'])->where('branch_id', '=', $input['branch_id'])->orderBy('id', 'desc')->paginate(5);
 
-        $filterSale = 'Ventas con estado = <strong>'. $input['estado'] .'</strong> en la sucursal <strong>'. $branch->name .'</strong>';
+        $filterSale = 'Ventas con estado <strong>'. $input['estado'] .'</strong> en la sucursal <strong>'. $branch->name .'</strong>';
 
         return View::make('sales.index')
                 ->with(compact('title', 'sales', 'filterSale', 'input'));
@@ -205,7 +210,7 @@ class SaleController extends BaseController {
 
         $sales = Sale::where('id', '=', $input['idSale'])->orderBy('id', 'desc')->paginate(5);
 
-        $filterSale = 'Venta con código = <strong>'. $input['idSale'] .'</strong>';
+        $filterSale = 'Venta con código <strong>'. $input['idSale'] .'</strong>';
 
         return View::make('sales.index')
                 ->with(compact('title', 'sales', 'filterSale', 'input'));
@@ -232,7 +237,7 @@ class SaleController extends BaseController {
 
         $sales = Sale::whereRaw('id in ('. $idsSale .')')->orderBy('id', 'desc')->paginate(5);
 
-        $filterSale = 'Ventas que contienen el artículo = <strong>'. $input['article'] .'</strong>';
+        $filterSale = 'Ventas que contienen el artículo <strong>'. $input['article'] .'</strong>';
 
         return View::make('sales.index')
                 ->with(compact('title', 'sales', 'filterSale', 'input'));
@@ -275,7 +280,7 @@ class SaleController extends BaseController {
             ->whereRaw('created_at BETWEEN "'. $input['fecha1'] .'" AND "'. $input['fecha2'] .'"')
             ->orderBy('id', 'desc')->paginate(5);
 
-        $filterSale = 'Ventas entre <strong>'. $input['fecha1'] .'</strong> y <strong>'. $input['fecha2'] .'</strong> que contienen el articulo <strong>'. $input['article'] .'</strong>';
+        $filterSale = 'Ventas entre <strong>'. $input['fecha1'] .'</strong> y <strong>'. $input['fecha2'] .'</strong> que contienen el artículo <strong>'. $input['article'] .'</strong>';
 
         return View::make('sales.index')
                 ->with(compact('title', 'sales', 'filterSale', 'input'));

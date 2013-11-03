@@ -93,7 +93,7 @@ class RotationController extends BaseController {
             $rotationItemsTable->create($rit);
 
         } catch (Exception $e) {
-            die($e .'No se pudo guardar el articulo '. $idArticle .' como item de la rotación.');
+            die($e .'No se pudo guardar el artículo '. $idArticle .' como item de la rotación.');
         }
 
     } #saveInRotationItemTable
@@ -189,8 +189,13 @@ class RotationController extends BaseController {
         try {
 
             $rotation = Rotation::find($idRotation);
-            $rotation->status = 'cancelado';
-            $rotation->update();
+
+            if (!in_array($rotation->status, array('pendiente en destino', 'finalizado'))) {
+
+                $rotation->status = 'cancelado';
+                $rotation->update();
+
+            }
 
             return Redirect::to('rotations');
 
@@ -231,12 +236,12 @@ class RotationController extends BaseController {
 
     public function getFilterById()
     {
-        $title = 'Rotacion';
+        $title = 'Rotación';
         $input = Input::all();
 
         $rotations = Rotation::where('id', '=', $input['idRotation'])->orderBy('id', 'desc')->paginate(5);
 
-        $filterRotation = 'Rotacion con código '. $input['idRotation'] .'</strong>';
+        $filterRotation = 'Rotación con código '. $input['idRotation'] .'</strong>';
 
         return View::make('rotations.index')
                 ->with(compact('title', 'rotations', 'filterRotation', 'input'));

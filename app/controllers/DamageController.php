@@ -90,7 +90,7 @@ class DamageController extends BaseController {
             $damageItemsTable->create($dit);
 
         } catch (Exception $e) {
-            die('No se pudo guardar el articulo '. $idArticle .' como item del daño.');
+            die('No se pudo guardar el artículo '. $idArticle .' como item del daño.');
         }
 
     } #saveInDamageItemTable
@@ -158,8 +158,13 @@ class DamageController extends BaseController {
         try {
 
             $damage = Damage::find($idDamage);
-            $damage->status = 'cancelado';
-            $damage->update();
+
+            if ($damage->status != 'finalizado') {
+
+                $damage->status = 'cancelado';
+                $damage->update();
+
+            }
 
             return Redirect::to('damages');
 
@@ -200,7 +205,7 @@ class DamageController extends BaseController {
 
     public function getFilterById()
     {
-        $title = 'Daños';
+        $title = 'Daño';
         $input = Input::all();
 
         $damages = Damage::where('id', '=', $input['idDamage'])->orderBy('id', 'desc')->paginate(5);
