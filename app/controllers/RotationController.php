@@ -197,7 +197,7 @@ class RotationController extends BaseController {
 
             }
 
-            return Redirect::to('rotations');
+            return Redirect::to('rotations/items/'. $idRotation);
 
         } catch (Exception $e) {
             die('No fue posible cancelar la rotación.');

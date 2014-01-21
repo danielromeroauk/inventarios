@@ -123,27 +123,30 @@ class PurchaseController extends BaseController {
 
             $input = Input::all();
 
-            $pitems = PurchaseItem::where('purchase_id', '=', $input['purchase'])->get();
+            if($input['notaparcial'] == 'false')
+            {
+                $pitems = PurchaseItem::where('purchase_id', '=', $input['purchase'])->get();
 
-            foreach ($pitems as $pitem) {
-                self::saveInStockTable($input['branch_id'], $pitem->article->id, $pitem->amount);
-            } #foreach
+                foreach ($pitems as $pitem) {
+                    self::saveInStockTable($input['branch_id'], $pitem->article->id, $pitem->amount);
+                } #foreach
+
+                /*Cambiar el status en la tabla purchase a finalizado*/
+                $purchase = Purchase::find($input['purchase']);
+                $purchase->status = 'finalizado';
+                $purchase->update();
+            } #if notaparcial == 'false'
 
             $purchaseStore = new PurchaseStore();
-            $ps['id'] = $input['purchase'];
+            $ps['purchase_id'] = $input['purchase'];
             $ps['user_id'] = Auth::user()->id;
             $ps['comments'] = $input['comments'];
             $purchaseStore->create($ps);
 
-            /*Cambiar el status en la tabla purchase a finalizado*/
-            $purchase = Purchase::find($input['purchase']);
-            $purchase->status = 'finalizado';
-            $purchase->update();
-
-            return Redirect::to('purchases');
+            return Redirect::to('purchases/items/'. $input['purchase']);
 
         } catch (Exception $e) {
-            die('No se pudo aumentar el stock.');
+            die('No se pudo aumentar el stock.<br />'. $e);
         }
 
     } #postPurchaseStore
@@ -161,7 +164,7 @@ class PurchaseController extends BaseController {
 
             }
 
-            return Redirect::to('purchases');
+            return Redirect::to('purchases/itmes/'. $idPurchase);
 
         } catch (Exception $e) {
             die('No fue posible cancelar la compra.');

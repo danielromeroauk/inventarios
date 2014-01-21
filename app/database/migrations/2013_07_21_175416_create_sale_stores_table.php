@@ -18,6 +18,7 @@ class CreateSaleStoresTable extends Migration {
 
 			$table->increments('id');
 			$table->integer('user_id')->unsigned();
+			$table->integer('sale_id')->unsigned();
 			$table->string('comments');
 
 			$table->timestamps();
@@ -27,7 +28,7 @@ class CreateSaleStoresTable extends Migration {
 				  ->onDelete('NO ACTION')
 				  ->onUpdate('cascade');
 
-			$table->foreign('id')
+			$table->foreign('sale_id')
 				  ->references('id')->on('sales')
 				  ->onDelete('NO ACTION')
 				  ->onUpdate('cascade');
@@ -44,7 +45,7 @@ class CreateSaleStoresTable extends Migration {
         Schema::table('sale_stores', function(Blueprint $table)
         {
             $table->dropForeign('sale_stores_user_id_foreign');
-        	$table->dropForeign('sale_stores_id_foreign');
+        	$table->dropForeign('sale_stores_sale_id_foreign');
         });
 
 		Schema::drop('sale_stores');

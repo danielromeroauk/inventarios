@@ -18,6 +18,7 @@ class CreatePurchaseStoresTable extends Migration {
 
 			$table->increments('id');
 			$table->integer('user_id')->unsigned();
+			$table->integer('purchase_id')->unsigned();
 			$table->string('comments');
 
 			$table->timestamps();
@@ -27,7 +28,7 @@ class CreatePurchaseStoresTable extends Migration {
 				  ->onDelete('NO ACTION')
 				  ->onUpdate('cascade');
 
-			$table->foreign('id')
+			$table->foreign('purchase_id')
 				  ->references('id')->on('purchases')
 				  ->onDelete('NO ACTION')
 				  ->onUpdate('cascade');
@@ -44,7 +45,7 @@ class CreatePurchaseStoresTable extends Migration {
         Schema::table('purchase_stores', function(Blueprint $table)
         {
             $table->dropForeign('purchase_stores_user_id_foreign');
-        	$table->dropForeign('purchase_stores_id_foreign');
+        	$table->dropForeign('purchase_stores_purchase_id_foreign');
         });
 
 		Schema::drop('purchase_stores');

@@ -10,7 +10,14 @@
             $(document).on('ready', iniciar);
 
             function iniciar() {
+
                convertirBotones();
+
+                $('#notaparcial').on('click', function(){
+                    $('#notap').val(true);
+                    validar();
+                });
+
             } //iniciar
 
         })(jQuery);
@@ -64,21 +71,28 @@
                 </table>
             </div><!-- /.panel-body -->
             <div class="panel-footer">
-                @if(isset($purchase->PurchaseStore->comments))
-
-                    <p class="label label-info">Finalizado por {{ $purchase->PurchaseStore->user->name }}</p>
-                    <p class="alert alert-success">
+                @foreach($purchase->PurchaseStore as $pstore)
+                    <p class="label label-info">
                         <span class="glyphicon glyphicon-comment"></span>
-                        {{ $purchase->PurchaseStore->comments }}
+                        {{ $pstore->created_at }} por {{ $pstore->user->name }}
                     </p>
+                    <p class="alert alert-success">
+                        {{ $pstore->comments }}
+                    </p>
+                @endforeach
 
-                @elseif( ( (Auth::user()->permitido('bodeguero') && $purchase->branch->id == Auth::user()->roles()->first()->branch->id) || Auth::user()->permitido('remisionero') || Auth::user()->permitido('administrador') ) && $purchase->status == 'pendiente')
+                @if( ( (Auth::user()->permitido('bodeguero') && $purchase->branch->id == Auth::user()->roles()->first()->branch->id) || Auth::user()->permitido('remisionero') || Auth::user()->permitido('administrador') ) && $purchase->status == 'pendiente')
 
                     {{ Form::open(array('url' => 'purchases/purchase-store', 'id' => 'purchaseStoreForm')) }}
                         {{ Form::input('hidden', 'purchase', $purchase->id) }}
                         {{ Form::input('hidden', 'branch_id', $purchase->branch->id) }}
+                        {{ Form::input('hidden', 'notaparcial', 'false', array('id' => 'notap')) }}
                         {{ Form::textarea('comments', '', array('id' => 'comments', 'rows' => '3', 'class' => 'form-control', 'placeholder' => 'Comentarios del bodeguero.', 'maxlength' => '255', 'required')) }}
-                         <a href="#purchaseStoreModal" class="button" data-toggle="modal">
+                         <span class="button" id="notaparcial">
+                            <span class="glyphicon glyphicon-comment"></span>
+                            Registrar nota parcial
+                        </span>
+                        <a href="#purchaseStoreModal" class="button" data-toggle="modal">
                             <span class="glyphicon glyphicon-floppy-save"></span>
                             Finalizar compra
                         </a>

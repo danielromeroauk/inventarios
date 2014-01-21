@@ -167,7 +167,7 @@ class InstantController extends BaseController {
 
             }
 
-            return Redirect::to('instants');
+            return Redirect::to('instants/items/'. $idInstant);
 
         } catch (Exception $e) {
             die('No fue posible cancelar la entrega inmediata.');

@@ -166,7 +166,7 @@ class DamageController extends BaseController {
 
             }
 
-            return Redirect::to('damages');
+            return Redirect::to('damages/items/'. $idDamage);
 
         } catch (Exception $e) {
             die('No fue posible cancelar el daño.');

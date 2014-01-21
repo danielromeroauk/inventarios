@@ -25,7 +25,7 @@ class Sale extends Eloquent {
 
     public function saleStore()
     {
-        return $this->hasOne('SaleStore', 'id');
+        return $this->hasMany('SaleStore');
     }
 
 }

@@ -129,24 +129,28 @@ class SaleController extends BaseController {
 
             $input = Input::all();
 
-            $sales = SaleItem::where('sale_id', '=', $input['sale'])->get();
+            if($input['notaparcial'] == 'false')
+            {
+                $sitems = SaleItem::where('sale_id', '=', $input['sale'])->get();
 
-            foreach ($sales as $sale) {
-                self::saveInStockTable($input['branch_id'], $sale->article->id, $sale->amount);
-            } #foreach
+                foreach ($sitems as $sitem) {
+                    self::saveInStockTable($input['branch_id'], $sitem->article->id, $sitem->amount);
+                } #foreach
+
+                /*Cambiar el status en la tabla sale a finalizado*/
+                $sale = Sale::find($input['sale']);
+                $sale->status = 'finalizado';
+                $sale->update();
+            } #if notaparcial == 'false'
 
             $saleStore = new SaleStore();
-            $ss['id'] = $input['sale'];
+            $ss['sale_id'] = $input['sale'];
             $ss['user_id'] = Auth::user()->id;
             $ss['comments'] = $input['comments'];
             $saleStore->create($ss);
 
-            /*Cambiar el status en la tabla sale a finalizado*/
-            $sale = Sale::find($input['sale']);
-            $sale->status = 'finalizado';
-            $sale->update();
 
-            return Redirect::to('sales');
+            return Redirect::to('sales/items/'. $input['sale']);
 
         } catch (Exception $e) {
             die('No se pudo disminuir el stock.');
@@ -166,7 +170,7 @@ class SaleController extends BaseController {
 
             }
 
-            return Redirect::to('sales');
+            return Redirect::to('sales/items/'. $idSale);
 
         } catch (Exception $e) {
             die('No fue posible cancelar la venta.');

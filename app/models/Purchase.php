@@ -25,7 +25,7 @@ class Purchase extends Eloquent {
 
     public function purchaseStore()
     {
-        return $this->hasOne('PurchaseStore', 'id');
+        return $this->hasMany('PurchaseStore');
     }
 
 }
