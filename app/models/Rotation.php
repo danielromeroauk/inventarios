@@ -30,7 +30,7 @@ class Rotation extends Eloquent {
 
     public function rotationStore()
     {
-        return $this->hasOne('RotationStore', 'id');
+        return $this->hasMany('RotationStore');
     }
 
 }

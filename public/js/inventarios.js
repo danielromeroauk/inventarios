@@ -1,4 +1,5 @@
 (function($){
+
     $(document).on('ready', iniciar);
 
     function iniciar() {
@@ -8,6 +9,8 @@
             'title': 'Cantidad',
             'content': 'Use coma (,) como separador decimal.'
         });
+
+        history.go(1);
 
     }
 

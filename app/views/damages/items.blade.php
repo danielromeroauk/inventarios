@@ -11,6 +11,12 @@
 
             function iniciar() {
                convertirBotones();
+
+                $('#notaparcial').on('click', function(){
+                    $('#notap').val(true);
+                    validar();
+                });
+
             } //iniciar
 
         })(jQuery);
@@ -64,20 +70,27 @@
                 </table>
             </div><!-- /.panel-body -->
             <div class="panel-footer">
-                @if(isset($damage->DamageStore->comments))
-
-                    <p class="label label-info">Finalizado por {{ $damage->DamageStore->user->name }}</p>
-                    <p class="alert alert-success">
+                @foreach($damage->DamageStore as $dstore)
+                    <p class="label label-info">
                         <span class="glyphicon glyphicon-comment"></span>
-                        {{ $damage->DamageStore->comments }}
+                        {{ $dstore->created_at }} por {{ $dstore->user->name }}
                     </p>
+                    <p class="alert alert-success">
+                        {{ $dstore->comments }}
+                    </p>
+                @endforeach
 
-                @elseif( ( (Auth::user()->permitido('bodeguero') && $damage->branch->id == Auth::user()->roles()->first()->branch->id) || Auth::user()->permitido('remisionero') || Auth::user()->permitido('administrador') ) && $damage->status == 'pendiente')
+                @if( ( (Auth::user()->permitido('bodeguero') && $damage->branch->id == Auth::user()->roles()->first()->branch->id) || Auth::user()->permitido('remisionero') || Auth::user()->permitido('administrador') ) && $damage->status == 'pendiente')
 
                     {{ Form::open(array('url' => 'damages/damage-store', 'id' => 'damageStoreForm')) }}
                         {{ Form::input('hidden', 'damage', $damage->id) }}
                         {{ Form::input('hidden', 'branch_id', $damage->branch->id) }}
+                        {{ Form::input('hidden', 'notaparcial', 'false', array('id' => 'notap')) }}
                         {{ Form::textarea('comments', '', array('id' => 'comments', 'rows' => '3', 'class' => 'form-control', 'placeholder' => 'Comentarios del bodeguero.', 'maxlength' => '255', 'required')) }}
+                        <span class="button" id="notaparcial">
+                            <span class="glyphicon glyphicon-comment"></span>
+                            Registrar nota parcial
+                        </span>
                          <a href="#damageStoreModal" class="button" data-toggle="modal">
                             <span class="glyphicon glyphicon-floppy-save"></span>
                             Finalizar daño

@@ -18,6 +18,7 @@ class CreateRotationStoresTable extends Migration {
 
 			$table->increments('id');
 			$table->integer('user_id')->unsigned();
+			$table->integer('rotation_id')->unsigned();
 			$table->string('comments_from');
 			$table->string('comments_to');
 
@@ -28,7 +29,7 @@ class CreateRotationStoresTable extends Migration {
 				  ->onDelete('NO ACTION')
 				  ->onUpdate('cascade');
 
-			$table->foreign('id')
+			$table->foreign('rotation_id')
 				  ->references('id')->on('rotations')
 				  ->onDelete('NO ACTION')
 				  ->onUpdate('cascade');
@@ -45,7 +46,7 @@ class CreateRotationStoresTable extends Migration {
         Schema::table('rotation_stores', function(Blueprint $table)
         {
             $table->dropForeign('rotation_stores_user_id_foreign');
-        	$table->dropForeign('rotation_stores_id_foreign');
+        	$table->dropForeign('rotation_stores_rotation_id_foreign');
         });
 
 		Schema::drop('rotation_stores');

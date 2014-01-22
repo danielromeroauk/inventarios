@@ -5,9 +5,9 @@
     {{ HTML::style('css/flipclock.css') }}
     {{ HTML::style('http://fonts.googleapis.com/css?family=Chela+One') }}
 
-    {{ HTML::script('js/flipclock/libs/prefixfree.min.js') }}
+    <!--{{ HTML::script('js/flipclock/libs/prefixfree.min.js') }}
     {{ HTML::script('js/flipclock/flipclock.min.js') }}
-    {{ HTML::script('js/flipclock-customer.js') }}
+    {{ HTML::script('js/flipclock-customer.js') }}-->
 
     <style>
     h1 {
@@ -20,11 +20,11 @@
 
 @section('content')
 
-	<!--<div class="alert-success well">
+	<div class="alert-success well">
 		Hola {{ Auth::user()->name }}, te encuentras asignado a la sucursal <strong>{{ Auth::user()->roles()->first()->branch->name }}</strong>
-	</div>-->
+	</div>
 
-    <h1 class="well-lg">Tiempo restante para uso gratuito por donación</h1>
-    <div id="mi-reloj"></div>
+    <!-- <h1 class="well-lg">Tiempo restante para uso gratuito por donación</h1>
+    <div id="mi-reloj"></div> -->
 
 @stop

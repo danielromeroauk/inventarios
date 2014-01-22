@@ -11,6 +11,12 @@
 
             function iniciar() {
                convertirBotones();
+
+                $('#notaparcial').on('click', function(){
+                    $('#notap').val(true);
+                    validar();
+                });
+
             } //iniciar
 
         })(jQuery);
@@ -65,32 +71,23 @@
                 </table>
             </div><!-- /.panel-body -->
             <div class="panel-footer">
-                @if(isset($rotation->RotationStore->comments_from) && $rotation->RotationStore->comments_from != '')
-
-                    <p class="label label-info">Desde origen por {{ $rotation->RotationStore->user->name }}</p>
-                    <p class="alert alert-success">
+                @foreach($rotation->rotationStore as $rstore)
+                    <p class="label label-info">
                         <span class="glyphicon glyphicon-comment"></span>
-                        {{ $rotation->RotationStore->comments_from }}
+                        {{ $rstore->created_at }} por {{ $rstore->user->name }}
                     </p>
-
-                @endif
-
-                @if(isset($rotation->RotationStore->comments_to) && $rotation->RotationStore->comments_to != '')
-
-                    <p class="label label-info">Finalizado en destino por {{ $rotation->RotationStore->user->name }}</p>
                     <p class="alert alert-success">
-                        <span class="glyphicon glyphicon-comment"></span>
-                        {{ $rotation->RotationStore->comments_to }}
+                        {{ $rstore->comments_from }}
+                        {{ $rstore->comments_to }}
                     </p>
-
-                @endif
+                @endforeach
 
                 @if( $rotation->status == 'pendiente en origen' && ( Auth::user()->permitido('bodeguero') && Auth::user()->roles()->first()->branch->id == $rotation->branch_from()->first()->id ) )
 
                     {{ Form::open(array('url' => 'rotations/rotation-store', 'id' => 'rotationStoreForm')) }}
                         {{ Form::input('hidden', 'rotation', $rotation->id) }}
-
                         {{ Form::input('hidden', 'branch_from', $rotation->branch_from()->first()->id) }}
+                        {{ Form::input('hidden', 'notaparcial', 'false', array('id' => 'notap')) }}
                         {{ Form::textarea('comments_from', '', array('id' => 'comments', 'rows' => '3', 'class' => 'form-control', 'placeholder' => 'Comentarios del bodeguero en origen.', 'maxlength' => '255', 'required')) }}
 
                         <a href="#rotationStoreModal" class="button" data-toggle="modal">
@@ -105,8 +102,8 @@
 
                     {{ Form::open(array('url' => 'rotations/rotation-store', 'id' => 'rotationStoreForm')) }}
                         {{ Form::input('hidden', 'rotation', $rotation->id) }}
-
                         {{ Form::input('hidden', 'branch_to', $rotation->branch_to()->first()->id) }}
+                        {{ Form::input('hidden', 'notaparcial', 'false', array('id' => 'notap')) }}
                         {{ Form::textarea('comments_to', '', array('id' => 'comments', 'rows' => '3', 'class' => 'form-control', 'placeholder' => 'Comentarios del bodeguero en destino.', 'maxlength' => '255', 'required')) }}
 
                         <a href="#rotationStoreModal" class="button" data-toggle="modal">
@@ -121,7 +118,7 @@
 
                     {{ Form::open(array('url' => 'rotations/rotation-store', 'id' => 'rotationStoreForm')) }}
                         {{ Form::input('hidden', 'rotation', $rotation->id) }}
-
+                        {{ Form::input('hidden', 'notaparcial', 'false', array('id' => 'notap')) }}
                         {{ Form::input('hidden', 'branch_from', $rotation->branch_from()->first()->id) }}
                         {{ Form::textarea('comments_from', '', array('id' => 'comments', 'rows' => '3', 'class' => 'form-control', 'placeholder' => 'Comentarios del bodeguero en origen.', 'maxlength' => '255', 'required')) }}
 
@@ -142,7 +139,7 @@
 
                     {{ Form::open(array('url' => 'rotations/rotation-store', 'id' => 'rotationStoreForm')) }}
                         {{ Form::input('hidden', 'rotation', $rotation->id) }}
-
+                        {{ Form::input('hidden', 'notaparcial', 'false', array('id' => 'notap')) }}
                         {{ Form::input('hidden', 'branch_to', $rotation->branch_to()->first()->id) }}
                         {{ Form::textarea('comments_to', '', array('id' => 'comments', 'rows' => '3', 'class' => 'form-control', 'placeholder' => 'Comentarios del bodeguero en destino.', 'maxlength' => '255', 'required')) }}
 
@@ -153,6 +150,13 @@
                         {{ Form::submit('Enviar', array('class' => 'hidden')) }}
                     {{ Form::close() }}
 
+                @endif
+
+                @if($rotation->status != 'finalizado')
+                    <span class="button" id="notaparcial">
+                        <span class="glyphicon glyphicon-comment"></span>
+                        Registrar nota parcial
+                    </span>
                 @endif
 
             </div><!-- /.panel-footer -->

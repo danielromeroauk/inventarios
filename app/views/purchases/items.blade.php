@@ -71,7 +71,7 @@
                 </table>
             </div><!-- /.panel-body -->
             <div class="panel-footer">
-                @foreach($purchase->PurchaseStore as $pstore)
+                @foreach($purchase->purchaseStore as $pstore)
                     <p class="label label-info">
                         <span class="glyphicon glyphicon-comment"></span>
                         {{ $pstore->created_at }} por {{ $pstore->user->name }}
@@ -88,7 +88,7 @@
                         {{ Form::input('hidden', 'branch_id', $purchase->branch->id) }}
                         {{ Form::input('hidden', 'notaparcial', 'false', array('id' => 'notap')) }}
                         {{ Form::textarea('comments', '', array('id' => 'comments', 'rows' => '3', 'class' => 'form-control', 'placeholder' => 'Comentarios del bodeguero.', 'maxlength' => '255', 'required')) }}
-                         <span class="button" id="notaparcial">
+                        <span class="button" id="notaparcial">
                             <span class="glyphicon glyphicon-comment"></span>
                             Registrar nota parcial
                         </span>

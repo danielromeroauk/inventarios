@@ -140,41 +140,52 @@ class RotationController extends BaseController {
     public function postRotationStore()
     {
         $input = Input::all();
+
         try {
 
+            /*Verifica que la remisión de verdad está activa*/
+            $rotation = Rotation::find($input['rotation']);
+            if (in_array($rotation->status, array('finalizado', 'cancelado'))) {
+                return Redirect::to('rotations/items/'. $input['rotation']);
+            }
+
             $rotations = RotationItem::where('rotation_id', '=', $input['rotation'])->get();
+
+
+            if($input['notaparcial'] == 'false')
+            {
+                foreach ($rotations as $rotation) {
+                    if (isset($input['branch_from'])) {
+                        self::saveInStockTable(true, $input['branch_from'], $rotation->article->id, $rotation->amount);
+                    } elseif (isset($input['branch_to'])) {
+                        self::saveInStockTable(false, $input['branch_to'], $rotation->article->id, $rotation->amount);
+                    }
+                } #foreach
+
+                /*Cambiar el status en la tabla rotation a finalizado*/
+                $rotation = Rotation::find($input['rotation']);
+                if (isset($input['branch_from'])) {
+                    $rotation->status = 'pendiente en destino';
+                } elseif (isset($input['branch_to'])) {
+                    $rotation->status = 'finalizado';
+                }
+                $rotation->update();
+
+            } #if notaparcial == 'false'
+
+            $rotationStore = new RotationStore();
+            $rs['rotation_id'] = $input['rotation'];
             $rs['user_id'] = Auth::user()->id;
 
-            foreach ($rotations as $rotation) {
-                if (isset($input['branch_from'])) {
-                    $rs['comments_from'] = $input['comments_from'];
-                    self::saveInStockTable(true, $input['branch_from'], $rotation->article->id, $rotation->amount);
-                } elseif (isset($input['branch_to'])) {
-                    self::saveInStockTable(false, $input['branch_to'], $rotation->article->id, $rotation->amount);
-                }
-            } #foreach
-
-            $rotationStore = RotationStore::find($input['rotation']);
-
-            if (empty($rotationStore)) {
-                $rotationStore = new RotationStore();
-                $rs['id'] = $input['rotation'];
-                $rotationStore->create($rs);
-            } else {
-                $rotationStore->comments_to = $input['comments_to'];
-                $rotationStore->update();
+            if (isset($input['comments_from'])) {
+                $rs['comments_from'] = $input['comments_from'];
+            } elseif (isset($input['comments_to'])) {
+                $rs['comments_to'] = $input['comments_to'];
             }
 
-            /*Cambiar el status en la tabla rotation a finalizado*/
-            $rotation = Rotation::find($input['rotation']);
-            if (isset($input['branch_from'])) {
-                $rotation->status = 'pendiente en destino';
-            } elseif (isset($input['branch_to'])) {
-                $rotation->status = 'finalizado';
-            }
-            $rotation->update();
+            $rotationStore->create($rs);
 
-            return Redirect::to('rotations');
+            return Redirect::to('rotations/items/'. $input['rotation']);
 
         } catch (Exception $e) {
 

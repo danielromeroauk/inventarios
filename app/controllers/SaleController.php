@@ -129,6 +129,12 @@ class SaleController extends BaseController {
 
             $input = Input::all();
 
+            /*Verifica que la remisión de verdad está activa*/
+            $sale = Sale::find($input['sale']);
+            if (in_array($sale->status, array('finalizado', 'cancelado'))) {
+                return Redirect::to('sales/items/'. $input['sale']);
+            }
+
             if($input['notaparcial'] == 'false')
             {
                 $sitems = SaleItem::where('sale_id', '=', $input['sale'])->get();

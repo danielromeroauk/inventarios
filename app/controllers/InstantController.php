@@ -131,7 +131,11 @@ class InstantController extends BaseController {
     {
         try {
 
-            $input = Input::all();
+            /*Verifica que la remisión de verdad está activa*/
+            $instant = Instant::find($idInstant);
+            if (in_array($instant->status, array('finalizado', 'cancelado'))) {
+                return Redirect::to('instants/items/'. $idInstant);
+            }
 
             $idBranch = Auth::user()->roles()->first()->branch->id;
 
@@ -142,15 +146,15 @@ class InstantController extends BaseController {
             } #foreach
 
             $instantStore = new InstantStore();
-            $is['id'] = $idInstant;
+            $is['instant_id'] = $idInstant;
             $is['user_id'] = Auth::user()->id;
             $is['comments'] = 'Entrega inmediata exitosa.';
             $instantStore->create($is);
 
-            return Redirect::to('instants');
+            return Redirect::to('instants/items/'. $idInstant);
 
         } catch (Exception $e) {
-            die('No se pudo disminuir el stock.');
+            die('No se pudo disminuir el stock.'. $e);
         }
     } #postInstantStore
 

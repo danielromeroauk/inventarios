@@ -25,7 +25,7 @@ class Damage extends Eloquent {
 
     public function damageStore()
     {
-        return $this->hasOne('DamageStore', 'id');
+        return $this->hasMany('DamageStore');
     }
 
 }

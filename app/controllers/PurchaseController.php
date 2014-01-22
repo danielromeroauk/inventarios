@@ -123,6 +123,12 @@ class PurchaseController extends BaseController {
 
             $input = Input::all();
 
+            /*Verifica que la remisión de verdad está activa*/
+            $purchase = Purchase::find($input['purchase']);
+            if (in_array($purchase->status, array('finalizado', 'cancelado'))) {
+                return Redirect::to('purchases/items/'. $input['purchase']);
+            }
+
             if($input['notaparcial'] == 'false')
             {
                 $pitems = PurchaseItem::where('purchase_id', '=', $input['purchase'])->get();
@@ -146,7 +152,7 @@ class PurchaseController extends BaseController {
             return Redirect::to('purchases/items/'. $input['purchase']);
 
         } catch (Exception $e) {
-            die('No se pudo aumentar el stock.<br />'. $e);
+            die('No se pudo aumentar el stock.<br />');
         }
 
     } #postPurchaseStore
@@ -164,7 +170,7 @@ class PurchaseController extends BaseController {
 
             }
 
-            return Redirect::to('purchases/itmes/'. $idPurchase);
+            return Redirect::to('purchases/items/'. $idPurchase);
 
         } catch (Exception $e) {
             die('No fue posible cancelar la compra.');

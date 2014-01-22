@@ -129,24 +129,35 @@ class DamageController extends BaseController {
 
             $input = Input::all();
 
-            $damages = DamageItem::where('damage_id', '=', $input['damage'])->get();
+            /*Verifica que la remisión de verdad está activa*/
+            $damage = Damage::find($input['damage']);
+            if (in_array($damage->status, array('finalizado', 'cancelado'))) {
+                return Redirect::to('damages/items/'. $input['damage']);
+            }
 
-            foreach ($damages as $damage) {
-                self::saveInStockTable($input['branch_id'], $damage->article->id, $damage->amount);
-            } #foreach
+            if($input['notaparcial'] == 'false')
+            {
+
+                $damages = DamageItem::where('damage_id', '=', $input['damage'])->get();
+
+                foreach ($damages as $damage) {
+                    self::saveInStockTable($input['branch_id'], $damage->article->id, $damage->amount);
+                } #foreach
+
+                /*Cambiar el status en la tabla damage a finalizado*/
+                $damage = Damage::find($input['damage']);
+                $damage->status = 'finalizado';
+                $damage->update();
+            } #if notaparcial == 'false'
 
             $damageStore = new DamageStore();
-            $ds['id'] = $input['damage'];
+            $ds['damage_id'] = $input['damage'];
             $ds['user_id'] = Auth::user()->id;
             $ds['comments'] = $input['comments'];
             $damageStore->create($ds);
 
-            /*Cambiar el status en la tabla damage a finalizado*/
-            $damage = Damage::find($input['damage']);
-            $damage->status = 'finalizado';
-            $damage->update();
 
-            return Redirect::to('damages');
+            return Redirect::to('damages/items/'. $input['damage']);
 
         } catch (Exception $e) {
             die('No se pudo disminuir el stock.');
