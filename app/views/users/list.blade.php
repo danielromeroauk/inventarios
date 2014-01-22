@@ -29,7 +29,9 @@
                             @endforeach
                         </td>
                         <td>
-                            {{ HTML::link('users/edit/'. $user->id, 'Editar') }}
+                            @if($user->roles->first()->name != 'administrador')
+                                {{ HTML::link('users/edit/'. $user->id, 'Editar') }}
+                            @endif
                         </td>
                     </tr>
                 @endforeach
