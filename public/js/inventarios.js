@@ -10,8 +10,6 @@
             'content': 'Use coma (,) como separador decimal.'
         });
 
-        history.go(1);
-
     }
 
 })(jQuery);
