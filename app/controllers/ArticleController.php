@@ -200,10 +200,10 @@ class ArticleController extends BaseController {
 
             }
 
-            if ($file->getSize() > 1000000) {
+            if ($file->getSize() > 250000) {
 
                 return Redirect::to('articles')
-                    ->with('message', 'El tamaño de la imagen no puede ser superior a 1MB.');
+                    ->with('message', 'El tamaño de la imagen no puede ser mayor a 250KB.');
             }
 
             $idArticle = Input::get('idArticle');
