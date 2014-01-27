@@ -195,6 +195,13 @@
                         Exportar stock
                     </a>' }}
 
+                    @if(isset($article->image()->first()->image))
+                        {{ '<a href="'. url('articles/quitar-imagen/'. $article->id) .'" class="btn btn-danger btn-sm" id="'. $article->id .'">
+                            <span class="glyphicon remove"></span>
+                            Quitar imagen
+                        </a>' }}
+                    @endif
+
               </div> <!-- /.panel.footer -->
 
             @endif

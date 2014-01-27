@@ -202,7 +202,7 @@ class ArticleController extends BaseController {
 
             if ($file->getSize() > 250000) {
 
-                return Redirect::to('articles')
+                return Redirect::to('articles/search?filterBy=id&search='. $idArticle)
                     ->with('message', 'El tamaño de la imagen no puede ser mayor a 250KB.');
             }
 
@@ -259,10 +259,35 @@ class ArticleController extends BaseController {
             } #else
 
         } catch (Exception $e) {
-            return Redirect::to('articles/search?filterBy=id&search='. $idArticle)->with(array('message' => '<p>La imagen no se pudo subir, revisa el formato (jpg,jpeg,gif,png) y el tamaño del archivo (max:1MB).</p>'));
+
+            return Redirect::to('articles/search?filterBy=id&search='. $idArticle)->with(array('message' => '<p>La imagen no se pudo subir, revisa el formato (jpg,jpeg,gif,png) y el tamaño del archivo (max:250KB).</p>'));
         }
 
     } #postImage
+
+    public function getQuitarImagen($idArticle)
+    {
+
+        try
+        {
+            $articleImage = ArticleImage::find($idArticle);
+
+            if(!empty($articleImage))
+            {
+                /*Quita el registro de la base de datos*/
+                $articleImage->delete();
+                /*Elimina la imagen del disco duro*/
+                File::delete(public_path() .'/img/articles/'. $articleImage->image);
+            }
+
+            return Redirect::to('articles/search?filterBy=id&search='. $idArticle)->with(array('messageOk' => 'Imagen del artículo '. $idArticle .' eliminada con éxito.'));
+
+        } catch (Exception $e) {
+
+                return Redirect::to('articles/search?filterBy=id&search='. $idArticle)->with(array('message' => 'No fue posible eliminar la imagen del artículo '. $idArticle));
+        }
+
+    } #getQuitarImagen
 
     public function getExcelByArticle($idArticle)
     {
