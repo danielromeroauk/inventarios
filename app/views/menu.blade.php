@@ -1,28 +1,61 @@
-<nav class="navbar navbar-default" role="navigation">
-  <!-- Brand and toggle get grouped for better mobile display -->
-  <div class="navbar-header">
-    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-      <span class="sr-only">Toggle navigation</span>
-      <span class="icon-bar"></span>
-      <span class="icon-bar"></span>
-      <span class="icon-bar"></span>
-    </button>
+<div class="navbar navbar-default" id="encabezado">
     <a class="navbar-brand" href="{{ url('/') }}">
-
       @if(Auth::check())
         {{ Auth::user()->roles()->first()->branch->name }}
       @else
         Inventarios
       @endif
     </a>
-  </div>
 
-  <!-- Collect the nav links, forms, and other content for toggling -->
-  <div class="collapse navbar-collapse navbar-ex1-collapse">
-    <ul class="nav navbar-nav">
-      <!-- <li> {{ HTML::link('/', 'Inicio') }} </li> -->
+    @if(Auth::check())
 
-      @if(Auth::check())
+      <ul class="nav navbar-nav pull-right">
+        <li>
+          <a>
+            <span class="glyphicon glyphicon-user"></span> {{ Auth::user()->email }}
+          </a>
+        </li>
+        <li>
+          <a href="{{ url('users/logout') }}" >
+            <span class="glyphicon glyphicon-log-out"></span> Salir &nbsp;
+          </a>
+        </li>
+      </ul>
+
+    @else
+
+      {{ Form::open(array('url' => 'users/index', 'class' => 'navbar-form navbar-right')) }}
+        <div class="form-group">
+          {{ Form::email('email', (isset($email) ? $email : ''), array('class' => 'form-control', 'placeholder' => 'Email', 'required', 'autofocus')) }}
+          {{ Form::password('password', array('class' => 'form-control', 'placeholder' => 'Password', 'required')) }}
+        </div>
+        {{ Form::submit('Entrar', array('class' => 'btn btn-primary')) }}
+      {{ Form::close() }}
+
+    @endif
+
+</div>
+
+@if(Auth::check())
+
+  <nav class="navbar navbar-default" role="navigation">
+
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+        <span class="sr-only">Toggle navigación</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse navbar-ex1-collapse">
+
+      <ul class="nav navbar-nav">
+
+        <li> {{ HTML::link('/', 'Inicio') }} </li>
 
         <li>
           {{ '<a href="'. url('articles') .'">
@@ -30,22 +63,22 @@
                   Artículos
               </a>' }}
 
-      @if(Auth::user()->permitido('administrador') || Auth::user()->permitido('remisionero'))
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Registrar <b class="caret"></b></a>
-          <ul class="dropdown-menu">
-            <li> {{ HTML::link('articles/add', 'Artículo') }} </li>
-
-            @if(Auth::user()->permitido('administrador'))
-              <li> {{ HTML::link('users/register', 'Usuario') }} </li>
-              <li> {{ HTML::link('branches/add', 'Sucursal') }} </li>
-            @endif
-
-          </ul>
-        </li>
-      @endif
-
+        @if(Auth::user()->permitido('administrador') || Auth::user()->permitido('remisionero'))
           <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Registrar <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li> {{ HTML::link('articles/add', 'Artículo') }} </li>
+
+              @if(Auth::user()->permitido('administrador'))
+                <li> {{ HTML::link('users/register', 'Usuario') }} </li>
+                <li> {{ HTML::link('branches/add', 'Sucursal') }} </li>
+              @endif
+
+            </ul>
+          </li>
+        @endif
+
+        <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Informes <b class="caret"></b></a>
           <ul class="dropdown-menu">
             <li> {{ HTML::link('purchases', 'Compras') }} </li>
@@ -57,10 +90,8 @@
         </li>
 
         @if(Auth::user()->permitido('administrador'))
-
           <li> {{ HTML::link('users/list', 'Usuarios') }} </li>
           <li> {{ HTML::link('branches', 'Sucursales') }} </li>
-
         @endif
 
         <li> {{ HTML::link('users/change-password', 'Cambiar password') }} </li>
@@ -79,34 +110,10 @@
             @endif
         </li>
 
-      @endif
+      </ul><!-- /nav navbar-nav -->
 
-    </ul><!-- /nav navbar-nav -->
+    </div><!-- /.navbar-collapse -->
 
-    @if(Auth::check())
+  </nav><!-- /.navbar navbar-default -->
 
-      <ul class="nav navbar-nav navbar-right">
-        <li>
-          <a><span class="glyphicon glyphicon-user"></span> {{ Auth::user()->email }}</a>
-        </li>
-        <li>
-          <a href="{{ url('users/logout') }}" class="btn btn-link">
-            <span class="glyphicon glyphicon-log-out"></span> Salir
-          </a>
-        </li>
-      </ul>
-
-    @else
-
-      {{ Form::open(array('url' => 'users/index', 'class' => 'navbar-form navbar-right')) }}
-        <div class="form-group">
-          {{ Form::email('email', (isset($email) ? $email : ''), array('class' => 'form-control', 'placeholder' => 'Email', 'required', 'autofocus')) }}
-          {{ Form::password('password', array('class' => 'form-control', 'placeholder' => 'Password', 'required')) }}
-        </div>
-        {{ Form::submit('Entrar', array('class' => 'btn btn-primary')) }}
-      {{ Form::close() }}
-
-    @endif
-
-  </div><!-- /.navbar-collapse -->
-</nav>
+@endif

@@ -23,3 +23,11 @@ ul.purchase, ul.sale, ul.damage, ul.instant, ul.rotation {
     max-width:150px;
     vertical-align:top;
 }
+
+#encabezado {
+    margin-bottom: 2px;
+}
+
+#encabezado ul.nav li {
+    display: inline-block;
+}
