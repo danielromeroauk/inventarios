@@ -55,7 +55,12 @@
 
       <ul class="nav navbar-nav">
 
-        <li> {{ HTML::link('/', 'Inicio') }} </li>
+        <li>
+          {{ '<a href="'. url('/') .'">
+                  <span class="glyphicon glyphicon-home"></span>
+                  inicio
+              </a>' }}
+        </li>
 
         <li>
           {{ '<a href="'. url('articles') .'">
