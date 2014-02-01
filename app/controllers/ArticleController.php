@@ -185,6 +185,8 @@ class ArticleController extends BaseController {
 
     public function postImage()
     {
+        $idArticle = Input::get('idArticle');
+
         try {
 
             $extensiones = array('jpg', 'jpeg', 'gif', 'png', 'bmp');
@@ -200,13 +202,11 @@ class ArticleController extends BaseController {
 
             }
 
-            if ($file->getSize() > 250000) {
+            if ($file->getSize() > 1000000) {
 
                 return Redirect::to('articles/search?filterBy=id&search='. $idArticle)
-                    ->with('message', 'El tamaño de la imagen no puede ser mayor a 250KB.');
+                    ->with('message', 'El tamaño de la imagen no puede ser mayor a 1000KB.');
             }
-
-            $idArticle = Input::get('idArticle');
 
             $dataUpload = array(
                 "image" => $file
@@ -246,13 +246,15 @@ class ArticleController extends BaseController {
                     $articleImage = new ArticleImage();
                     $articleImage->create($ai);
 
-                    $file->move("img/articles", $ai['image']);
+                    /*Cambia el tamaño de la imagen y guarda el archivo en img/articles con el id del artículo y su extenxión*/
+                    Image::make($file->getRealPath())->widen(150)->save('img/articles/'. $ai['image']);
+                    // $file->move("img/articles", $ai['image']);
 
                     return Redirect::to('articles/search?filterBy=id&search='. $idArticle)->with(array('messageOk' => 'Imagen subida con éxito.'));
 
                 } elseif($articleImage->update($ai)) {
-
-                    $file->move("img/articles", $ai['image']);
+                    Image::make($file->getRealPath())->widen(150)->save('img/articles/'. $ai['image']);
+                    // $file->move("img/articles", $ai['image']);
 
                     return Redirect::to('articles/search?filterBy=id&search='. $idArticle)->with(array('messageOk' => 'Imagen actualizada con éxito.'));
                 }
@@ -260,7 +262,7 @@ class ArticleController extends BaseController {
 
         } catch (Exception $e) {
 
-            return Redirect::to('articles/search?filterBy=id&search='. $idArticle)->with(array('message' => '<p>La imagen no se pudo subir, revisa el formato (jpg,jpeg,gif,png) y el tamaño del archivo (max:250KB).</p>'));
+            return Redirect::to('articles/search?filterBy=id&search='. $idArticle)->with(array('message' => '<p>La imagen no se pudo subir, revisa el formato (jpg,jpeg,gif,png) y el tamaño del archivo (max:1000KB).</p>'));
         }
 
     } #postImage

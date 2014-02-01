@@ -5,7 +5,8 @@
 	"require": {
 		"laravel/framework": "4.0.*",
 		"way/generators": "dev-master",
-		"phpoffice/phpexcel": "dev-develop"
+		"phpoffice/phpexcel": "dev-develop",
+		"intervention/image": "dev-master"
 	},
 	"autoload": {
 		"classmap": [
