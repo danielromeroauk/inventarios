@@ -358,7 +358,7 @@ class ArticleController extends BaseController {
 
 
         // Rename worksheet
-        $objPHPExcel->getActiveSheet()->setTitle($article->name . date('Y-m-d'));
+        $objPHPExcel->getActiveSheet()->setTitle('a' . $article->id . date('_Ymd'));
 
 
         // Set active sheet index to the first sheet, so Excel opens this as the first sheet
@@ -367,7 +367,7 @@ class ArticleController extends BaseController {
 
         // Redirect output to a client’s web browser (Excel2007)
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename="'. $article->name . date('_Y-m-d_His') .'.xlsx"');
+        header('Content-Disposition: attachment;filename="a'. $article->id . date('_YmdHis') .'.xlsx"');
         header('Cache-Control: max-age=0');
 
         $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');

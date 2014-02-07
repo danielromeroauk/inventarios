@@ -197,7 +197,7 @@ class BrancheController extends BaseController {
 
 
         // Rename worksheet
-        $objPHPExcel->getActiveSheet()->setTitle($branch->name . date('Y-m-d'));
+        $objPHPExcel->getActiveSheet()->setTitle('s'. $branch->id . date('_Ymd'));
 
 
         // Set active sheet index to the first sheet, so Excel opens this as the first sheet
@@ -206,7 +206,7 @@ class BrancheController extends BaseController {
 
         // Redirect output to a client’s web browser (Excel2007)
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename="'. $branch->name . date('_Y-m-d_His') .'.xlsx"');
+        header('Content-Disposition: attachment;filename="s'. $branch->id . date('_YmdHis') .'.xlsx"');
         header('Cache-Control: max-age=0');
 
         $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
