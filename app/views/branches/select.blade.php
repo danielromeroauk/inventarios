@@ -1,4 +1,4 @@
-<table class="table table-stripped table-hover table-bordered">
+<table class="table table-striped table-hover table-bordered">
     <thead>
         <th>Código</th>
         <th>Nombre</th>

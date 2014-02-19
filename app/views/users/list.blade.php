@@ -4,7 +4,7 @@
 
     <div class="row">
         <h1>Usuarios</h1>
-        <table class="table table-stripped table-hover table-bordered">
+        <table class="table table-striped table-hover table-bordered">
             <thead>
                 <th>Id</th>
                 <th>Nombre</th>

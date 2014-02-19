@@ -109,7 +109,7 @@
               <div id="tab2-{{ $article->id }}">
                 <div class="article-image">
                     @if(isset($article->image()->first()->image))
-                        {{ '<img src="'. url('img/articles/'. $article->image()->first()->image) .'">' }}
+                        {{ '<img src="'. url('img/articles/'. $article->image()->first()->image) .'" class="img-rounded">' }}
                     @else
                         <img src="http://placehold.it/150x150" />
                     @endif
