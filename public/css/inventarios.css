@@ -24,6 +24,14 @@ ul.purchase, ul.sale, ul.damage, ul.instant, ul.rotation {
     vertical-align:top;
 }
 
+.datos {
+    margin-top: 1em;
+}
+
+.right {
+    text-align: right;
+}
+
 #encabezado {
     margin-bottom: 2px;
 }

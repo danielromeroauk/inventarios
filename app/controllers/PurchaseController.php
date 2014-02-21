@@ -268,13 +268,17 @@ class PurchaseController extends BaseController {
         $title = 'Compras';
         $input = Input::all();
         $idsPurchase = '0';
+        $amounts = array();
+        $articleName = $input['article'];
 
         $article = Article::find($input['article']);
 
         if (!empty($article)) {
+            $articleName = $article->name;
 
-            foreach ($article->purchaseItems as $pitems) {
-                $idsPurchase .= $pitems->purchase->id .',';
+            foreach ($article->purchaseItems as $pitem) {
+                $idsPurchase .= $pitem->purchase->id .',';
+                $amounts[$pitem->purchase->id] = $pitem->amount;
             }
 
         }
@@ -283,12 +287,13 @@ class PurchaseController extends BaseController {
 
         $purchases = Purchase::whereRaw('id in ('. $idsPurchase .')')
             ->whereRaw('created_at BETWEEN "'. $input['fecha1'] .'" AND "'. $input['fecha2'] .'"')
-            ->orderBy('id', 'desc')->paginate(5);
+            ->orderBy('id', 'asc')->paginate(100);
 
-        $filterPurchase = 'Compras entre <strong>'. $input['fecha1'] .'</strong> y <strong>'. $input['fecha2'] .'</strong> que contienen el artículo <strong>'. $input['article'] .'</strong>';
+        $filterPurchase = 'Compras entre <strong>'. $input['fecha1'] .'</strong> y <strong>'. $input['fecha2'] .'</strong> que contienen el artículo <strong>'. $articleName .'</strong>';
 
-        return View::make('purchases.index')
-                ->with(compact('title', 'purchases', 'filterPurchase', 'input'));
+
+        return View::make('purchases.list')
+            ->with(compact('title', 'purchases', 'filterPurchase', 'input', 'amounts'));
 
     } #getFilterByArticleDates
 
@@ -334,5 +339,6 @@ class PurchaseController extends BaseController {
                 ->with(compact('title', 'purchases', 'filterPurchase', 'input'));
 
     } #getFilterByArticleComments
+
 
 } #PurchaseController

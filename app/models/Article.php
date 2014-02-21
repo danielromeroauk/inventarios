@@ -224,4 +224,53 @@ class Article extends Eloquent {
         }
     } #checkStock
 
+    /**
+     * Devuelve los movimientos realizados entre $fecha1 y $fecha2
+     * @param  datetime $fecha1
+     * @param  datetime $fecha2
+     * @return array    $movimientos
+     * array
+     *   0
+     *     array
+     *       'id' => int 2
+     *       'comments' => string 'Compra test.' (length=12)
+     *       'status' => string 'finalizado' (length=10)
+     *       'created_at' => string '2014-01-01 17:40:42' (length=19)
+     *       'updated_at' => string '2014-01-01 18:26:32' (length=19)
+    */
+    public function movimientosEnFechas($fecha1='2014-01-01 00:00', $fecha2='2014-01-01 23:59')
+    {
+        $movimientos = array();
+
+        $purchases = Purchase::where('created_at', '>=', $fecha1)
+            ->where('created_at', '<=', $fecha2)
+            ->orderBy('created_at', 'asc')->get();
+
+        foreach ($purchases as $purchase) {
+            foreach ($purchase->purchaseItems as $item) {
+                if ($this->id == $item->article->id) {
+                    $purchaseArray['created_at'] = $purchase->created_at;
+
+                }
+            }
+        }
+
+        $sales = Sale::where('created_at', '>=', $fecha1)
+            ->where('created_at', '<=', $fecha2)
+            ->orderBy('created_at', 'asc');
+
+        $damages = Damage::where('created_at', '>=', $fecha1)
+            ->where('created_at', '<=', $fecha2)
+            ->orderBy('created_at', 'asc');
+
+        $instants = Instant::where('created_at', '>=', $fecha1)
+            ->where('created_at', '<=', $fecha2)
+            ->orderBy('created_at', 'asc');
+
+        $rotations = Rotation::where('created_at', '>=', $fecha1)
+            ->where('created_at', '<=', $fecha2)
+            ->orderBy('created_at', 'asc');
+
+    } #movimientosEnFechas
+
 }

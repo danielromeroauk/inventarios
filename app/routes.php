@@ -35,3 +35,8 @@ Route::group(array('before' => 'auth'), function()
     Route::controller('instants', 'InstantController');
     Route::controller('rotations', 'RotationController');
 });
+
+Route::get('test', function(){
+    $articulo = Article::find(1);
+    $articulo->movimientosEnFechas();
+});
