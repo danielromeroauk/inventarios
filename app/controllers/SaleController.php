@@ -273,13 +273,16 @@ class SaleController extends BaseController {
         $title = 'Ventas';
         $input = Input::all();
         $idsSale = '0';
+        $amounts = array();
+        $articleName = $input['article'];
 
         $article = Article::find($input['article']);
 
         if (!empty($article)) {
 
-            foreach ($article->saleItems as $sitems) {
-                $idsSale .= $sitems->sale->id .',';
+            foreach ($article->saleItems as $sitem) {
+                $idsSale .= $sitem->sale->id .',';
+                $amounts[$sitem->sale->id] = $sitem->amount;
             }
 
         }
@@ -288,12 +291,12 @@ class SaleController extends BaseController {
 
         $sales = Sale::whereRaw('id in ('. $idsSale .')')
             ->whereRaw('created_at BETWEEN "'. $input['fecha1'] .'" AND "'. $input['fecha2'] .'"')
-            ->orderBy('id', 'desc')->paginate(5);
+            ->orderBy('id', 'asc')->paginate(100);
 
-        $filterSale = 'Ventas entre <strong>'. $input['fecha1'] .'</strong> y <strong>'. $input['fecha2'] .'</strong> que contienen el artículo <strong>'. $input['article'] .'</strong>';
+        $filterSale = 'Ventas entre <strong>'. $input['fecha1'] .'</strong> y <strong>'. $input['fecha2'] .'</strong> que contienen el artículo <strong>'. $articleName.'</strong>';
 
-        return View::make('sales.index')
-                ->with(compact('title', 'sales', 'filterSale', 'input'));
+        return View::make('sales.list')
+                ->with(compact('title', 'sales', 'filterSale', 'input', 'amounts'));
 
     } #getFilterByArticleDates
 

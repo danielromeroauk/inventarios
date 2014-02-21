@@ -1,7 +1,10 @@
 /bootstrap/compiled.php
 /docs
 /public/packages
+/public/css/flipclock.css
 /public/img
+/public/js/flipclock
+/public/js/flipclock-customer.js
 /vendor
 composer.phar
 composer.lock
