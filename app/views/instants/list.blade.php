@@ -19,10 +19,10 @@
 
 @section('content')
 
-    <h1>Informe de ventas</h1>
+    <h1>Informe de entregas inmediatas</h1>
 
     <div>
-        {{ Form::open(array('url' => 'sales/filter-by-article-dates', 'method' => 'get')) }}
+        {{ Form::open(array('url' => 'instants/filter-by-article-dates', 'method' => 'get')) }}
 
             <div class="input-group">
                 {{ Form::input('number', 'article', '', array('class' => 'form-control', 'min' => '1', 'step' => '1', 'max' => '99999999999999.99', 'title' => 'Código de artículo', 'placeholder' => 'Código de artículo', 'required')) }}
@@ -41,10 +41,10 @@
         {{ Form::close() }}
     </div>
 
-    @if(isset($filterSale))
+    @if(isset($filterInstant))
         <div class="alert alert-dismissable alert-info">
           <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-          {{ $filterSale }}
+          {{ $filterInstant }}
         </div>
     @endif
 
@@ -57,15 +57,15 @@
             <th>Acción</th>
         </thead>
         <tbody>
-            @foreach($sales as $sale)
+            @foreach($instants as $instant)
                 <tr>
-                    <td>{{ $sale->id }}</td>
-                    <td>{{ $sale->created_at }}</td>
-                    <td class="right">{{ $amounts[$sale->id] }}</td>
-                    <td>{{ $sale->comments }}</td>
+                    <td>{{ $instant->id }}</td>
+                    <td>{{ $instant->created_at }}</td>
+                    <td class="right">{{ $amounts[$instant->id] }}</td>
+                    <td>{{ $instant->comments }}</td>
                     <td>
                         <span class="glyphicon glyphicon-search"></span>
-                        {{ HTML::link('sales/items/'. $sale->id, 'Ver detalles') }}
+                        {{ HTML::link('instants/items/'. $instant->id, 'Ver detalles') }}
                     </td>
                 </tr>
             @endforeach
@@ -74,9 +74,9 @@
 
     <?php
         if(isset($input)) {
-            echo $sales->appends(array_except($input, 'page'))->links();
+            echo $instants->appends(array_except($input, 'page'))->links();
         } else {
-            echo $sales->links();
+            echo $instants->links();
         }
     ?>
 

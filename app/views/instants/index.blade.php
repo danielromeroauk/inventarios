@@ -45,7 +45,7 @@
 @stop
 
 @section('content')
-    <h1>Informe de entrega inmediata</h1>
+    <h1>Informe de entregas inmediatas</h1>
     <button class="btn btn-info" id="btnFiltrar">
         <span class="glyphicon glyphicon-filter"></span>
         Filtros

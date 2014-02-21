@@ -306,13 +306,17 @@ class RotationController extends BaseController {
         $title = 'Rotaciones';
         $input = Input::all();
         $idsRotation = '0';
+        $amounts = array();
+        $articleName = $input['article'];
 
         $article = Article::find($input['article']);
 
         if (!empty($article)) {
+            $articleName = $article->name;
 
-            foreach ($article->rotationItems as $ritems) {
-                $idsRotation .= $ritems->rotation->id .',';
+            foreach ($article->rotationItems as $ritem) {
+                $idsRotation .= $ritem->rotation->id .',';
+                $amounts[$ritem->rotation->id] = $ritem->amount;
             }
 
         }
@@ -321,12 +325,12 @@ class RotationController extends BaseController {
 
         $rotations = Rotation::whereRaw('id in ('. $idsRotation .')')
             ->whereRaw('created_at BETWEEN "'. $input['fecha1'] .'" AND "'. $input['fecha2'] .'"')
-            ->orderBy('id', 'desc')->paginate(5);
+            ->orderBy('id', 'asc')->paginate(100);
 
-        $filterRotation = 'Rotaciones entre <strong>'. $input['fecha1'] .'</strong> y <strong>'. $input['fecha2'] .'</strong> que contienen el artículo <strong>'. $input['article'] .'</strong>';
+        $filterRotation = 'Rotaciones entre <strong>'. $input['fecha1'] .'</strong> y <strong>'. $input['fecha2'] .'</strong> que contienen el artículo <strong>'. $articleName .'</strong>';
 
-        return View::make('rotations.index')
-                ->with(compact('title', 'rotations', 'filterRotation', 'input'));
+        return View::make('rotations.list')
+                ->with(compact('title', 'rotations', 'filterRotation', 'input', 'amounts'));
 
     } #getFilterByArticleDates
 

@@ -254,13 +254,17 @@ class InstantController extends BaseController {
         $title = 'Entregas inmediatas';
         $input = Input::all();
         $idsInstant = '0';
+        $amounts = array();
+        $articleName = $input['article'];
 
         $article = Article::find($input['article']);
 
         if (!empty($article)) {
+            $articleName = $article->name;
 
-            foreach ($article->instantItems as $iitems) {
-                $idsInstant .= $iitems->instant->id .',';
+            foreach ($article->instantItems as $iitem) {
+                $idsInstant .= $iitem->instant->id .',';
+                $amounts[$iitem->instant->id] = $iitem->amount;
             }
 
         }
@@ -269,12 +273,12 @@ class InstantController extends BaseController {
 
         $instants = Instant::whereRaw('id in ('. $idsInstant .')')
             ->whereRaw('created_at BETWEEN "'. $input['fecha1'] .'" AND "'. $input['fecha2'] .'"')
-            ->orderBy('id', 'desc')->paginate(5);
+            ->orderBy('id', 'asc')->paginate(100);
 
-        $filterInstant = 'Entregas inmediatas entre <strong>'. $input['fecha1'] .'</strong> y <strong>'. $input['fecha2'] .'</strong> que contienen el artículo <strong>'. $input['article'] .'</strong>';
+        $filterInstant = 'Entregas inmediatas entre <strong>'. $input['fecha1'] .'</strong> y <strong>'. $input['fecha2'] .'</strong> que contienen el artículo <strong>'. $articleName .'</strong>';
 
-        return View::make('instants.index')
-                ->with(compact('title', 'instants', 'filterInstant', 'input'));
+        return View::make('instants.list')
+                ->with(compact('title', 'instants', 'filterInstant', 'input', 'amounts'));
 
     } #getFilterByArticleDates
 

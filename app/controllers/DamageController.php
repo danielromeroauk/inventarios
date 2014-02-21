@@ -270,13 +270,17 @@ class DamageController extends BaseController {
         $title = 'Daños';
         $input = Input::all();
         $idsDamage = '0';
+        $amounts = array();
+        $articleName = $input['article'];
 
         $article = Article::find($input['article']);
 
         if (!empty($article)) {
+            $articleName = $article->name;
 
-            foreach ($article->damageItems as $ditems) {
-                $idsDamage .= $ditems->damage->id .',';
+            foreach ($article->damageItems as $ditem) {
+                $idsDamage .= $ditem->damage->id .',';
+                $amounts[$ditem->damage->id] = $ditem->amount;
             }
 
         }
@@ -285,12 +289,12 @@ class DamageController extends BaseController {
 
         $damages = Damage::whereRaw('id in ('. $idsDamage .')')
             ->whereRaw('created_at BETWEEN "'. $input['fecha1'] .'" AND "'. $input['fecha2'] .'"')
-            ->orderBy('id', 'desc')->paginate(5);
+            ->orderBy('id', 'asc')->paginate(100);
 
-        $filterDamage = 'Daños entre <strong>'. $input['fecha1'] .'</strong> y <strong>'. $input['fecha2'] .'</strong> que contienen el artículo <strong>'. $input['article'] .'</strong>';
+        $filterDamage = 'Daños entre <strong>'. $input['fecha1'] .'</strong> y <strong>'. $input['fecha2'] .'</strong> que contienen el artículo <strong>'. $articleName .'</strong>';
 
-        return View::make('damages.index')
-                ->with(compact('title', 'damages', 'filterDamage', 'input'));
+        return View::make('damages.list')
+                ->with(compact('title', 'damages', 'filterDamage', 'input', 'amounts'));
 
     } #getFilterByArticleDates
 

@@ -279,6 +279,7 @@ class SaleController extends BaseController {
         $article = Article::find($input['article']);
 
         if (!empty($article)) {
+            $articleName = $article->name;
 
             foreach ($article->saleItems as $sitem) {
                 $idsSale .= $sitem->sale->id .',';
