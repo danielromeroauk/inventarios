@@ -202,10 +202,10 @@ class ArticleController extends BaseController {
 
             }
 
-            if ($file->getSize() > 1000000) {
+            if ($file->getSize() > 10000000) {
 
                 return Redirect::to('articles/search?filterBy=id&search='. $idArticle)
-                    ->with('message', 'El tamaño de la imagen no puede ser mayor a 1000KB.');
+                    ->with('message', 'El tamaño de la imagen no puede ser mayor a 10000KB.');
             }
 
             $dataUpload = array(
