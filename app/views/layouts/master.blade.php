@@ -15,6 +15,7 @@
 	</script>
 	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 	{{ HTML::script('js/jconfirmaction.jquery.js') }}
+	{{ HTML::script('js/contador.js') }}
 	{{ HTML::script('js/inventarios.js') }}
 
 	@yield('head')

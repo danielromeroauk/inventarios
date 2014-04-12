@@ -10,11 +10,14 @@
     @if(Auth::check())
 
       <ul class="nav navbar-nav pull-right">
-        <li>
-          <a>
-            <span class="glyphicon glyphicon-user"></span> {{ Auth::user()->email }}
-          </a>
-        </li>
+        <p class="navbar-text">
+          <span class="glyphicon glyphicon-time"></span>
+          <span id="contador"></span>
+        </p>
+          <p class="navbar-text">
+            <span class="glyphicon glyphicon-user"></span>
+            {{ Auth::user()->email }}
+          </p>
         <li>
           <a href="{{ url('users/logout') }}" >
             <span class="glyphicon glyphicon-log-out"></span> Salir &nbsp;
