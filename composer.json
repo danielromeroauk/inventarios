@@ -3,7 +3,7 @@
 	"description": "Sistema de inventarios.",
 	"keywords": ["framework", "laravel", "inventarios", "adsiar", "construimportados"],
 	"require": {
-		"laravel/framework": "4.0.*",
+		"laravel/framework": "4.0.10",
 		"way/generators": "dev-master",
 		"phpoffice/phpexcel": "dev-develop",
 		"intervention/image": "dev-master"
