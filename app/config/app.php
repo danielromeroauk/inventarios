@@ -26,7 +26,7 @@ return array(
 	|
 	*/
 
-	'url' => 'http://construimportados.adsiar.com',
+	'url' => 'http://localhost/inventarios',
 
 	/*
 	|--------------------------------------------------------------------------

@@ -3,7 +3,9 @@
 @section('head')
 
     {{ HTML::style('css/flipclock.css') }}
-    {{ HTML::style('http://fonts.googleapis.com/css?family=Chela+One') }}
+
+    {{ HTML::style('fonts/chelaone.css') }}
+    {{-- HTML::style('http://fonts.googleapis.com/css?family=Chela+One') --}}
 
     <!--{{ HTML::script('js/flipclock/libs/prefixfree.min.js') }}
     {{ HTML::script('js/flipclock/flipclock.min.js') }}

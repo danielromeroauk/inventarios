@@ -1,8 +1,12 @@
 @extends('layouts.master')
 
 @section('head')
-    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
-    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <!-- <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" /> -->
+    {{ HTML::style('css/jquery-ui-smoothness.css') }}
+
+    <!-- <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script> -->
+    {{ HTML::script('js/jquery-ui.js') }}
+
     <script>
         (function($){
 
@@ -111,7 +115,8 @@
                     @if(isset($article->image()->first()->image))
                         {{ '<img src="'. url('img/articles/'. $article->image()->first()->image) .'" class="img-rounded">' }}
                     @else
-                        <img src="http://placehold.it/150x150" />
+                        <!-- <img src="http://placehold.it/150x150" /> -->
+                        <img src="img/150x150.gif" />
                     @endif
                 </div>
                 <div style="display:inline-block;">
