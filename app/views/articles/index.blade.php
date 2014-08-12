@@ -116,7 +116,7 @@
                         {{ '<img src="'. url('img/articles/'. $article->image()->first()->image) .'" class="img-rounded">' }}
                     @else
                         <!-- <img src="http://placehold.it/150x150" /> -->
-                        <img src="img/150x150.gif" />
+                        <img src="{{ url('img/150x150.gif') }}" />
                     @endif
                 </div>
                 <div style="display:inline-block;">
