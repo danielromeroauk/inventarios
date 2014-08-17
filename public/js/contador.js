@@ -1,13 +1,13 @@
 function countdown(id)
 {
-    var fecha=new Date('2015','03','15','00','00','00');
+    var fecha=new Date('2015','07','13','00','00','00');
     var hoy=new Date();
     var dias=0;
     var horas=0;
     var minutos=0;
     var segundos=0;
 
-    if (fecha>hoy){
+    if (fecha>=hoy){
         var diferencia=(fecha.getTime()-hoy.getTime())/1000;
         dias=Math.floor(diferencia/86400);
         diferencia=diferencia-(86400*dias);
@@ -24,6 +24,6 @@ function countdown(id)
         }
     }
     else{
-        document.getElementById('restante').innerHTML='Quedan ' + dias + ' D&iacute;as, ' + horas + ' Horas, ' + minutos + ' Minutos, ' + segundos + ' Segundos';
+        window.location.replace('http://adsiar.com');
     }
 }
