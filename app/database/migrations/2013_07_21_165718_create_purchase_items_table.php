@@ -25,13 +25,13 @@ class CreatePurchaseItemsTable extends Migration {
 
 			$table->foreign('purchase_id')
 				  ->references('id')->on('purchases')
-				  ->onDelete('NO ACTION')
-				  ->onUpdate('cascade');
+				  ->onUpdate('CASCADE')
+				  ->onDelete('NO ACTION');
 
 			$table->foreign('article_id')
 				  ->references('id')->on('articles')
-				  ->onDelete('NO ACTION')
-				  ->onUpdate('cascade');
+				  ->onUpdate('CASCADE')
+				  ->onDelete('NO ACTION');
 		});
 	}
 

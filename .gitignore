@@ -1,3 +1,4 @@
+/app/storage
 /bootstrap/compiled.php
 /docs
 /public/packages
@@ -9,4 +10,3 @@
 composer.phar
 composer.lock
 .DS_Store
-/app/storage

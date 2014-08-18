@@ -25,13 +25,13 @@ class CreateRotationItemsTable extends Migration {
 
 			$table->foreign('rotation_id')
 				  ->references('id')->on('rotations')
-				  ->onDelete('NO ACTION')
-				  ->onUpdate('cascade');
+				  ->onUpdate('CASCADE')
+				  ->onDelete('NO ACTION');
 
 			$table->foreign('article_id')
 				  ->references('id')->on('articles')
-				  ->onDelete('NO ACTION')
-				  ->onUpdate('cascade');
+				  ->onUpdate('CASCADE')
+				  ->onDelete('NO ACTION');
 		});
 	}
 

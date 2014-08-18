@@ -10,11 +10,6 @@ class UsersTableSeeder extends Seeder {
 				'name' => 'Daniel Romero Gelvez',
 				'email' => 'danielromeroauk@gmail.com',
 				'password' => Hash::make('123')
-			),
-			array(
-				'name' => 'Nilso Ortiz',
-				'email' => 'yamitcolmenares@hotmail.com',
-				'password' => Hash::make('123')
 			)
 		);
 

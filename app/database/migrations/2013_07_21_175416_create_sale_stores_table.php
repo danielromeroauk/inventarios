@@ -25,13 +25,13 @@ class CreateSaleStoresTable extends Migration {
 
 			$table->foreign('user_id')
 				  ->references('id')->on('users')
-				  ->onDelete('NO ACTION')
-				  ->onUpdate('cascade');
+				  ->onUpdate('CASCADE')
+				  ->onDelete('NO ACTION');
 
 			$table->foreign('sale_id')
 				  ->references('id')->on('sales')
-				  ->onDelete('NO ACTION')
-				  ->onUpdate('cascade');
+				  ->onUpdate('CASCADE')
+				  ->onDelete('NO ACTION');
 		});
 	}
 

@@ -55,7 +55,7 @@ return array(
 		'mysql' => array(
 			'driver'    => 'mysql',
 			'host'      => 'localhost',
-			'database'  => 'adsiar_inventarios',
+			'database'  => 'inventarios',
 			'username'  => 'root',
 			'password'  => '',
 			'charset'   => 'utf8',

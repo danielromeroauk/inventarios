@@ -25,13 +25,13 @@ class CreateInstantItemsTable extends Migration {
 
 			$table->foreign('instant_id')
 				  ->references('id')->on('instants')
-				  ->onDelete('NO ACTION')
-				  ->onUpdate('cascade');
+				  ->onUpdate('CASCADE')
+				  ->onDelete('NO ACTION');
 
 			$table->foreign('article_id')
 				  ->references('id')->on('articles')
-				  ->onDelete('NO ACTION')
-				  ->onUpdate('cascade');
+				  ->onUpdate('CASCADE')
+				  ->onDelete('NO ACTION');
 		});
 	}
 

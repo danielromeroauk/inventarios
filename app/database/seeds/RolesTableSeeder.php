@@ -10,11 +10,6 @@ class RolesTableSeeder extends Seeder {
 				'name' => 'administrador',
 				'user_id' => 1,
 				'branch_id' => 1
-			),
-			array(
-				'name' => 'administrador',
-				'user_id' => 2,
-				'branch_id' => 1
 			)
 		);
 

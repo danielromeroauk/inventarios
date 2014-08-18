@@ -26,13 +26,13 @@ class CreateRotationStoresTable extends Migration {
 
 			$table->foreign('user_id')
 				  ->references('id')->on('users')
-				  ->onDelete('NO ACTION')
-				  ->onUpdate('cascade');
+				  ->onUpdate('CASCADE')
+				  ->onDelete('NO ACTION');
 
 			$table->foreign('rotation_id')
 				  ->references('id')->on('rotations')
-				  ->onDelete('NO ACTION')
-				  ->onUpdate('cascade');
+				  ->onUpdate('CASCADE')
+				  ->onDelete('NO ACTION');
 		});
 	}
 
