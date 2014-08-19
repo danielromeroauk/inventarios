@@ -7,7 +7,7 @@
         <table class="table table-bordered table-condensed">
             <thead>
                 <th cols="2" class="success">
-                    Nueva sucursal
+                    Editar sucursal
                 </th>
             </thead>
             <tbody>

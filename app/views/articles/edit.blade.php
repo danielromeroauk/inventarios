@@ -7,7 +7,7 @@
         <table class="table table-bordered table-condensed">
             <thead>
                 <th cols="2" class="success">
-                    Nuevo artículo
+                    Editar artículo
                 </th>
             </thead>
             <tbody>
