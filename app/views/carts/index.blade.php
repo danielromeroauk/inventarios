@@ -16,6 +16,11 @@
             function iniciar() {
                convertirBotones();
                cargarBranches();
+
+               $("#cargar_archivo").on('click', function(){
+                    $('#cargarModal .modal-body').load("{{ url('cart/desde-archivo') }}");
+               });
+
             } //iniciar
 
         })(jQuery);
@@ -116,6 +121,11 @@
                             {{ '<a href="'. url('cart/clear') .'" class="btn btn-danger btn-xs">
                                 <span class="glyphicon glyphicon-floppy-remove"></span>
                                 Vaciar carrito
+                            </a>' }}
+
+                            {{ '<a href="#cargarModal" class="btn btn-success btn-xs" id="cargar_archivo"  data-toggle="modal">
+                                <span class="glyphicon glyphicon-book"></span>
+                                Cargar desde Excel
                             </a>' }}
                         </th>
                     </tr>
@@ -367,6 +377,21 @@
             <div class="modal-footer">
               <a href="#" class="btn btn-danger" data-dismiss="modal">No</a>
               <a href="javascript:validarRotation();" class="btn btn-primary">Sí</a>
+            </div>
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+      </div><!-- /.modal -->
+
+      <!-- Modal -->
+      <div class="modal fade" id="cargarModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
+              <h4 class="modal-title">Cargar carrito desde excel</h4>
+            </div>
+            <div class="modal-body">
+              No se ha podido cargar el formulario para cargar el archivo.
             </div>
           </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
