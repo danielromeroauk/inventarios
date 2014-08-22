@@ -22,6 +22,14 @@ class Article extends Eloquent {
         'iva.required' => 'El IVA es requerido.'
     );
 
+    public static $medidas = array(
+        'Unidades' => 'Unidades',
+        'Pares' => 'Pares',
+        'Kilogramos' => 'Kilogramos',
+        'Metros' => 'Metros',
+        'Centímetros' => 'Centímetros'
+    );
+
     public function stocks()
     {
         return $this->hasMany('Stock');
