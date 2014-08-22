@@ -28,6 +28,10 @@ ul.purchase, ul.sale, ul.damage, ul.instant, ul.rotation {
     margin-top: 1em;
 }
 
+.justify {
+    text-align: justify;
+}
+
 .right {
     text-align: right;
 }
