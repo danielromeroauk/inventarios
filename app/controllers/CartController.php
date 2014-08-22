@@ -84,7 +84,7 @@ class CartController extends BaseController {
 
             $objPHPExcel = PHPExcel_IOFactory::load($file);
 
-            for ($i=1; $i < 200; $i++)
+            for ($i=2; $i < 200; $i++)
             {
                 $codigoBarras = $objPHPExcel->getActiveSheet()->getCell('A'.$i)->getValue();
                 $cantidad = $objPHPExcel->getActiveSheet()->getCell('B'.$i)->getValue();
