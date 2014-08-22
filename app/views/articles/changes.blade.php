@@ -50,8 +50,8 @@
                     <tr>
                         <td>{{ $log->name }}</td>
                         <td>{{ $log->unit }}</td>
-                        <td>{{ $log->cost }}</td>
-                        <td>{{ $log->price }}</td>
+                        <td>{{ number_format($log->cost, 2, ',', '.') }}</td>
+                        <td>{{ number_format($log->price, 2, ',', '.') }}</td>
                         <td>{{ $log->iva }}%</td>
                     </tr>
                 </table>

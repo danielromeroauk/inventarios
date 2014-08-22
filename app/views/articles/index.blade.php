@@ -49,10 +49,13 @@
         {{ Form::open(array('url' => 'articles/search', 'method' => 'get')) }}
             <div class="input-group">
               <span class="input-group-addon">
+                <input type="radio" name="filterBy" value="id" /> Por código
+              </span>
+              <span class="input-group-addon">
                 <input type="radio" name="filterBy" value="name" checked /> Por nombre
               </span>
               <span class="input-group-addon">
-                <input type="radio" name="filterBy" value="id" /> Por código
+                <input type="radio" name="filterBy" value="comments" /> Por adicionales
               </span>
 
               {{ Form::text('search', '', array('placeholder' => 'Buscar...', 'class' => 'form-control')) }}
@@ -98,8 +101,8 @@
                     <tr>
                         <td>{{ $article->id }}</td>
                         <td>{{ $article->unit }}</td>
-                        <td>{{ $article->cost }}</td>
-                        <td>{{ $article->price }}</td>
+                        <td>{{ number_format($article->cost, 2, ',', '.') }}</td>
+                        <td>{{ number_format($article->price, 2, ',', '.') }}</td>
                         <td>{{ $article->iva }}%</td>
                     </tr>
                 </table>
