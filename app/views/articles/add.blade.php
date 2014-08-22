@@ -19,7 +19,7 @@
                     <td>
                         <div class="input-group">
                             <span class="input-group-addon">Medida:</span>
-                            {{ Form::select('unit', array('Unidades' => 'Unidades', 'Metros' => 'Metros'), '', array('class' => 'form-control', 'required')) }}
+                            {{ Form::select('unit', Article::$medidas, '', array('class' => 'form-control', 'required')) }}
                         </div>
                     </td>
                 </tr>
@@ -27,7 +27,7 @@
                     <td>
                         <div class="input-group">
                             <span class="input-group-addon">Costo: $</span>
-                            {{ Form::input('number', 'cost', '1000.00', array('class' => 'form-control', 'min' => '0.01', 'step' => '0.01', 'max' => '99999999999999.99', 'title' => 'Costo', 'required')) }}
+                            {{ Form::input('number', 'cost', '1000.00', array('class' => 'form-control', 'min' => '0.01', 'step' => '0.01', 'max' => '99999999999999.99', 'title' => 'Costo', 'id' => 'cost', 'required')) }}
                         </div>
                     </td>
                 </tr>
@@ -35,7 +35,7 @@
                     <td>
                         <div class="input-group">
                             <span class="input-group-addon">Precio: $</span>
-                            {{ Form::input('number', 'price', '1000.00', array('class' => 'form-control', 'min' => '0.01', 'step' => '0.01', 'max' => '99999999999999.99', 'title' => 'Precio', 'required')) }}
+                            {{ Form::input('number', 'price', '1000.00', array('class' => 'form-control', 'min' => '0.01', 'step' => '0.01', 'max' => '99999999999999.99', 'title' => 'Precio', 'id' => 'price', 'required')) }}
                         </div>
                     </td>
                 </tr>
@@ -43,7 +43,7 @@
                     <td>
                         <div class="input-group">
                             <span class="input-group-addon">IVA:</span>
-                            {{ Form::select('iva', array('0' => '0', '5' => '5', '16' => '16'), '16', array('class' => 'form-control', 'required')) }}
+                            {{ Form::select('iva', array('0' => '0', '5' => '5', '16' => '16'), '16', array('class' => 'form-control', 'id' => 'iva', 'required')) }}
                             <span class="input-group-addon">%</span>
                         </div>
                     </td>
@@ -82,5 +82,7 @@
       </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
   </div><!-- /.modal -->
+
+  {{ HTML::script('js/calculo-precio.js') }}
 
 @stop
