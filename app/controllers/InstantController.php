@@ -146,7 +146,7 @@ class InstantController extends BaseController {
             } #foreach
 
             $instantStore = new InstantStore();
-            $is['instant_id'] = $idInstant;
+            $is['id'] = $idInstant;
             $is['user_id'] = Auth::user()->id;
             $is['comments'] = 'Entrega inmediata exitosa.';
             $instantStore->create($is);
@@ -156,7 +156,7 @@ class InstantController extends BaseController {
         } catch (Exception $e) {
             die('No se pudo disminuir el stock.'. $e);
         }
-    } #postInstantStore
+    } #saveInInstantStore
 
     public function getCancel($idInstant)
     {
