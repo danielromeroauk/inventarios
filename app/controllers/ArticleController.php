@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 class ArticleController extends BaseController {
 
@@ -156,6 +156,12 @@ class ArticleController extends BaseController {
             $filtro = 'Artículo con código <strong>'. $input['search'] .'</strong>.';
 
             $articles = Article::whereRaw("id = '". $input['search'] ."'")->paginate(5);
+
+        } else if($input['filterBy'] == 'comments') {
+
+            $filtro = 'Artículos que contienen en datos adicionales <strong>'. $input['search'] .'</strong>.';
+
+            $articles = Article::whereRaw("comments like '%". $input['search'] ."%'")->orderBy('name', 'asc')->paginate(5);
 
         } else { // Se asume que el filtro es por nombre.
 
@@ -321,7 +327,6 @@ class ArticleController extends BaseController {
                                      ->setKeywords("artículo, sucursal, ". $article->name)
                                      ->setCategory("Archivo generado");
 
-
         // Datos de sucursal
         $objPHPExcel->setActiveSheetIndex(0)
                     ->setCellValue('A1', 'Código de artículo')
@@ -344,7 +349,10 @@ class ArticleController extends BaseController {
                     ->setCellValue('E6', 'Costo neto');
 
         $stocks = Stock::where('article_id', '=', $article->id)->get();
+
+        // Desde donde inicia el contenido.
         $fila = 7;
+
         foreach ($stocks as $stock) {
 
             $objPHPExcel->setActiveSheetIndex(0)
@@ -356,14 +364,11 @@ class ArticleController extends BaseController {
             $fila++;
         }
 
-
         // Rename worksheet
         $objPHPExcel->getActiveSheet()->setTitle('a' . $article->id . date('_Ymd'));
 
-
         // Set active sheet index to the first sheet, so Excel opens this as the first sheet
         $objPHPExcel->setActiveSheetIndex(0);
-
 
         // Redirect output to a client’s web browser (Excel2007)
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -371,8 +376,12 @@ class ArticleController extends BaseController {
         header('Cache-Control: max-age=0');
 
         $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+
+        // Esta línea impide que funcione en mac con XAMPP.
         $objWriter->save('php://output');
+
         exit;
+
     } #getExcelByArticle
 
 }
