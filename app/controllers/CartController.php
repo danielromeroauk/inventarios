@@ -99,7 +99,7 @@ class CartController extends BaseController {
                 $cantidad = $cantidad;
 
                 // Si el artículo no existe en el sistema.
-                if(empty($articulos->first()))
+                if(empty($articulos->first()->name))
                 {
                     // Se agrega el código de barras al final del arreglo $articulosSinRegistrar.
                     array_push($articulosSinRegistrar, $codigoBarras);
