@@ -17,8 +17,15 @@ ul.purchase, ul.sale, ul.damage, ul.instant, ul.rotation {
     padding: 0 0 1em 0;
 }
 
+.alcarrito {
+    padding-left: 0;
+    padding-right: 0;
+    max-width: 8em;
+}
+
 .article-image, .article-image img {
     display:inline-block;
+    margin: 0 2em 5px 0;
     max-height:150px;
     max-width:150px;
     vertical-align:top;
@@ -36,10 +43,25 @@ ul.purchase, ul.sale, ul.damage, ul.instant, ul.rotation {
     text-align: right;
 }
 
+.pagination {
+    display: block;
+}
+
 #encabezado {
     margin-bottom: 2px;
 }
 
 #encabezado ul.nav li {
     display: inline-block;
+}
+
+@media screen and (min-width: 1200px) {
+
+    .articulo {
+        display: inline-block;
+        float: none;
+        vertical-align: top;
+        width: 49%;
+    }
+
 }

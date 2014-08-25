@@ -13,7 +13,7 @@ class ArticleController extends BaseController {
 	{
 		$title = "Artículos";
 
-        $articles = Article::orderBy('name', 'asc')->paginate(5);
+        $articles = Article::orderBy('name', 'asc')->paginate(6);
 
         $branches = Branche::all();
 
@@ -137,7 +137,7 @@ class ArticleController extends BaseController {
         $article = DB::table('article_changes')
             ->where('article_id', '=', $idArticle)
             ->orderBy('created_at', 'desc')
-            ->paginate(5);
+            ->paginate(6);
 
         return View::make('articles.changes')
             ->with(compact('article'));
@@ -155,19 +155,19 @@ class ArticleController extends BaseController {
 
             $filtro = 'Artículo con código <strong>'. $input['search'] .'</strong>.';
 
-            $articles = Article::whereRaw("id = '". $input['search'] ."'")->paginate(5);
+            $articles = Article::whereRaw("id = '". $input['search'] ."'")->paginate(6);
 
         } else if($input['filterBy'] == 'comments') {
 
             $filtro = 'Artículos que contienen en datos adicionales <strong>'. $input['search'] .'</strong>.';
 
-            $articles = Article::whereRaw("comments like '%". $input['search'] ."%'")->orderBy('name', 'asc')->paginate(5);
+            $articles = Article::whereRaw("comments like '%". $input['search'] ."%'")->orderBy('name', 'asc')->paginate(6);
 
         } else { // Se asume que el filtro es por nombre.
 
             $filtro = 'Artículos que contienen en el nombre <strong>'. $input['search'] .'</strong>.';
 
-            $articles = Article::whereRaw("name like '%". $input['search'] ."%'")->orderBy('name', 'asc')->paginate(5);
+            $articles = Article::whereRaw("name like '%". $input['search'] ."%'")->orderBy('name', 'asc')->paginate(6);
 
         }
 
@@ -253,13 +253,13 @@ class ArticleController extends BaseController {
                     $articleImage->create($ai);
 
                     /*Cambia el tamaño de la imagen y guarda el archivo en img/articles con el id del artículo y su extenxión*/
-                    Image::make($file->getRealPath())->widen(150)->save('img/articles/'. $ai['image']);
+                    Image::make($file->getRealPath())->widen(300)->save('img/articles/'. $ai['image']);
                     // $file->move("img/articles", $ai['image']);
 
                     return Redirect::to('articles/search?filterBy=id&search='. $idArticle)->with(array('messageOk' => 'Imagen subida con éxito.'));
 
                 } elseif($articleImage->update($ai)) {
-                    Image::make($file->getRealPath())->widen(150)->save('img/articles/'. $ai['image']);
+                    Image::make($file->getRealPath())->widen(300)->save('img/articles/'. $ai['image']);
                     // $file->move("img/articles", $ai['image']);
 
                     return Redirect::to('articles/search?filterBy=id&search='. $idArticle)->with(array('messageOk' => 'Imagen actualizada con éxito.'));

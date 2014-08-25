@@ -74,7 +74,7 @@
     </div>
 
     @foreach($articles as $article)
-
+    <div class="col-lg-6 articulo">
         <div class="panel panel-primary">
           <div class="panel-heading">
                 <span class="glyphicon glyphicon-send"></span>
@@ -106,7 +106,11 @@
                         <td>{{ $article->iva }}%</td>
                     </tr>
                 </table>
-                <p>{{ $article->comments }}</p>
+
+                @if(!empty($article->comments))
+                    <p class="well">{{ $article->comments }}</p>
+                @endif
+
                 <a href="{{ url('articles/show-changes/'. $article->id) }}" class="link">
                     <span class="glyphicon glyphicon-road"></span>
                     Ver historial de cambios
@@ -136,6 +140,25 @@
                         @endforeach
                     </table>
                 </div>
+
+                @if(Auth::check() && (Auth::user()->permitido('administrador') || Auth::user()->permitido('remisionero')))
+
+                     {{ Form::open(array('url' => 'cart/add', 'class' => 'form-inline')) }}
+
+                        {{ Form::text('id', $article->id, array('class' => 'hidden')) }}
+
+                        <div class="col-xs-3 alcarrito">
+                            {{ Form::input('number', 'cantidad', '1.00', array('class' => 'form-control input-sm', 'min' => '0.01', 'step' => '0.01', 'max' => '99999999999999.99', 'title' => 'Cantidad', 'required')) }}
+                        </div>
+
+                        <button type="submit" class="btn btn-success btn-sm">
+                            <span class="glyphicon glyphicon-shopping-cart"></span>
+                        </button>
+
+                    {{ Form::close() }}
+
+                @endif
+
               </div> <!-- /#tab2 -->
 
               <div id="tab3-{{ $article->id }}">
@@ -178,27 +201,18 @@
             @if(Auth::check() && (Auth::user()->permitido('administrador') || Auth::user()->permitido('remisionero')))
 
               <div class="panel-footer">
-                 {{ Form::open(array('url' => 'cart/add')) }}
-                        {{ Form::text('id', $article->id, array('class' => 'hidden')) }}
-                        {{ Form::input('number', 'cantidad', '1.00', array('class' => 'form-control', 'min' => '0.01', 'step' => '0.01', 'max' => '99999999999999.99', 'title' => 'Cantidad', 'required')) }}
-                        <button type="submit" class="btn btn-success btn-sm">
-                            <span class="glyphicon glyphicon-shopping-cart"></span>
-                            Al carrito
-                        </button>
-                    {{ Form::close() }}
 
-
-                    {{ '<a href="'. url('articles/edit/'. $article->id) .'" class="btn btn-warning btn-sm">
+                    {{ '<a href="'. url('articles/edit/'. $article->id) .'" class="btn btn-primary btn-sm">
                         <span class="glyphicon glyphicon-edit"></span>
                         Editar
                     </a>' }}
 
-                    {{ '<a href="#imagenModal" data-toggle="modal" class="btn btn-danger btn-sm auk-imagen" id="'. $article->id .'">
+                    {{ '<a href="#imagenModal" data-toggle="modal" class="btn btn-info btn-sm auk-imagen" id="'. $article->id .'">
                         <span class="glyphicon glyphicon-picture"></span>
                         Cambiar imagen
                     </a>' }}
 
-                    {{ '<a href="'. url('articles/excel-by-article/'. $article->id) .'" class="btn btn-info btn-sm auk-imagen" id="'. $article->id .'">
+                    {{ '<a href="'. url('articles/excel-by-article/'. $article->id) .'" class="btn btn-success btn-sm auk-imagen" id="'. $article->id .'">
                         <span class="glyphicon glyphicon-export"></span>
                         Exportar stock
                     </a>' }}
@@ -216,6 +230,7 @@
 
         </div> <!-- /.panel.panel-primary -->
 
+    </div> <!-- /.col-lg-6 -->
     @endforeach
 
     <?php
