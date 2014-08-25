@@ -5,7 +5,7 @@ class InstantController extends BaseController {
     public function getIndex()
     {
         $title = 'Entregas inmediatas';
-        $instants = Instant::where('branch_id', '=', Auth::user()->roles()->first()->branch->id)->orderBy('id', 'desc')->paginate(5);
+        $instants = Instant::where('branch_id', '=', Auth::user()->roles()->first()->branch->id)->orderBy('id', 'desc')->paginate(6);
 
         $filterInstant = 'Entregas inmediatas de la sucursal <strong>'. Auth::user()->roles()->first()->branch->name .'</strong>.';
 
@@ -185,7 +185,7 @@ class InstantController extends BaseController {
 
         $branch = Branche::find($input['branch_id']);
 
-        $instants = Instant::where('branch_id', '=', $input['branch_id'])->orderBy('id', 'desc')->paginate(5);
+        $instants = Instant::where('branch_id', '=', $input['branch_id'])->orderBy('id', 'desc')->paginate(6);
 
         $filterInstant = 'Entregas inmediatas de la sucursal <strong>'. $branch->name .'</strong>';
 
@@ -199,7 +199,7 @@ class InstantController extends BaseController {
         $title = 'Entrega inmediata';
         $input = Input::all();
 
-        $instants = Instant::where('id', '=', $input['idInstant'])->orderBy('id', 'desc')->paginate(5);
+        $instants = Instant::where('id', '=', $input['idInstant'])->orderBy('id', 'desc')->paginate(6);
 
         $filterInstant = 'Entrega inmediata con código '. $input['idInstant'] .'</strong>';
 
@@ -226,7 +226,7 @@ class InstantController extends BaseController {
 
         $idsInstant = trim($idsInstant, ',');
 
-        $instants = Instant::whereRaw('id in ('. $idsInstant .')')->orderBy('id', 'desc')->paginate(5);
+        $instants = Instant::whereRaw('id in ('. $idsInstant .')')->orderBy('id', 'desc')->paginate(6);
 
         $filterInstant = 'Entregas inmediatas que contienen el artículo <strong>'. $input['article'] .'</strong>';
 
@@ -240,7 +240,7 @@ class InstantController extends BaseController {
         $title = 'Entregas inmediatas';
         $input = Input::all();
 
-        $instants = Instant::whereRaw('created_at BETWEEN "'. $input['fecha1'] .'" AND "'. $input['fecha2'] .'"')->orderBy('id', 'desc')->paginate(5);
+        $instants = Instant::whereRaw('created_at BETWEEN "'. $input['fecha1'] .'" AND "'. $input['fecha2'] .'"')->orderBy('id', 'desc')->paginate(6);
 
         $filterInstant = 'Entregas inmediatas con fecha de creación entre <strong>'. $input['fecha1'] .'</strong> y <strong>'. $input['fecha2'] .'</strong>';
 
@@ -287,7 +287,7 @@ class InstantController extends BaseController {
         $title = 'Entregas inmediatas';
         $input = Input::all();
 
-        $instants = Instant::whereRaw("comments like '%". $input['comments'] ."%'")->orderBy('id', 'desc')->paginate(5);
+        $instants = Instant::whereRaw("comments like '%". $input['comments'] ."%'")->orderBy('id', 'desc')->paginate(6);
 
         $filterInstant = 'Entregas inmediatas que contienen <strong>'. $input['comments'] .'</strong> en los comentarios del remisionero.';
 
@@ -316,7 +316,7 @@ class InstantController extends BaseController {
 
         $instants = Instant::whereRaw('id in ('. $idsInstant .')')
             ->whereRaw('comments like "%'. $input['comments'] .'%"')
-            ->orderBy('id', 'desc')->paginate(5);
+            ->orderBy('id', 'desc')->paginate(6);
 
         $filterInstant = 'Entregas inmediatas que contienen el artículo <strong>'. $input['article'] .'</strong> y en los comentarios del remisionero <strong>'. $input['comments'] .'</strong>.';
 

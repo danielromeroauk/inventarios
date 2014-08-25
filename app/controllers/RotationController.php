@@ -7,7 +7,7 @@ class RotationController extends BaseController {
         $title = 'Rotaciones';
         $branchUser = Auth::user()->roles()->first()->branch;
 
-        $rotations = Rotation::where('status', '<>', 'finalizado')->whereRaw('branch_from = "'. $branchUser->id .'" OR branch_to = "'. $branchUser->id .'"')->orderBy('id', 'desc')->paginate(5);
+        $rotations = Rotation::where('status', '<>', 'finalizado')->whereRaw('branch_from = "'. $branchUser->id .'" OR branch_to = "'. $branchUser->id .'"')->orderBy('id', 'desc')->paginate(6);
 
         $filterRotation = 'Rotaciones <strong>sin finalizar</strong> de la sucursal <strong>'. $branchUser->name .'</strong>.';
 
@@ -220,7 +220,7 @@ class RotationController extends BaseController {
         $title = 'Rotaciones';
         $input = Input::all();
 
-        $rotations = Rotation::where('status', '=', $input['estado'])->orderBy('id', 'desc')->paginate(5);
+        $rotations = Rotation::where('status', '=', $input['estado'])->orderBy('id', 'desc')->paginate(6);
 
         $filterRotation = 'Rotaciones con estado <strong>'. $input['estado'] .'</strong>';
 
@@ -236,7 +236,7 @@ class RotationController extends BaseController {
 
         $branch = Branche::find($input['branch_id']);
 
-        $rotations = Rotation::where('status', '=', $input['estado'])->whereRaw('branch_from = "'. $input['branch_id'] .'" OR branch_to = "'. $input['branch_id'] .'"')->orderBy('id', 'desc')->paginate(5);
+        $rotations = Rotation::where('status', '=', $input['estado'])->whereRaw('branch_from = "'. $input['branch_id'] .'" OR branch_to = "'. $input['branch_id'] .'"')->orderBy('id', 'desc')->paginate(6);
 
         $filterRotation = 'Rotaciones con estado <strong>'. $input['estado'] .'</strong> en la sucursal <strong>'. $branch->name .'</strong>';
 
@@ -250,7 +250,7 @@ class RotationController extends BaseController {
         $title = 'Rotación';
         $input = Input::all();
 
-        $rotations = Rotation::where('id', '=', $input['idRotation'])->orderBy('id', 'desc')->paginate(5);
+        $rotations = Rotation::where('id', '=', $input['idRotation'])->orderBy('id', 'desc')->paginate(6);
 
         $filterRotation = 'Rotación con código '. $input['idRotation'] .'</strong>';
 
@@ -278,7 +278,7 @@ class RotationController extends BaseController {
 
         $idsRotation = trim($idsRotation, ',');
 
-        $rotations = Rotation::whereRaw('id in ('. $idsRotation .')')->orderBy('id', 'desc')->paginate(5);
+        $rotations = Rotation::whereRaw('id in ('. $idsRotation .')')->orderBy('id', 'desc')->paginate(6);
 
         $filterRotation = 'Rotaciones que contienen el artículo <strong>'. $input['article'] .'</strong>';
 
@@ -292,7 +292,7 @@ class RotationController extends BaseController {
         $title = 'Rotaciones';
         $input = Input::all();
 
-        $rotations = Rotation::whereRaw('created_at BETWEEN "'. $input['fecha1'] .'" AND "'. $input['fecha2'] .'"')->orderBy('id', 'desc')->paginate(5);
+        $rotations = Rotation::whereRaw('created_at BETWEEN "'. $input['fecha1'] .'" AND "'. $input['fecha2'] .'"')->orderBy('id', 'desc')->paginate(6);
 
         $filterRotation = 'Rotaciones con fecha de creación entre <strong>'. $input['fecha1'] .'</strong> y <strong>'. $input['fecha2'] .'</strong>';
 
@@ -339,7 +339,7 @@ class RotationController extends BaseController {
         $title = 'Rotaciones';
         $input = Input::all();
 
-        $rotations = Rotation::whereRaw("comments like '%". $input['comments'] ."%'")->orderBy('id', 'desc')->paginate(5);
+        $rotations = Rotation::whereRaw("comments like '%". $input['comments'] ."%'")->orderBy('id', 'desc')->paginate(6);
 
         $filterRotation = 'Rotaciones que contienen <strong>'. $input['comments'] .'</strong> en los comentarios del remisionero.';
 
@@ -368,7 +368,7 @@ class RotationController extends BaseController {
 
         $rotations = Rotation::whereRaw('id in ('. $idsRotation .')')
             ->whereRaw('comments like "%'. $input['comments'] .'%"')
-            ->orderBy('id', 'desc')->paginate(5);
+            ->orderBy('id', 'desc')->paginate(6);
 
         $filterRotation = 'Rotaciones que contienen el artículo <strong>'. $input['article'] .'</strong> y en los comentarios del remisionero <strong>'. $input['comments'] .'</strong>.';
 

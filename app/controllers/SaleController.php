@@ -5,7 +5,7 @@ class SaleController extends BaseController {
     public function getIndex()
     {
         $title = 'Ventas';
-        $sales = Sale::where('status', '=', 'pendiente')->where('branch_id', '=', Auth::user()->roles()->first()->branch->id)->orderBy('id', 'desc')->paginate(5);
+        $sales = Sale::where('status', '=', 'pendiente')->where('branch_id', '=', Auth::user()->roles()->first()->branch->id)->orderBy('id', 'desc')->paginate(6);
 
         $filterSale = 'Ventas con estado <strong>pendiente</strong> en la sucursal <strong>'. Auth::user()->roles()->first()->branch->name .'</strong>';
 
@@ -188,7 +188,7 @@ class SaleController extends BaseController {
         $title = 'Ventas';
         $input = Input::all();
 
-        $sales = Sale::where('status', '=', $input['estado'])->orderBy('id', 'desc')->paginate(5);
+        $sales = Sale::where('status', '=', $input['estado'])->orderBy('id', 'desc')->paginate(6);
 
         $filterSale = 'Ventas con estado <strong>'. $input['estado'] .'</strong>';
 
@@ -204,7 +204,7 @@ class SaleController extends BaseController {
 
         $branch = Branche::find($input['branch_id']);
 
-        $sales = Sale::where('status', '=', $input['estado'])->where('branch_id', '=', $input['branch_id'])->orderBy('id', 'desc')->paginate(5);
+        $sales = Sale::where('status', '=', $input['estado'])->where('branch_id', '=', $input['branch_id'])->orderBy('id', 'desc')->paginate(6);
 
         $filterSale = 'Ventas con estado <strong>'. $input['estado'] .'</strong> en la sucursal <strong>'. $branch->name .'</strong>';
 
@@ -218,7 +218,7 @@ class SaleController extends BaseController {
         $title = 'Ventas';
         $input = Input::all();
 
-        $sales = Sale::where('id', '=', $input['idSale'])->orderBy('id', 'desc')->paginate(5);
+        $sales = Sale::where('id', '=', $input['idSale'])->orderBy('id', 'desc')->paginate(6);
 
         $filterSale = 'Venta con código <strong>'. $input['idSale'] .'</strong>';
 
@@ -245,7 +245,7 @@ class SaleController extends BaseController {
 
         $idsSale = trim($idsSale, ',');
 
-        $sales = Sale::whereRaw('id in ('. $idsSale .')')->orderBy('id', 'desc')->paginate(5);
+        $sales = Sale::whereRaw('id in ('. $idsSale .')')->orderBy('id', 'desc')->paginate(6);
 
         $filterSale = 'Ventas que contienen el artículo <strong>'. $input['article'] .'</strong>';
 
@@ -259,7 +259,7 @@ class SaleController extends BaseController {
         $title = 'Ventas';
         $input = Input::all();
 
-        $sales = Sale::whereRaw('created_at BETWEEN "'. $input['fecha1'] .'" AND "'. $input['fecha2'] .'"')->orderBy('id', 'desc')->paginate(5);
+        $sales = Sale::whereRaw('created_at BETWEEN "'. $input['fecha1'] .'" AND "'. $input['fecha2'] .'"')->orderBy('id', 'desc')->paginate(6);
 
         $filterSale = 'Ventas con fecha de creación entre <strong>'. Input::get('fecha1') .'</strong> y <strong>'. Input::get('fecha2') .'</strong>';
 
@@ -306,7 +306,7 @@ class SaleController extends BaseController {
         $title = 'Ventas';
         $input = Input::all();
 
-        $sales = Sale::whereRaw("comments like '%". $input['comments'] ."%'")->orderBy('id', 'desc')->paginate(5);
+        $sales = Sale::whereRaw("comments like '%". $input['comments'] ."%'")->orderBy('id', 'desc')->paginate(6);
 
         $filterSale = 'Ventas que contienen <strong>'. $input['comments'] .'</strong> en los comentarios del remisionero.';
 
@@ -335,7 +335,7 @@ class SaleController extends BaseController {
 
         $sales = Purchase::whereRaw('id in ('. $idsSale .')')
             ->whereRaw('comments like "%'. $input['comments'] .'%"')
-            ->orderBy('id', 'desc')->paginate(5);
+            ->orderBy('id', 'desc')->paginate(6);
 
         $filterSale = 'Ventas que contienen el artículo <strong>'. $input['article'] .'</strong> y en los comentarios del remisionero <strong>'. $input['comments'] .'</strong>.';
 

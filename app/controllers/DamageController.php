@@ -5,7 +5,7 @@ class DamageController extends BaseController {
     public function getIndex()
     {
         $title = 'Daños';
-        $damages = Damage::where('status', '=', 'pendiente')->where('branch_id', '=', Auth::user()->roles()->first()->branch->id)->orderBy('id', 'desc')->paginate(5);
+        $damages = Damage::where('status', '=', 'pendiente')->where('branch_id', '=', Auth::user()->roles()->first()->branch->id)->orderBy('id', 'desc')->paginate(6);
 
         $filterDamage = 'Daños con estado <strong>pendiente</strong> en la sucursal <strong>'. Auth::user()->roles()->first()->branch->name .'</strong>.';
 
@@ -189,7 +189,7 @@ class DamageController extends BaseController {
         $title = 'Daños';
         $input = Input::all();
 
-        $damages = Damage::where('status', '=', $input['estado'])->orderBy('id', 'desc')->paginate(5);
+        $damages = Damage::where('status', '=', $input['estado'])->orderBy('id', 'desc')->paginate(6);
 
         $filterDamage = 'Daños con estado <strong>'. $input['estado'] .'</strong>';
 
@@ -205,7 +205,7 @@ class DamageController extends BaseController {
 
         $branch = Branche::find($input['branch_id']);
 
-        $damages = Damage::where('status', '=', $input['estado'])->where('branch_id', '=', $input['branch_id'])->orderBy('id', 'desc')->paginate(5);
+        $damages = Damage::where('status', '=', $input['estado'])->where('branch_id', '=', $input['branch_id'])->orderBy('id', 'desc')->paginate(6);
 
         $filterDamage = 'Daños con estado <strong>'. $input['estado'] .'</strong> en la sucursal <strong>'. $branch->name .'</strong>';
 
@@ -219,7 +219,7 @@ class DamageController extends BaseController {
         $title = 'Daño';
         $input = Input::all();
 
-        $damages = Damage::where('id', '=', $input['idDamage'])->orderBy('id', 'desc')->paginate(5);
+        $damages = Damage::where('id', '=', $input['idDamage'])->orderBy('id', 'desc')->paginate(6);
 
         $filterDamage = 'Daño con código '. $input['idDamage'] .'</strong>';
 
@@ -242,7 +242,7 @@ class DamageController extends BaseController {
 
         $idsDamage = trim($idsDamage, ',');
 
-        $damages = Damage::whereRaw('id in ('. $idsDamage .')')->orderBy('id', 'desc')->paginate(5);
+        $damages = Damage::whereRaw('id in ('. $idsDamage .')')->orderBy('id', 'desc')->paginate(6);
 
         $filterDamage = 'Daños que contienen el artículo <strong>'. $input['article'] .'</strong>';
 
@@ -256,7 +256,7 @@ class DamageController extends BaseController {
         $title = 'Daños';
         $input = Input::all();
 
-        $damages = Damage::whereRaw('created_at BETWEEN "'. $input['fecha1'] .'" AND "'. $input['fecha2'] .'"')->orderBy('id', 'desc')->paginate(5);
+        $damages = Damage::whereRaw('created_at BETWEEN "'. $input['fecha1'] .'" AND "'. $input['fecha2'] .'"')->orderBy('id', 'desc')->paginate(6);
 
         $filterDamage = 'Daños con fecha de creación entre <strong>'. $input['fecha1'] .'</strong> y <strong>'. $input['fecha2'] .'</strong>';
 
@@ -303,7 +303,7 @@ class DamageController extends BaseController {
         $title = 'Daños';
         $input = Input::all();
 
-        $damages = Damage::whereRaw("comments like '%". $input['comments'] ."%'")->orderBy('id', 'desc')->paginate(5);
+        $damages = Damage::whereRaw("comments like '%". $input['comments'] ."%'")->orderBy('id', 'desc')->paginate(6);
 
         $filterDamage = 'Daños que contienen <strong>'. $input['comments'] .'</strong> en los comentarios del remisionero.';
 
@@ -332,7 +332,7 @@ class DamageController extends BaseController {
 
         $damages = Damage::whereRaw('id in ('. $idsDamage .')')
             ->whereRaw('comments like "%'. $input['comments'] .'%"')
-            ->orderBy('id', 'desc')->paginate(5);
+            ->orderBy('id', 'desc')->paginate(6);
 
         $filterDamage = 'Daños que contienen el artículo <strong>'. $input['article'] .'</strong> y en los comentarios del remisionero <strong>'. $input['comments'] .'</strong>.';
 

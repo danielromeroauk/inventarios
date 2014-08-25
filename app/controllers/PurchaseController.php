@@ -5,7 +5,7 @@ class PurchaseController extends BaseController {
     public function getIndex()
     {
         $title = 'Compras';
-        $purchases = Purchase::where('status', '=', 'pendiente')->where('branch_id', '=', Auth::user()->roles()->first()->branch->id)->orderBy('id', 'desc')->paginate(5);
+        $purchases = Purchase::where('status', '=', 'pendiente')->where('branch_id', '=', Auth::user()->roles()->first()->branch->id)->orderBy('id', 'desc')->paginate(6);
 
         $filterPurchase = 'Compras con estado <strong>pendiente</strong> en la sucursal <strong>'. Auth::user()->roles()->first()->branch->name .'</strong>.';
 
@@ -183,7 +183,7 @@ class PurchaseController extends BaseController {
         $title = 'Compras';
         $input = Input::all();
 
-        $purchases = Purchase::where('status', '=', $input['estado'])->orderBy('id', 'desc')->paginate(5);
+        $purchases = Purchase::where('status', '=', $input['estado'])->orderBy('id', 'desc')->paginate(6);
 
         $filterPurchase = 'Compras con estado <strong>'. $input['estado'] .'</strong>';
 
@@ -199,7 +199,7 @@ class PurchaseController extends BaseController {
 
         $branch = Branche::find($input['branch_id']);
 
-        $purchases = Purchase::where('status', '=', $input['estado'])->where('branch_id', '=', $input['branch_id'])->orderBy('id', 'desc')->paginate(5);
+        $purchases = Purchase::where('status', '=', $input['estado'])->where('branch_id', '=', $input['branch_id'])->orderBy('id', 'desc')->paginate(6);
 
         $filterPurchase = 'Compras con estado <strong>'. $input['estado'] .'</strong> en la sucursal <strong>'. $branch->name .'</strong>';
 
@@ -213,7 +213,7 @@ class PurchaseController extends BaseController {
         $title = 'Compra';
         $input = Input::all();
 
-        $purchases = Purchase::where('id', '=', $input['idPurchase'])->orderBy('id', 'desc')->paginate(5);
+        $purchases = Purchase::where('id', '=', $input['idPurchase'])->orderBy('id', 'desc')->paginate(6);
 
         $filterPurchase = 'Compra con código '. $input['idPurchase'] .'</strong>';
 
@@ -240,7 +240,7 @@ class PurchaseController extends BaseController {
 
         $idsPurchase = trim($idsPurchase, ',');
 
-        $purchases = Purchase::whereRaw('id in ('. $idsPurchase .')')->orderBy('id', 'desc')->paginate(5);
+        $purchases = Purchase::whereRaw('id in ('. $idsPurchase .')')->orderBy('id', 'desc')->paginate(6);
 
         $filterPurchase = 'Compras que contienen el artículo <strong>'. $input['article'] .'</strong>';
 
@@ -254,7 +254,7 @@ class PurchaseController extends BaseController {
         $title = 'Compras';
         $input = Input::all();
 
-        $purchases = Purchase::whereRaw('created_at BETWEEN "'. $input['fecha1'] .'" AND "'. $input['fecha2'] .'"')->orderBy('id', 'desc')->paginate(5);
+        $purchases = Purchase::whereRaw('created_at BETWEEN "'. $input['fecha1'] .'" AND "'. $input['fecha2'] .'"')->orderBy('id', 'desc')->paginate(6);
 
         $filterPurchase = 'Compras con fecha de creación entre <strong>'. $input['fecha1'] .'</strong> y <strong>'. $input['fecha2'] .'</strong>';
 
@@ -302,7 +302,7 @@ class PurchaseController extends BaseController {
         $title = 'Compras';
         $input = Input::all();
 
-        $purchases = Purchase::whereRaw("comments like '%". $input['comments'] ."%'")->orderBy('id', 'desc')->paginate(5);
+        $purchases = Purchase::whereRaw("comments like '%". $input['comments'] ."%'")->orderBy('id', 'desc')->paginate(6);
 
         $filterPurchase = 'Compras que contienen <strong>'. $input['comments'] .'</strong> en los comentarios del remisionero.';
 
@@ -331,7 +331,7 @@ class PurchaseController extends BaseController {
 
         $purchases = Purchase::whereRaw('id in ('. $idsPurchase .')')
             ->whereRaw('comments like "%'. $input['comments'] .'%"')
-            ->orderBy('id', 'desc')->paginate(5);
+            ->orderBy('id', 'desc')->paginate(6);
 
         $filterPurchase = 'Compras que contienen el artículo <strong>'. $input['article'] .'</strong> y en los comentarios del remisionero <strong>'. $input['comments'] .'</strong>.';
 
