@@ -33,19 +33,24 @@ class ArticleController extends BaseController {
 	{
     	$title = 'Nuevo artículo';
 
-		if(Auth::user() && (Auth::user()->permitido('administrador') || Auth::user()->permitido('remisionero'))) {
+		if(Auth::user() && (Auth::user()->permitido('administrador') || Auth::user()->permitido('remisionero')))
+        {
 			$input = Input::all();
 
 			$v = Validator::make($input, Article::$rules, Article::$messages);
 
 	        if ($v->passes())
 	        {
-	        	try {
-	            $this->article->create($input);
+                $idArticle = 1;
 
-                $input['id'] = Article::first()->orderBy('created_at', 'desc')->first()->id;
+	        	try
+                {
+    	            $this->article->create($input);
 
-                self::logChanges(array_except($input, '_token'));
+                    $input['id'] = Article::first()->orderBy('created_at', 'desc')->first()->id;
+                    $idArticle = $input['id'];
+
+                    self::logChanges(array_except($input, '_token'));
 
 	        	} catch (Exception $e) {
 	        		// $message = $e->getMessage();
@@ -56,14 +61,15 @@ class ArticleController extends BaseController {
         			->withInput();
 	        	}
 
-	            return Redirect::to('articles');
-	        }
+                return Redirect::to('articles/search?filterBy=id&search='. $idArticle)->with(array('messageOk' => 'Artículo creado con éxito.'));
+            }
 
 	        return Redirect::to('articles/add')
 	            ->withInput()
 	            ->withErrors($v)
 	            ->with('message');
 		}
+
 	} #postAdd
 
 	public function getEdit($id)
@@ -109,13 +115,14 @@ class ArticleController extends BaseController {
 		            ->with(compact('title', 'article'));
         	}
 
-            return Redirect::to('articles/index');
+            return Redirect::to('articles/search?filterBy=id&search='. $id)->with(array('messageOk' => 'Artículo editado con éxito.'));
         }
 
         return Redirect::to('articles/edit/'. $id)
             ->withInput()
             ->withErrors($v)
             ->with('message', 'Hay errores de validación.');
+
     } #postUpdate
 
     private function logChanges($input)

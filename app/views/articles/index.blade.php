@@ -86,7 +86,7 @@
               <ul>
                 {{ '<li><a href="#tab1-'. $article->id .'"><span>Datos generales</span></a></li>' }}
                 {{ '<li><a href="#tab2-'. $article->id .'"><span>Stock disponible</span></a></li>' }}
-                {{ '<li><a href="#tab3-'. $article->id .'"><span>Stock en movimientos pendientes</span></a></li>' }}
+                {{ '<li><a href="#tab3-'. $article->id .'"><span>Stock en pendientes</span></a></li>' }}
               </ul>
 
               <div id="tab1-{{ $article->id }}">
