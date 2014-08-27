@@ -1,3 +1,7 @@
+div.panel-footer form {
+    display: inline;
+}
+
 *[class*=ui-] {
     font-size: .875em;
 }
