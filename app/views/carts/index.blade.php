@@ -117,6 +117,7 @@
                         <th>Cód. Artículo</th>
                         <th>Nombre del artículo</th>
                         <th>Cantidad</th>
+                        <th class="center">Precio</th>
                         <th>
                             {{ '<a href="'. url('cart/clear') .'" class="btn btn-danger btn-xs">
                                 <span class="glyphicon glyphicon-floppy-remove"></span>
@@ -136,6 +137,7 @@
                           <td>{{ $item['article']->id }}</td>
                             <td>{{ $item['article']->name }}</td>
                             <td>{{ $item['amount'] .' '. $item['article']->unit }}</td>
+                            <td class="right"> {{ number_format( $item['article']->price, 2, ',', '.' ) }}</td>
                             <td>
                                 {{ '<a href="'. url('cart/clear-item/'. $item['article']->id) .'">
                                     <button class="btn btn-warning btn-xs">

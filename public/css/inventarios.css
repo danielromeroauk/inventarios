@@ -23,6 +23,10 @@ ul.purchase, ul.sale, ul.damage, ul.instant, ul.rotation {
     vertical-align:top;
 }
 
+.center {
+    text-align: center;
+}
+
 .datos {
     margin-top: 1em;
 }
