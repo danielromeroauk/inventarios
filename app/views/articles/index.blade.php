@@ -126,7 +126,32 @@
                         <img src="{{ url('img/150x150.gif') }}" />
                     @endif
                 </div>
+
                 <div style="display:inline-block;">
+
+                    <h3>COP$ {{ number_format($article->price, 2, ',', '.') }}</h3>
+
+                    @if(Auth::check() && (Auth::user()->permitido('administrador') || Auth::user()->permitido('remisionero')))
+
+                         {{ Form::open(array('url' => 'cart/add', 'class' => 'form-inline')) }}
+
+                            {{ Form::text('id', $article->id, array('class' => 'hidden')) }}
+
+                            <div class="col-xs-9 alcarrito">
+                                {{ Form::input('number', 'cantidad', '1.00', array('class' => 'form-control input-sm', 'min' => '0.01', 'step' => '0.01', 'max' => '99999999999999.99', 'title' => 'Cantidad', 'required')) }}
+                            </div>
+
+                            <button type="submit" class="btn btn-success btn-sm">
+                                <span class="glyphicon glyphicon-shopping-cart"></span>
+                            </button>
+
+                        {{ Form::close() }}
+
+                    @endif
+
+                </div>
+
+                <div>
                     <table class="table table-stripped table-hover">
                         <tr>
                             <th>Sucursal</th>
@@ -140,24 +165,6 @@
                         @endforeach
                     </table>
                 </div>
-
-                @if(Auth::check() && (Auth::user()->permitido('administrador') || Auth::user()->permitido('remisionero')))
-
-                     {{ Form::open(array('url' => 'cart/add', 'class' => 'form-inline')) }}
-
-                        {{ Form::text('id', $article->id, array('class' => 'hidden')) }}
-
-                        <div class="col-xs-3 alcarrito">
-                            {{ Form::input('number', 'cantidad', '1.00', array('class' => 'form-control input-sm', 'min' => '0.01', 'step' => '0.01', 'max' => '99999999999999.99', 'title' => 'Cantidad', 'required')) }}
-                        </div>
-
-                        <button type="submit" class="btn btn-success btn-sm">
-                            <span class="glyphicon glyphicon-shopping-cart"></span>
-                        </button>
-
-                    {{ Form::close() }}
-
-                @endif
 
               </div> <!-- /#tab2 -->
 

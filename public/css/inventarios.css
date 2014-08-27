@@ -1,12 +1,3 @@
-div.panel-footer form {
-    display: inline;
-}
-
-div.panel-footer form input[type=number] {
-    display: inline-block;
-    width: 118px;
-}
-
 *[class*=ui-] {
     font-size: .875em;
 }
@@ -18,14 +9,15 @@ ul.purchase, ul.sale, ul.damage, ul.instant, ul.rotation {
 }
 
 .alcarrito {
+    max-width: 10em;
+    min-width: 3em;
     padding-left: 0;
     padding-right: 0;
-    max-width: 8em;
 }
 
 .article-image, .article-image img {
     display:inline-block;
-    margin: 0 2em 5px 0;
+    margin: 0 2em 1.5em 0;
     max-height:150px;
     max-width:150px;
     vertical-align:top;
