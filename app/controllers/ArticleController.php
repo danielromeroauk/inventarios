@@ -378,16 +378,22 @@ class ArticleController extends BaseController {
         $objPHPExcel->setActiveSheetIndex(0);
 
         // Redirect output to a client’s web browser (Excel2007)
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        /*header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="a'. $article->id . date('_YmdHis') .'.xlsx"');
-        header('Cache-Control: max-age=0');
+        header('Cache-Control: max-age=0');*/
+
+        $nombre_archivo = 'a' . $article->id . date('_His') . '.xlsx';
 
         $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+        $objWriter->save(public_path() .'/excel/'. $nombre_archivo);
+
+        return Redirect::to('articles/search?filterBy=id&search='. $idArticle)
+            ->with(array('messageOk' => 'El archivo '. $nombre_archivo .' se ha creado con éxito, si la descarga no inicia automáticamente haga click <a id="descarga" href="'. url('excel/'. $nombre_archivo) .'">aquí</a> para descargarlo.<script>$(location).attr("href", "'. url('excel/'. $nombre_archivo) .'");</script>'));
 
         // Esta línea impide que funcione en mac con XAMPP.
-        $objWriter->save('php://output');
+        //$objWriter->save('php://output');
 
-        exit;
+        //exit;
 
     } #getExcelByArticle
 
