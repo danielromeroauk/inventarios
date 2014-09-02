@@ -260,13 +260,13 @@ class ArticleController extends BaseController {
                     $articleImage->create($ai);
 
                     /*Cambia el tamaño de la imagen y guarda el archivo en img/articles con el id del artículo y su extenxión*/
-                    Image::make($file->getRealPath())->widen(300)->save('img/articles/'. $ai['image']);
+                    Image::make($file->getRealPath())->widen(150)->save('img/articles/'. $ai['image']);
                     // $file->move("img/articles", $ai['image']);
 
                     return Redirect::to('articles/search?filterBy=id&search='. $idArticle)->with(array('messageOk' => 'Imagen subida con éxito.'));
 
                 } elseif($articleImage->update($ai)) {
-                    Image::make($file->getRealPath())->widen(300)->save('img/articles/'. $ai['image']);
+                    Image::make($file->getRealPath())->widen(150)->save('img/articles/'. $ai['image']);
                     // $file->move("img/articles", $ai['image']);
 
                     return Redirect::to('articles/search?filterBy=id&search='. $idArticle)->with(array('messageOk' => 'Imagen actualizada con éxito.'));
