@@ -388,7 +388,7 @@ class ArticleController extends BaseController {
         $objWriter->save(public_path() .'/excel/'. $nombre_archivo);
 
         return Redirect::to('articles/search?filterBy=id&search='. $idArticle)
-            ->with(array('messageOk' => 'El archivo '. $nombre_archivo .' se ha creado con éxito, si la descarga no inicia automáticamente haga click <a id="descarga" href="'. url('excel/'. $nombre_archivo) .'">aquí</a> para descargarlo.<script>$(location).attr("href", "'. url('excel/'. $nombre_archivo) .'");</script>'));
+            ->with(array('mensajewell' => 'El archivo '. $nombre_archivo .' se ha creado con éxito, si la descarga no inicia automáticamente haga click <a id="descarga" href="'. url('excel/'. $nombre_archivo) .'">aquí</a> para descargarlo.<script>$(document).on("ready", function(){  $(location).attr("href", "'. url('excel/'. $nombre_archivo) .'");  });</script>'));
 
         // Esta línea impide que funcione en mac con XAMPP.
         //$objWriter->save('php://output');

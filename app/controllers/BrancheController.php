@@ -217,7 +217,7 @@ class BrancheController extends BaseController {
         $objWriter->save(public_path() .'/excel/'. $nombre_archivo);
 
         return Redirect::to('branches')
-            ->with(array('messageOk' => 'El archivo '. $nombre_archivo .' se ha creado con éxito, si la descarga no inicia automáticamente haga click <a id="descarga" href="'. url('excel/'. $nombre_archivo) .'">aquí</a> para descargarlo.<script>$(location).attr("href", "'. url('excel/'. $nombre_archivo) .'");</script>'));
+            ->with(array('mensajewell' => 'El archivo '. $nombre_archivo .' se ha creado con éxito, si la descarga no inicia automáticamente haga click <a id="descarga" href="'. url('excel/'. $nombre_archivo) .'">aquí</a> para descargarlo.<script>$(document).on("ready", function(){  $(location).attr("href", "'. url('excel/'. $nombre_archivo) .'");  });</script>'));
 
         // $objWriter->save('php://output');
 
