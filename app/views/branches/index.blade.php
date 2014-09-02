@@ -18,7 +18,12 @@
                         <td>{{ $branch->name }}</td>
                         <td>{{ $branch->comments }}</td>
                         <td>{{ HTML::link('branches/excel-by-branch/'. $branch->id, 'Descargar') }}</td>
-                        <td>{{ HTML::link('branches/edit/'. $branch->id, 'Editar') }}</td>
+
+                        @if(Auth::user() && (Auth::user()->permitido('administrador'))) {
+
+                            <td>{{ HTML::link('branches/edit/'. $branch->id, 'Editar') }}</td>
+                        @endif
+
                     </tr>
                 @endforeach
             </tbody>

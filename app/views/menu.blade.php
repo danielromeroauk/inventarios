@@ -99,8 +99,9 @@
 
         @if(Auth::user()->permitido('administrador'))
           <li> {{ HTML::link('users/list', 'Usuarios') }} </li>
-          <li> {{ HTML::link('branches', 'Sucursales') }} </li>
         @endif
+
+        <li> {{ HTML::link('branches', 'Sucursales') }} </li>
 
         <li> {{ HTML::link('users/change-password', 'Cambiar password') }} </li>
 

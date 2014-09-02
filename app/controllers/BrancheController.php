@@ -58,6 +58,8 @@ class BrancheController extends BaseController {
 	            ->withErrors($v)
 	            ->with('message');
 		}
+
+        return Redirect::to('branches');
 	}
 
 	public function getEdit($id)
@@ -76,6 +78,8 @@ class BrancheController extends BaseController {
 	        return View::make('branches.edit')
 	        	->with(compact('title', 'branch'));
 	    }
+
+        return Redirect::to('branches');
     }
 
 	public function postUpdate()
