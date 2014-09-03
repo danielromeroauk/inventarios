@@ -148,7 +148,7 @@ class InstantController extends BaseController {
             $instantStore = new InstantStore();
             $is['id'] = $idInstant;
             $is['user_id'] = Auth::user()->id;
-            $is['comments'] = 'Entrega inmediata exitosa.';
+            $is['comments'] = 'Ok.';
             $instantStore->create($is);
 
             return Redirect::to('instants/items/'. $idInstant);
