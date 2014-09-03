@@ -11,7 +11,8 @@
 |
 */
 
-Route::get('/', function(){
+Route::get('/', function()
+{
     $title = 'Inicio';
 
     return View::make('inicio')
@@ -27,7 +28,7 @@ Route::group(array('before' => 'auth'), function()
 {
     Route::controller('users', 'UserController');
     Route::controller('articles', 'ArticleController');
-    Route::controller('branches', 'BrancheController');
+    Route::controller('branches', 'BranchController');
     Route::controller('cart', 'CartController');
     Route::controller('purchases', 'PurchaseController');
     Route::controller('sales', 'SaleController');
@@ -35,4 +36,3 @@ Route::group(array('before' => 'auth'), function()
     Route::controller('instants', 'InstantController');
     Route::controller('rotations', 'RotationController');
 });
-
