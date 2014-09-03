@@ -20,20 +20,3 @@
 		{{ Session::get('messageOk') }}
 	</div>
 @endif
-
-<?php
-/*
- * Otra forma de mostrar los errores.
- */
-/*
-<div class="span4 well">
-	@if(isset($errors) && count($errors->all()) > 0)
-		<ul>
-			@foreach ($errors->all('<li>:message</li>') as $message)
-			{{ $message }}
-			@endforeach
-		</ul>
-	@endif
-</div>
- */
-?>

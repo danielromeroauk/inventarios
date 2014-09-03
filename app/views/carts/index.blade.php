@@ -2,11 +2,11 @@
 
 @section('head')
 
-    <!-- <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.css" /> -->
-    {{ HTML::style('css/jquery-ui-cupertino.css') }}
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.css" />
+    {{-- HTML::style('css/jquery-ui-cupertino.css') --}}
 
-    <!-- <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script> -->
-    {{ HTML::script('js/jquery-ui.js') }}
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    {{-- HTML::script('js/jquery-ui.js') --}}
 
     <script>
         (function($){
