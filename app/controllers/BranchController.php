@@ -1,6 +1,6 @@
 <?php
 
-class BrancheController extends BaseController {
+class BranchController extends BaseController {
 
 	protected $branch;
 
@@ -56,7 +56,7 @@ class BrancheController extends BaseController {
 	        return Redirect::to('branches/add')
 	            ->withInput()
 	            ->withErrors($v)
-	            ->with('message');
+	            ->with('message', 'Hay errores en el postAdd de branches');
 		}
 
         return Redirect::to('branches');
