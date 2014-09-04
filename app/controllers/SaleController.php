@@ -2,15 +2,18 @@
 
 class SaleController extends BaseController {
 
+    const TIPO_REMISION = 'sales';
+
     public function getIndex()
     {
+        $TIPO_REMISION = self::TIPO_REMISION;
         $title = 'Ventas';
         $sales = Sale::where('status', '=', 'pendiente')->where('branch_id', '=', Auth::user()->roles()->first()->branch->id)->orderBy('id', 'desc')->paginate(6);
 
-        $filterSale = 'Ventas con estado <strong>pendiente</strong> en la sucursal <strong>'. Auth::user()->roles()->first()->branch->name .'</strong>';
+        $mensaje = 'Ventas con estado <strong>pendiente</strong> en la sucursal <strong>'. Auth::user()->roles()->first()->branch->name .'</strong>';
 
         return View::make('sales.index')
-                ->with(compact('title', 'sales', 'filterSale'));
+                ->with(compact('title', 'sales', 'mensaje', 'TIPO_REMISION'));
     }
 
     public function postAdd()
@@ -129,13 +132,8 @@ class SaleController extends BaseController {
 
             $input = Input::all();
 
-            /*Verifica que la remisión de verdad está activa*/
-            $sale = Sale::find($input['sale']);
-            if (in_array($sale->status, array('finalizado', 'cancelado'))) {
-                return Redirect::to('sales/items/'. $input['sale']);
-            }
-
-            if($input['notaparcial'] == 'false')
+            // Si no existe notaparcial es porque se está finalizando la remisión.
+            if(!isset($input['notaparcial']))
             {
                 $sitems = SaleItem::where('sale_id', '=', $input['sale'])->get();
 
@@ -185,20 +183,22 @@ class SaleController extends BaseController {
 
     public function getFilterByStatus()
     {
+        $TIPO_REMISION = self::TIPO_REMISION;
         $title = 'Ventas';
         $input = Input::all();
 
         $sales = Sale::where('status', '=', $input['estado'])->orderBy('id', 'desc')->paginate(6);
 
-        $filterSale = 'Ventas con estado <strong>'. $input['estado'] .'</strong>';
+        $mensaje = 'Ventas con estado <strong>'. $input['estado'] .'</strong>';
 
         return View::make('sales.index')
-                ->with(compact('title', 'sales', 'filterSale', 'input'));
+                ->with(compact('title', 'sales', 'mensaje', 'input', 'TIPO_REMISION'));
 
     } #getFilterByStatus
 
     public function getFilterByStatusBranch()
     {
+        $TIPO_REMISION = self::TIPO_REMISION;
         $title = 'Ventas';
         $input = Input::all();
 
@@ -206,70 +206,78 @@ class SaleController extends BaseController {
 
         $sales = Sale::where('status', '=', $input['estado'])->where('branch_id', '=', $input['branch_id'])->orderBy('id', 'desc')->paginate(6);
 
-        $filterSale = 'Ventas con estado <strong>'. $input['estado'] .'</strong> en la sucursal <strong>'. $branch->name .'</strong>';
+        $mensaje = 'Ventas con estado <strong>'. $input['estado'] .'</strong> en la sucursal <strong>'. $branch->name .'</strong>';
 
         return View::make('sales.index')
-                ->with(compact('title', 'sales', 'filterSale', 'input'));
+                ->with(compact('title', 'sales', 'mensaje', 'input', 'TIPO_REMISION'));
 
     } #getFilterByStatusBranch
 
     public function getFilterById()
     {
+        $TIPO_REMISION = self::TIPO_REMISION;
         $title = 'Ventas';
         $input = Input::all();
 
         $sales = Sale::where('id', '=', $input['idSale'])->orderBy('id', 'desc')->paginate(6);
 
-        $filterSale = 'Venta con código <strong>'. $input['idSale'] .'</strong>';
+        $mensaje = 'Venta con código <strong>'. $input['idSale'] .'</strong>';
 
         return View::make('sales.index')
-                ->with(compact('title', 'sales', 'filterSale', 'input'));
+                ->with(compact('title', 'sales', 'mensaje', 'input', 'TIPO_REMISION'));
 
     } #getFilterById
 
     public function getFilterByArticle()
     {
+        $TIPO_REMISION = self::TIPO_REMISION;
         $title = 'Ventas';
         $input = Input::all();
         $idsSale = '0';
+        $amounts = array();
+        $articleName = $input['article'];
 
         $article = Article::find($input['article']);
 
         if (!empty($article)) {
+            $articleName = $article->name;
 
-            foreach ($article->saleItems as $sitems) {
-                $idsSale .= $sitems->sale->id .',';
+            foreach ($article->saleItems as $sitem) {
+                $idsSale .= $sitem->sale->id .',';
+                $amounts[$sitem->sale->id] = $sitem->amount;
             }
 
         }
 
         $idsSale = trim($idsSale, ',');
 
-        $sales = Sale::whereRaw('id in ('. $idsSale .')')->orderBy('id', 'desc')->paginate(6);
+        $sales = Sale::whereRaw('id in ('. $idsSale .')')->orderBy('id', 'desc')->paginate(50);
 
-        $filterSale = 'Ventas que contienen el artículo <strong>'. $input['article'] .'</strong>';
+        $mensaje = 'Ventas que contienen el artículo <strong>'. $articleName .'</strong>';
 
-        return View::make('sales.index')
-                ->with(compact('title', 'sales', 'filterSale', 'input'));
+        return View::make('sales.list')
+                ->with(compact('title', 'sales', 'mensaje', 'input', 'amounts', 'TIPO_REMISION'));
 
     } #getFilterByArticle
 
     public function getFilterByDates()
     {
+        $TIPO_REMISION = self::TIPO_REMISION;
         $title = 'Ventas';
         $input = Input::all();
 
         $sales = Sale::whereRaw('created_at BETWEEN "'. $input['fecha1'] .'" AND "'. $input['fecha2'] .'"')->orderBy('id', 'desc')->paginate(6);
 
-        $filterSale = 'Ventas con fecha de creación entre <strong>'. Input::get('fecha1') .'</strong> y <strong>'. Input::get('fecha2') .'</strong>';
+        $mensaje = 'Ventas con fecha de creación entre <strong>'. Input::get('fecha1') .'</strong> y <strong>'. Input::get('fecha2') .'</strong>';
 
         return View::make('sales.index')
-                ->with(compact('title', 'sales', 'filterSale', 'input'));
+                ->with(compact('title', 'sales', 'mensaje', 'input', 'TIPO_REMISION'));
 
     } #getFilterByDates
 
     public function getFilterByArticleDates()
     {
+        $TIPO_REMISION = self::TIPO_REMISION;
         $title = 'Ventas';
         $input = Input::all();
         $idsSale = '0';
@@ -292,41 +300,48 @@ class SaleController extends BaseController {
 
         $sales = Sale::whereRaw('id in ('. $idsSale .')')
             ->whereRaw('created_at BETWEEN "'. $input['fecha1'] .'" AND "'. $input['fecha2'] .'"')
+            ->where('status', '<>', 'cancelado')
             ->orderBy('id', 'asc')->paginate(100);
 
-        $filterSale = 'Ventas entre <strong>'. $input['fecha1'] .'</strong> y <strong>'. $input['fecha2'] .'</strong> que contienen el artículo <strong>'. $articleName.'</strong>';
+        $mensaje = 'Ventas entre <strong>'. $input['fecha1'] .'</strong> y <strong>'. $input['fecha2'] .'</strong> que contienen el artículo <strong>'. $articleName .'</strong>, este filtro no tiene en cuenta las remisiones que están canceladas.';
 
         return View::make('sales.list')
-                ->with(compact('title', 'sales', 'filterSale', 'input', 'amounts'));
+                ->with(compact('title', 'sales', 'mensaje', 'input', 'amounts', 'TIPO_REMISION'));
 
     } #getFilterByArticleDates
 
     public function getFilterByComments()
     {
+        $TIPO_REMISION = self::TIPO_REMISION;
         $title = 'Ventas';
         $input = Input::all();
 
         $sales = Sale::whereRaw("comments like '%". $input['comments'] ."%'")->orderBy('id', 'desc')->paginate(6);
 
-        $filterSale = 'Ventas que contienen <strong>'. $input['comments'] .'</strong> en los comentarios del remisionero.';
+        $mensaje = 'Ventas que contienen <strong>'. $input['comments'] .'</strong> en el comentario del remisionero.';
 
         return View::make('sales.index')
-                ->with(compact('title', 'sales', 'filterSale', 'input'));
+                ->with(compact('title', 'sales', 'mensaje', 'input', 'TIPO_REMISION'));
 
     } #getFilterByComments
 
     public function getFilterByArticleComments()
     {
+        $TIPO_REMISION = self::TIPO_REMISION;
         $title = 'Ventas';
         $input = Input::all();
         $idsSale = '0';
+        $amounts = array();
+        $articleName = $input['article'];
 
         $article = Article::find($input['article']);
 
         if (!empty($article)) {
+            $articleName = $article->name;
 
-            foreach ($article->saleItems as $sitems) {
-                $idsSale .= $sitems->sale->id .',';
+            foreach ($article->saleItems as $sitem) {
+                $idsSale .= $sitem->sale->id .',';
+                $amounts[$sitem->sale->id] = $sitem->amount;
             }
 
         }
@@ -335,13 +350,47 @@ class SaleController extends BaseController {
 
         $sales = Purchase::whereRaw('id in ('. $idsSale .')')
             ->whereRaw('comments like "%'. $input['comments'] .'%"')
-            ->orderBy('id', 'desc')->paginate(6);
+            ->orderBy('id', 'desc')->paginate(50);
 
-        $filterSale = 'Ventas que contienen el artículo <strong>'. $input['article'] .'</strong> y en los comentarios del remisionero <strong>'. $input['comments'] .'</strong>.';
+        $mensaje = 'Ventas que contienen el artículo <strong>'. $articleName .'</strong> y en el comentario del remisionero <strong>'. $input['comments'] .'</strong>.';
 
-        return View::make('sales.index')
-                ->with(compact('title', 'sales', 'filterSale', 'input'));
+        return View::make('sales.list')
+                ->with(compact('title', 'sales', 'mensaje', 'input', 'TIPO_REMISION'));
 
     } #getFilterByCommentsArticle
+
+    public function getFilterByStatusArticleDates()
+    {
+        $TIPO_REMISION = self::TIPO_REMISION;
+        $title = 'Ventas';
+        $input = Input::all();
+        $idsSale = '0';
+        $amounts = array();
+        $articleName = $input['article'];
+
+        $article = Article::find($input['article']);
+
+        if (!empty($article)) {
+            $articleName = $article->name;
+
+            foreach ($article->saleItems as $sitem) {
+                $idsSale .= $sitem->sale->id .',';
+                $amounts[$sitem->sale->id] = $sitem->amount;
+            }
+
+        }
+
+        $idsSale = trim($idsSale, ',');
+
+        $sales = Sale::whereRaw('id in ('. $idsSale .')')
+            ->whereRaw('status = "'. $input['estado'] .'" AND (created_at BETWEEN "'. $input['fecha1'] .'" AND "'. $input['fecha2'] .'")')
+            ->orderBy('id', 'asc')->paginate(100);
+
+        $mensaje = 'Ventas con estado <strong>'. $input['estado'] .'</strong> entre <strong>'. $input['fecha1'] .'</strong> y <strong>'. $input['fecha2'] .'</strong> que contienen el artículo <strong>'. $articleName .'</strong>';
+
+        return View::make('sales.list')
+                ->with(compact('title', 'sales', 'mensaje', 'input', 'amounts', 'mensaje', 'TIPO_REMISION'));
+
+    } #getFilterByArticleDates
 
 } #SaleController

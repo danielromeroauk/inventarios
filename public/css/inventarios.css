@@ -27,6 +27,11 @@ ul.purchase, ul.sale, ul.damage, ul.instant, ul.rotation {
     vertical-align:top;
 }
 
+.boton-aplicar {
+    clear: both;
+    padding: 1em 0 0 1em;
+}
+
 .center {
     text-align: center;
 }
@@ -53,6 +58,17 @@ ul.purchase, ul.sale, ul.damage, ul.instant, ul.rotation {
 
 #encabezado ul.nav li {
     display: inline-block;
+}
+
+@media screen and (min-width: 750px) {
+
+    .remision {
+        display: inline-block;
+        float: none;
+        vertical-align: top;
+        width: 49%;
+    }
+
 }
 
 @media screen and (min-width: 1200px) {
