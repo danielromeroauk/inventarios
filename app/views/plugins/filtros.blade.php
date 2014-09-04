@@ -212,6 +212,23 @@
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 @endif
 
+
+<!-- Modal -->
+<div class="modal fade" id="branchesModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
+          <h4 class="modal-title">Sucursales</h4>
+        </div>
+        <div class="modal-body">
+          Las sucursales no han podido mostrarse.
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
 <script>
     $(document).on('ready', function()
     {
