@@ -1,11 +1,14 @@
 @extends('layouts.master')
 
 @section('head')
-    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/start/jquery-ui.css" />
-    {{-- HTML::style('css/jquery-ui-start.css') --}}
 
-    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-    {{-- HTML::script('js/jquery-ui.js') --}}
+    @if(Config::get('app.entorno') == 'local')
+        {{ HTML::style('css/jquery-ui-start.css') }}
+        {{ HTML::script('js/jquery-ui.js') }}
+    @else
+        <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/start/jquery-ui.css" />
+        <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    @endif
 
     <script>
         (function($){
@@ -73,7 +76,7 @@
                 </table>
             </div><!-- /.panel-body -->
             <div class="panel-footer">
-                @foreach($sale->SaleStore as $sstore)
+                @foreach($sale->saleStore as $sstore)
                     <p class="label label-info">
                         <span class="glyphicon glyphicon-comment"></span>
                         {{ $sstore->created_at }} por {{ $sstore->user->name }}

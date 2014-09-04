@@ -1,11 +1,14 @@
 @extends('layouts.master')
 
 @section('head')
-    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
-    {{-- HTML::style('css/jquery-ui-smoothness.css') --}}
 
-    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-    {{-- HTML::script('js/jquery-ui.js') --}}
+    @if(Config::get('app.entorno') == 'local')
+        {{ HTML::style('css/jquery-ui-smoothness.css') }}
+        {{ HTML::script('js/jquery-ui.js') }}
+    @else
+        <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+        <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    @endif
 
     <script>
         (function($){
@@ -54,9 +57,40 @@
         Filtros
     </button>
     <div class="acordion">
+        <h3>Filtro por estado, código de artículo y rango de fechas</h3>
+        <div>
+            {{ Form::open(array('url' => 'sales/filter-by-status-article-dates', 'method' => 'get')) }}
+
+                <div class="input-group">
+
+                    <span class="input-group-addon">Estado:</span>
+                    {{ Form::select('estado', array('pendiente' => 'Pendiente', 'cancelado' => 'Cancelado', 'finalizado' => 'Finalizado'), '', array('class' => 'form-control')) }}
+
+                    <span class="input-group-addon">Artículo:</span>
+                    {{ Form::input('number', 'article', '', array('class' => 'form-control', 'min' => '1', 'step' => '1', 'max' => '99999999999999.99', 'title' => 'Código de artículo', 'placeholder' => 'Código de artículo', 'required')) }}
+
+                </div>
+
+                <br />
+
+                <div class="input-group">
+                    <span class="input-group-addon">Fecha inicio:</span>
+                    <input type="date" name="fecha1" class="form-control", title="Fecha inicio" required />
+
+                    <span class="input-group-addon">Fecha fin:</span>
+                    <input type="date" name="fecha2" class="form-control", title="Fecha fin" required />
+
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" type="submit">Aplicar</button>
+                    </span>
+
+                </div><!-- /input-group -->
+            {{ Form::close() }}
+        </div>
         <h3>Filtro por estado y sucursal</h3>
         <div>
             {{ Form::open(array('url' => 'sales/filter-by-status-branch', 'id' => 'branchForm', 'method' => 'get')) }}
+
                 <div class="input-group">
 
                     <span class="input-group-addon">Estado:</span>

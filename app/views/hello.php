@@ -8,7 +8,7 @@
 
         body {
             margin:0;
-            font-family:'Lato', sans-serif;
+            font-family:'Lato', helvetica, sans-serif;
             text-align:center;
             color: #999;
         }
@@ -18,7 +18,7 @@
            height: 300px;
            position: absolute;
            left: 50%;
-           top: 50%; 
+           top: 50%;
            margin-left: -150px;
            margin-top: -150px;
         }

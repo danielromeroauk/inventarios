@@ -16,6 +16,12 @@ return array(
 	'debug' => true,
 
 	/*
+	| Cuando la aplicación se está ejecutando en un entorno de desarrollo o de producción.
+	| Los valores que se pueden usar son: local y produccion.
+	 */
+	'entorno' => 'local',
+
+	/*
 	|--------------------------------------------------------------------------
 	| Application URL
 	|--------------------------------------------------------------------------

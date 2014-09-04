@@ -2,8 +2,11 @@
 
 @section('head')
 
-    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-    {{-- HTML::script('js/jquery-ui.js') --}}
+    @if(Config::get('app.entorno') == 'local')
+        {{ HTML::script('js/jquery-ui.js') }}
+    @else
+        <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    @endif
 
     <script>
         (function($){
