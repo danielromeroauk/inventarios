@@ -187,7 +187,15 @@
                                 </tr>
                                 <tr>
                                     <td>Venta</td>
-                                    <td>{{ $article->inSales($branch) .' '. $article->unit }}</td>
+                                    <td>
+                                        @if($article->inSales($branch) > 0)
+                                            <a href="{{ url('sales/filter-by-status-article-dates?estado=pendiente&article='. $article->id .'&fecha1=2000-01-01&fecha2=2038-12-31') }}" class="btn btn-default">
+                                                {{ $article->inSales($branch) .' '. $article->unit }}
+                                            </a>
+                                        @else
+                                            {{ $article->inSales($branch) .' '. $article->unit }}
+                                        @endif
+                                    </td>
                                 </tr>
                                     <td>Origen de rotación</td>
                                     <td>{{ $article->inRotationsFrom($branch) .' '. $article->unit }}</td>
