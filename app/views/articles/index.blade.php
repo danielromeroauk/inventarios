@@ -183,7 +183,15 @@
                                 </tr>
                                 <tr>
                                     <td>Compra</td>
-                                    <td>{{ $article->inPurchases($branch) .' '. $article->unit }}</td>
+                                    <td>
+                                        @if($article->inSales($branch) > 0)
+                                            <a href="{{ url('purchases/filter-by-status-article-dates?estado=pendiente&article='. $article->id .'&fecha1=2000-01-01&fecha2=2038-12-31') }}" class="btn btn-default">
+                                                {{ $article->inPurchases($branch) .' '. $article->unit }}
+                                            </a>
+                                        @else
+                                            {{ $article->inPurchases($branch) .' '. $article->unit }}
+                                        @endif
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>Venta</td>
