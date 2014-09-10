@@ -2,15 +2,18 @@
 
 class PurchaseController extends BaseController {
 
+    const TIPO_REMISION = 'purchases';
+
     public function getIndex()
     {
+        $TIPO_REMISION = self::TIPO_REMISION;
         $title = 'Compras';
         $purchases = Purchase::where('status', '=', 'pendiente')->where('branch_id', '=', Auth::user()->roles()->first()->branch->id)->orderBy('id', 'desc')->paginate(6);
 
-        $filterPurchase = 'Compras con estado <strong>pendiente</strong> en la sucursal <strong>'. Auth::user()->roles()->first()->branch->name .'</strong>.';
+        $mensaje = 'Compras con estado <strong>pendiente</strong> en la sucursal <strong>'. Auth::user()->roles()->first()->branch->name .'</strong>.';
 
         return View::make('purchases.index')
-                ->with(compact('title', 'purchases', 'filterPurchase'));
+                ->with(compact('title', 'purchases', 'mensaje', 'TIPO_REMISION'));
 
     } #getIndex
 
@@ -129,7 +132,7 @@ class PurchaseController extends BaseController {
                 return Redirect::to('purchases/items/'. $input['purchase']);
             }
 
-            if($input['notaparcial'] == 'false')
+            if(!isset($input['notaparcial']))
             {
                 $pitems = PurchaseItem::where('purchase_id', '=', $input['purchase'])->get();
 
@@ -180,20 +183,22 @@ class PurchaseController extends BaseController {
 
     public function getFilterByStatus()
     {
+        $TIPO_REMISION = self::TIPO_REMISION;
         $title = 'Compras';
         $input = Input::all();
 
         $purchases = Purchase::where('status', '=', $input['estado'])->orderBy('id', 'desc')->paginate(6);
 
-        $filterPurchase = 'Compras con estado <strong>'. $input['estado'] .'</strong>';
+        $mensaje = 'Compras con estado <strong>'. $input['estado'] .'</strong>';
 
         return View::make('purchases.index')
-                ->with(compact('title', 'purchases', 'filterPurchase', 'input'));
+                ->with(compact('title', 'purchases', 'mensaje', 'input', 'TIPO_REMISION'));
 
     } #getFilterByStatus
 
     public function getFilterByStatusBranch()
     {
+        $TIPO_REMISION = self::TIPO_REMISION;
         $title = 'Compras';
         $input = Input::all();
 
@@ -201,70 +206,78 @@ class PurchaseController extends BaseController {
 
         $purchases = Purchase::where('status', '=', $input['estado'])->where('branch_id', '=', $input['branch_id'])->orderBy('id', 'desc')->paginate(6);
 
-        $filterPurchase = 'Compras con estado <strong>'. $input['estado'] .'</strong> en la sucursal <strong>'. $branch->name .'</strong>';
+        $mensaje = 'Compras con estado <strong>'. $input['estado'] .'</strong> en la sucursal <strong>'. $branch->name .'</strong>';
 
         return View::make('purchases.index')
-                ->with(compact('title', 'purchases', 'filterPurchase', 'input'));
+                ->with(compact('title', 'purchases', 'mensaje', 'input', 'TIPO_REMISION'));
 
     } #getFilterByStatusBranch
 
     public function getFilterById()
     {
+        $TIPO_REMISION = self::TIPO_REMISION;
         $title = 'Compra';
         $input = Input::all();
 
-        $purchases = Purchase::where('id', '=', $input['idPurchase'])->orderBy('id', 'desc')->paginate(6);
+        $purchases = Purchase::where('id', '=', $input['idRemision'])->orderBy('id', 'desc')->paginate(6);
 
-        $filterPurchase = 'Compra con código '. $input['idPurchase'] .'</strong>';
+        $mensaje = 'Compra con código '. $input['idRemision'] .'</strong>';
 
         return View::make('purchases.index')
-                ->with(compact('title', 'purchases', 'filterPurchase', 'input'));
+                ->with(compact('title', 'purchases', 'mensaje', 'input', 'TIPO_REMISION'));
 
     } #getFilterById
 
     public function getFilterByArticle()
     {
+        $TIPO_REMISION = self::TIPO_REMISION;
         $title = 'Compras';
         $input = Input::all();
         $idsPurchase = '0';
+        $amounts = array();
+        $articleName = $input['article'];
 
         $article = Article::find($input['article']);
 
         if (!empty($article)) {
+            $articleName = $article->name;
 
-            foreach ($article->purchaseItems as $pitems) {
-                $idsPurchase .= $pitems->purchase->id .',';
+            foreach ($article->purchaseItems as $pitem) {
+                $idsPurchase .= $pitem->purchase->id .',';
+                $amounts[$pitem->purchase->id] = $pitem->amount;
             }
 
         }
 
         $idsPurchase = trim($idsPurchase, ',');
 
-        $purchases = Purchase::whereRaw('id in ('. $idsPurchase .')')->orderBy('id', 'desc')->paginate(6);
+        $purchases = Purchase::whereRaw('id in ('. $idsPurchase .')')->orderBy('id', 'desc')->paginate(50);
 
-        $filterPurchase = 'Compras que contienen el artículo <strong>'. $input['article'] .'</strong>';
+        $mensaje = 'Compras que contienen el artículo <strong>'. $articleName .'</strong>';
 
-        return View::make('purchases.index')
-                ->with(compact('title', 'purchases', 'filterPurchase', 'input'));
+        return View::make('purchases.list')
+                ->with(compact('title', 'purchases', 'mensaje', 'input', 'amounts', 'TIPO_REMISION'));
 
     } #getFilterByArticle
 
     public function getFilterByDates()
     {
+        $TIPO_REMISION = self::TIPO_REMISION;
         $title = 'Compras';
         $input = Input::all();
 
         $purchases = Purchase::whereRaw('created_at BETWEEN "'. $input['fecha1'] .'" AND "'. $input['fecha2'] .'"')->orderBy('id', 'desc')->paginate(6);
 
-        $filterPurchase = 'Compras con fecha de creación entre <strong>'. $input['fecha1'] .'</strong> y <strong>'. $input['fecha2'] .'</strong>';
+        $mensaje = 'Compras con fecha de creación entre <strong>'. $input['fecha1'] .'</strong> y <strong>'. $input['fecha2'] .'</strong>';
 
         return View::make('purchases.index')
-                ->with(compact('title', 'purchases', 'filterPurchase', 'input'));
+                ->with(compact('title', 'purchases', 'mensaje', 'input', 'TIPO_REMISION'));
 
     } #getFilterByDates
 
     public function getFilterByArticleDates()
     {
+        $TIPO_REMISION = self::TIPO_REMISION;
         $title = 'Compras';
         $input = Input::all();
         $idsPurchase = '0';
@@ -287,42 +300,48 @@ class PurchaseController extends BaseController {
 
         $purchases = Purchase::whereRaw('id in ('. $idsPurchase .')')
             ->whereRaw('created_at BETWEEN "'. $input['fecha1'] .'" AND "'. $input['fecha2'] .'"')
-            ->orderBy('id', 'asc')->paginate(100);
+            ->orderBy('id', 'asc')->paginate(50);
 
-        $filterPurchase = 'Compras entre <strong>'. $input['fecha1'] .'</strong> y <strong>'. $input['fecha2'] .'</strong> que contienen el artículo <strong>'. $articleName .'</strong>';
+        $mensaje = 'Compras entre <strong>'. $input['fecha1'] .'</strong> y <strong>'. $input['fecha2'] .'</strong> que contienen el artículo <strong>'. $articleName .'</strong>';
 
 
         return View::make('purchases.list')
-            ->with(compact('title', 'purchases', 'filterPurchase', 'input', 'amounts'));
+            ->with(compact('title', 'purchases', 'mensaje', 'input', 'amounts', 'TIPO_REMISION'));
 
     } #getFilterByArticleDates
 
     public function getFilterByComments()
     {
+        $TIPO_REMISION = self::TIPO_REMISION;
         $title = 'Compras';
         $input = Input::all();
 
         $purchases = Purchase::whereRaw("comments like '%". $input['comments'] ."%'")->orderBy('id', 'desc')->paginate(6);
 
-        $filterPurchase = 'Compras que contienen <strong>'. $input['comments'] .'</strong> en los comentarios del remisionero.';
+        $mensaje = 'Compras que contienen <strong>'. $input['comments'] .'</strong> en los comentarios del remisionero.';
 
         return View::make('purchases.index')
-                ->with(compact('title', 'purchases', 'filterPurchase', 'input'));
+                ->with(compact('title', 'purchases', 'mensaje', 'input', 'TIPO_REMISION'));
 
     } #getFilterByComments
 
     public function getFilterByArticleComments()
     {
+        $TIPO_REMISION = self::TIPO_REMISION;
         $title = 'Compras';
         $input = Input::all();
         $idsPurchase = '0';
+        $amounts = array();
+        $articleName = $input['article'];
 
         $article = Article::find($input['article']);
 
         if (!empty($article)) {
+            $articleName = $article->name;
 
-            foreach ($article->purchaseItems as $pitems) {
-                $idsPurchase .= $pitems->purchase->id .',';
+            foreach ($article->purchaseItems as $pitem) {
+                $idsPurchase .= $pitem->purchase->id .',';
+                $amounts[$pitem->purchase->id] = $pitem->amount;
             }
 
         }
@@ -331,14 +350,48 @@ class PurchaseController extends BaseController {
 
         $purchases = Purchase::whereRaw('id in ('. $idsPurchase .')')
             ->whereRaw('comments like "%'. $input['comments'] .'%"')
-            ->orderBy('id', 'desc')->paginate(6);
+            ->orderBy('id', 'desc')->paginate(50);
 
-        $filterPurchase = 'Compras que contienen el artículo <strong>'. $input['article'] .'</strong> y en los comentarios del remisionero <strong>'. $input['comments'] .'</strong>.';
+        $mensaje = 'Compras que contienen el artículo <strong>'. $input['article'] .'</strong> y en los comentarios del remisionero <strong>'. $input['comments'] .'</strong>.';
 
-        return View::make('purchases.index')
-                ->with(compact('title', 'purchases', 'filterPurchase', 'input'));
+        return View::make('purchases.list')
+                ->with(compact('title', 'purchases', 'mensaje', 'input', 'amounts', 'TIPO_REMISION'));
 
     } #getFilterByArticleComments
+
+    public function getFilterByStatusArticleDates()
+    {
+        $TIPO_REMISION = self::TIPO_REMISION;
+        $title = 'Ventas';
+        $input = Input::all();
+        $idsPurchase = '0';
+        $amounts = array();
+        $articleName = $input['article'];
+
+        $article = Article::find($input['article']);
+
+        if (!empty($article)) {
+            $articleName = $article->name;
+
+            foreach ($article->purchaseItems as $pitem) {
+                $idsPurchase .= $pitem->purchase->id .',';
+                $amounts[$pitem->purchase->id] = $pitem->amount;
+            }
+
+        }
+
+        $idsPurchase = trim($idsPurchase, ',');
+
+        $purchases = Purchase::whereRaw('id in ('. $idsPurchase .')')
+            ->whereRaw('status = "'. $input['estado'] .'" AND (created_at BETWEEN "'. $input['fecha1'] .'" AND "'. $input['fecha2'] .'")')
+            ->orderBy('id', 'asc')->paginate(50);
+
+        $mensaje = 'Compras con estado <strong>'. $input['estado'] .'</strong> entre <strong>'. $input['fecha1'] .'</strong> y <strong>'. $input['fecha2'] .'</strong> que contienen el artículo <strong>'. $articleName .'</strong>';
+
+        return View::make('purchases.list')
+                ->with(compact('title', 'purchases', 'mensaje', 'input', 'amounts', 'mensaje', 'TIPO_REMISION'));
+
+    } #getFilterByArticleDates
 
 
 } #PurchaseController

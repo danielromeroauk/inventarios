@@ -11,33 +11,22 @@
     @endif
 
     <script>
-        (function($){
-
-            $(document).on('ready', iniciar);
-
-            function iniciar() {
-
-               convertirBotones();
-
-                $('#notaparcial').on('click', function(){
-                    $('#notap').val(true);
-                    validar();
-                });
-
-            } //iniciar
-
-        })(jQuery);
-
-        function convertirBotones()
+        $(document).on('ready', function()
         {
             $('.button').button();
-        }
+            $('#notaparcial').on('click', validar);
 
-        function validar() {
-            if ($('#comments').val() != '') {
-                $('#purchaseStoreForm').submit();
-            } else {
-                alert('Faltan campos por diligenciar');
+        });
+
+        function validar()
+        {
+            if ($('#comments').val() != '')
+            {
+                $('#storeForm').submit();
+
+            } else
+            {
+                alert('Faltan campos por diligenciar.');
             }
         }
     </script>
@@ -46,95 +35,131 @@
 
 @section('content')
 
-        <div class="panel panel-success">
-            <div class="panel-heading">
-                <span class="glyphicon glyphicon-list-alt"></span>
-                Código de compra: {{ $purchase->id }}
-            </div>
-            <div class="panel-body">
-                <ul class="purchase">
-                    <li><strong>Estado:</strong> {{ $purchase->status }}</li>
-                    <li><strong>Fecha de creación:</strong> {{ $purchase->created_at }}</li>
-                    <li><strong>Para la sucursal:</strong> {{ $purchase->branch->name }}</li>
-                    <li><strong>Usuario:</strong> {{ $purchase->user->name }}</li>
-                    <li><strong>Fecha de modificación:</strong> {{ $purchase->updated_at }}</li>
-                </ul>
-                <p><strong>Comentarios del remisionero:</strong> {{ $purchase->comments }}</p>
+    @if($purchase->status == 'pendiente')
+        <div class="panel panel-danger">
 
-                <table class="table table-striped table-bordered">
+    @elseif($purchase->status == 'finalizado')
+        <div class="panel panel-success">
+
+    @else
+        <div class="panel panel-default">
+
+    @endif
+
+        <div class="panel-heading">
+            <span class="glyphicon glyphicon-leaf"></span>
+            Compra {{ $purchase->id }}
+            creada por {{ $purchase->user->name }}
+            el día {{ $purchase->created_at }}
+        </div>
+
+        <div class="panel-body">
+            <p><strong>{{ strtoupper( $purchase->status ) }}</strong> en {{ $purchase->branch->name }}.</p>
+            <p>{{ $purchase->comments }}</p>
+
+            <table class="table table-striped table-bordered">
+                <tr>
+                    <th>Cód. Artículo</th>
+                    <th>Nombre de artículo</th>
+                    <th>Cantidad</th>
+                </tr>
+                @foreach($pitems as $pitem)
                     <tr>
-                        <th>Cód. Artículo</th>
-                        <th>Nombre del artículo</th>
-                        <th>Cantidad</th>
+                        <td>
+                            <a href="{{ url('articles/search?filterBy=id&search='. $pitem->article->id) }}">
+                                {{ $pitem->article->id }}
+                            </a>
+                        </td>
+                        <td>{{ $pitem->article->name }}</td>
+                        <td>{{ $pitem->amount .' '. $pitem->article->unit }}</td>
                     </tr>
-                    @foreach($pitems as $pitem)
-                        <tr>
-                            <td>{{ $pitem->article->id }}</td>
-                            <td>{{ $pitem->article->name }}</td>
-                            <td>{{ $pitem->amount .' '. $pitem->article->unit }}</td>
-                        </tr>
-                    @endforeach
-                </table>
-            </div><!-- /.panel-body -->
-            <div class="panel-footer">
-                @foreach($purchase->purchaseStore as $pstore)
-                    <p class="label label-info">
+                @endforeach
+            </table>
+
+            @foreach($purchase->purchaseStore as $pstore)
+
+                <div class="col-md-6">
+
+                    <div class="label label-primary">
                         <span class="glyphicon glyphicon-comment"></span>
-                        {{ $pstore->created_at }} por {{ $pstore->user->name }}
-                    </p>
-                    <p class="alert alert-success">
+                        {{ $pstore->user->name }}
+                    </div>
+                    <div class="label label-success">
+                         {{ $pstore->created_at }}
+                    </div>
+                    <p class="alert alert-info">
                         {{ $pstore->comments }}
                     </p>
-                @endforeach
 
-                @if( ( (Auth::user()->permitido('bodeguero') && $purchase->branch->id == Auth::user()->roles()->first()->branch->id) || Auth::user()->permitido('remisionero') || Auth::user()->permitido('administrador') ) && $purchase->status == 'pendiente')
+                </div>
 
-                    {{ Form::open(array('url' => 'purchases/purchase-store', 'id' => 'purchaseStoreForm')) }}
-                        {{ Form::input('hidden', 'purchase', $purchase->id) }}
-                        {{ Form::input('hidden', 'branch_id', $purchase->branch->id) }}
-                        {{ Form::input('hidden', 'notaparcial', 'false', array('id' => 'notap')) }}
-                        {{ Form::textarea('comments', '', array('id' => 'comments', 'rows' => '3', 'class' => 'form-control', 'placeholder' => 'Comentarios del bodeguero.', 'maxlength' => '255', 'required')) }}
-                        <span class="button" id="notaparcial">
-                            <span class="glyphicon glyphicon-comment"></span>
-                            Registrar nota parcial
-                        </span>
-                        <a href="#purchaseStoreModal" class="button" data-toggle="modal">
-                            <span class="glyphicon glyphicon-floppy-save"></span>
-                            Finalizar compra
-                        </a>
-                        {{ Form::submit('Enviar', array('class' => 'hidden')) }}
-                    {{ Form::close() }}
+            @endforeach
 
-                    @if(Auth::user()->permitido('remisionero') || Auth::user()->permitido('administrador'))
+        </div><!-- /.panel-body -->
 
-                            {{ '<a href="'. url('purchases/cancel/'. $purchase->id) .'" class="btn btn-danger btn-sm">
-                                <span class="glyphicon glyphicon-minus-sign"></span>
-                                Cancelar remisión
-                            </a>' }}
 
-                    @endif
+        <div class="panel-footer">
+
+            {{ Form::open(array('url' => 'purchases/purchase-store', 'id' => 'storeForm')) }}
+
+                {{ Form::input('hidden', 'purchase', $purchase->id) }}
+                {{ Form::input('hidden', 'branch_id', $purchase->branch->id) }}
+
+                {{ Form::textarea('comments', '', array('id' => 'comments', 'rows' => '3', 'class' => 'form-control', 'placeholder' => 'Comentarios de bodeguero.', 'maxlength' => '255', 'required')) }}
+
+                <button type="submit" class="btn btn-success btn-sm" id="notaparcial" name="notaparcial">
+                    <span class="glyphicon glyphicon-comment"></span>
+                    Comentar
+                </button>
+
+                @if( $purchase->status == 'pendiente' &&
+                    in_array(Auth::user()->roles()->first()->name, array('administrador', 'remisionero', 'bodeguero')) )
+
+                     <a href="#modalConfirmar" class="btn btn-primary btn-sm" data-toggle="modal">
+                        <span class="glyphicon glyphicon-floppy-save"></span>
+                        Finalizar compra
+                    </a>
 
                 @endif
-            </div><!-- /.panel-footer -->
-        </div><!-- /.panel -->
 
-      <!-- Modal -->
-      <div class="modal fade" id="purchaseStoreModal">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
-              <h4 class="modal-title">Confirmar</h4>
-            </div>
-            <div class="modal-body">
-              ¿Deseas finalizar la compra? Si haces clic en <strong>Sí</strong> el stock aumentará.
-            </div>
-            <div class="modal-footer">
-              <a href="#" class="btn btn-danger" data-dismiss="modal">No</a>
-              <a href="javascript:validar();" class="btn btn-primary">Sí</a>
-            </div>
-          </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-      </div><!-- /.modal -->
+                {{ Form::submit('Enviar', array('class' => 'hidden')) }}
+
+            {{ Form::close() }}
+
+            @if(Auth::user()->permitido('remisionero') || Auth::user()->permitido('administrador'))
+
+                @if($purchase->status == 'pendiente')
+
+                    {{ '<a href="'. url('purchases/cancel/'. $purchase->id) .'" class="btn btn-danger btn-sm">
+                        <span class="glyphicon glyphicon-minus-sign"></span>
+                        Cancelar remisión
+                    </a>' }}
+
+                @endif
+
+            @endif
+
+        </div><!-- /.panel-footer -->
+
+    </div><!-- /.panel -->
+
+  <!-- Modal -->
+  <div class="modal fade" id="modalConfirmar">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
+          <h4 class="modal-title">Confirmar</h4>
+        </div>
+        <div class="modal-body">
+          ¿Deseas finalizar la compra? Si haces clic en <strong>Sí</strong> el stock aumentará.
+        </div>
+        <div class="modal-footer">
+          <a href="#" class="btn btn-danger" data-dismiss="modal">No</a>
+          <a href="javascript:validar();" class="btn btn-primary">Sí</a>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
 
 @stop
