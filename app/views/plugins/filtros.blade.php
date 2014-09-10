@@ -98,7 +98,7 @@
     <div>
         {{ Form::open(array('url' => $TIPO_REMISION .'/filter-by-id', 'method' => 'get')) }}
             <div class="input-group">
-                {{ Form::input('number', 'idSale', '', array('class' => 'form-control', 'min' => '1', 'step' => '1', 'max' => '99999999999999.99', 'title' => 'Código de remisión', 'placeholder' => 'Código de remisión', 'required')) }}
+                {{ Form::input('number', 'idRemision', '', array('class' => 'form-control', 'min' => '1', 'step' => '1', 'max' => '99999999999999.99', 'title' => 'Código de remisión', 'placeholder' => 'Código de remisión', 'required')) }}
                 <span class="input-group-btn">
                     <button class="btn btn-primary" type="submit">Aplicar</button>
                 </span>

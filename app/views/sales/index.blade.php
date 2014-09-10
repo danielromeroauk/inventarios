@@ -6,6 +6,7 @@
     @include('plugins.filtros')
 
     @foreach($sales as $sale)
+
         <div class="col-sm-6 remision">
 
             @if($sale->status == 'pendiente')

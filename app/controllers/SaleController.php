@@ -219,9 +219,9 @@ class SaleController extends BaseController {
         $title = 'Ventas';
         $input = Input::all();
 
-        $sales = Sale::where('id', '=', $input['idSale'])->orderBy('id', 'desc')->paginate(6);
+        $sales = Sale::where('id', '=', $input['idRemision'])->orderBy('id', 'desc')->paginate(6);
 
-        $mensaje = 'Venta con código <strong>'. $input['idSale'] .'</strong>';
+        $mensaje = 'Venta con código <strong>'. $input['idRemision'] .'</strong>';
 
         return View::make('sales.index')
                 ->with(compact('title', 'sales', 'mensaje', 'input', 'TIPO_REMISION'));
@@ -301,7 +301,7 @@ class SaleController extends BaseController {
         $sales = Sale::whereRaw('id in ('. $idsSale .')')
             ->whereRaw('created_at BETWEEN "'. $input['fecha1'] .'" AND "'. $input['fecha2'] .'"')
             ->where('status', '<>', 'cancelado')
-            ->orderBy('id', 'asc')->paginate(100);
+            ->orderBy('id', 'asc')->paginate(50);
 
         $mensaje = 'Ventas entre <strong>'. $input['fecha1'] .'</strong> y <strong>'. $input['fecha2'] .'</strong> que contienen el artículo <strong>'. $articleName .'</strong>, este filtro no tiene en cuenta las remisiones que están canceladas.';
 
@@ -348,14 +348,14 @@ class SaleController extends BaseController {
 
         $idsSale = trim($idsSale, ',');
 
-        $sales = Purchase::whereRaw('id in ('. $idsSale .')')
+        $sales = Sale::whereRaw('id in ('. $idsSale .')')
             ->whereRaw('comments like "%'. $input['comments'] .'%"')
             ->orderBy('id', 'desc')->paginate(50);
 
         $mensaje = 'Ventas que contienen el artículo <strong>'. $articleName .'</strong> y en el comentario del remisionero <strong>'. $input['comments'] .'</strong>.';
 
         return View::make('sales.list')
-                ->with(compact('title', 'sales', 'mensaje', 'input', 'TIPO_REMISION'));
+                ->with(compact('title', 'sales', 'mensaje', 'input', 'amounts', 'TIPO_REMISION'));
 
     } #getFilterByCommentsArticle
 
@@ -384,7 +384,7 @@ class SaleController extends BaseController {
 
         $sales = Sale::whereRaw('id in ('. $idsSale .')')
             ->whereRaw('status = "'. $input['estado'] .'" AND (created_at BETWEEN "'. $input['fecha1'] .'" AND "'. $input['fecha2'] .'")')
-            ->orderBy('id', 'asc')->paginate(100);
+            ->orderBy('id', 'asc')->paginate(50);
 
         $mensaje = 'Ventas con estado <strong>'. $input['estado'] .'</strong> entre <strong>'. $input['fecha1'] .'</strong> y <strong>'. $input['fecha2'] .'</strong> que contienen el artículo <strong>'. $articleName .'</strong>';
 
