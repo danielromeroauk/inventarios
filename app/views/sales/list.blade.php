@@ -50,12 +50,10 @@
         </tbody>
     </table>
 
-    <?php
-        if(isset($input)) {
-            echo $sales->appends(array_except($input, 'page'))->links();
-        } else {
-            echo $sales->links();
-        }
-    ?>
+    @if(isset($input))
+        {{$sales->appends(array_except($input, 'page'))->links()}}
+    @else
+         {{$sales->links()}}
+    @endif
 
 @stop

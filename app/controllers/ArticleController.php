@@ -397,4 +397,105 @@ class ArticleController extends BaseController {
 
     } #getExcelByArticle
 
+    public function getMovimientos($idArticle)
+    {
+        $articulo = Article::find($idArticle);
+
+        if(!empty($articulo))
+        {
+            $fecha1 = Input::get('fecha1');
+            $fecha2 = Input::get('fecha2');
+            $nombreArticulo = $articulo->name;
+            $movimientos = $articulo->movimientos($fecha1, $fecha2);
+
+            return View::make('articles.movimientos')
+            ->with(compact('movimientos', 'articulo'));
+        }
+
+        return Redirect::to('/')->with('message', 'No se encontraron movimientos para el artículo indicado.');
+
+    } #movimientos
+
+    public function getExcelConMovimientos($idArticle)
+    {
+        $article = Article::find($idArticle);
+
+        if(empty($article))
+        {
+            return Redirect::to('articles');
+        }
+
+        $fecha1 = Input::get('fecha1');
+        $fecha2 = Input::get('fecha2');
+        $movimientos = $article->movimientos($fecha1, $fecha2);
+
+        /** Error reporting */
+        error_reporting(E_ALL);
+        ini_set('display_errors', TRUE);
+        ini_set('display_startup_errors', TRUE);
+        date_default_timezone_set('America/Bogota');
+
+        if (PHP_SAPI == 'cli')
+            die('Este archivo corre únicamente desde un navegador web.');
+
+        // Create new PHPExcel object
+        $objPHPExcel = new PHPExcel();
+
+        // Set document properties
+        $objPHPExcel->getProperties()->setCreator(Auth::user()->name)
+                                     ->setLastModifiedBy(Auth::user()->name)
+                                     ->setTitle("Movimientos de artículo")
+                                     ->setSubject("Artículo ". $article->name)
+                                     ->setDescription("Este documento contiene los movimientos del artículo ". $article->name)
+                                     ->setKeywords("artículo, sucursal, ". $article->name)
+                                     ->setCategory("Archivo generado");
+
+        // Datos de encabezado
+        $objPHPExcel->setActiveSheetIndex(0)
+                    ->setCellValue('A1', 'Movimientos del artículo '. $article->name .' desde '. $fecha1 .' hasta '. $fecha2)
+                    ->setCellValue('A2', 'Fecha')
+                    ->setCellValue('B2', 'Tipo de remisión')
+                    ->setCellValue('C2', 'Sucursal')
+                    ->setCellValue('D2', 'Cantidad')
+                    ->setCellValue('E2', 'Estado')
+                    ->setCellValue('F2', 'Comentario del remisionero')
+                    ->setCellValue('G2', 'Nota reciente');
+
+        $stocks = Stock::where('article_id', '=', $article->id)->get();
+
+        // Desde donde inicia el contenido.
+        $fila = 3;
+
+        foreach ($movimientos as $movimiento) {
+
+            $fecha = (string) $movimiento['fecha'];
+
+            $objPHPExcel->setActiveSheetIndex(0)
+                    ->setCellValue('A'. $fila, $fecha)
+                    ->setCellValue('B'. $fila, $movimiento['tipo'])
+                    ->setCellValue('C'. $fila, $movimiento['sucursal'])
+                    ->setCellValue('D'. $fila, $movimiento['cantidad'])
+                    ->setCellValue('E'. $fila, $movimiento['estado'])
+                    ->setCellValue('F'. $fila, $movimiento['comentario'])
+                    ->setCellValue('G'. $fila, $movimiento['nota']);
+
+            $fila++;
+        }
+
+        // Rename worksheet
+        $objPHPExcel->getActiveSheet()->setTitle('m' . $article->id . date('_Ymd'));
+
+        // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+        $objPHPExcel->setActiveSheetIndex(0);
+
+        $nombre_archivo = 'm' . $article->id . date('_His') . '.xlsx';
+
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+        $objWriter->save(public_path() .'/excel/'. $nombre_archivo);
+
+        return Redirect::to('articles/search?filterBy=id&search='. $idArticle)
+            ->with(array('mensajewell' => 'El archivo '. $nombre_archivo .' se ha creado con éxito, si la descarga no inicia automáticamente haga click <a id="descarga" href="'. url('excel/'. $nombre_archivo) .'">aquí</a> para descargarlo.<script>$(document).on("ready", function(){  $(location).attr("href", "'. url('excel/'. $nombre_archivo) .'");  });</script>'));
+
+    } #getExcelArticuloMovimientos
+
 }

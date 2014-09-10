@@ -64,6 +64,6 @@
 
     @endforeach
 
-    <?php echo $article->links(); ?>
+    {{$article->links()}}
 
 @stop

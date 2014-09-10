@@ -217,13 +217,11 @@
         </div>
     @endforeach
 
-    <?php
-        if(isset($input)) {
-            echo $damages->appends(array_except($input, 'page'))->links();
-        } else {
-            echo $damages->links();
-        }
-    ?>
+    @if(isset($input))
+        {{$damages->appends(array_except($input, 'page'))->links()}}
+    @else
+        {{$damages->links()}}
+    @endif
 
     <!-- Modal -->
     <div class="modal fade" id="branchesModal">

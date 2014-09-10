@@ -217,6 +217,28 @@
                             </table>
                         </div>
                     @endforeach
+
+                    <h3>Informe de todos los movimientos en cualquier estado</h3>
+                    <div>
+                        {{ Form::open(array('url' => 'articles/movimientos/'. $article->id, 'method' => 'get')) }}
+
+                            <div class="input-group">
+                                <span class="input-group-addon">Desde:</span>
+                                <input type="date" name="fecha1" class="form-control", title="Fecha inicio" required />
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">Hasta:</span>
+                                <input type="date" name="fecha2" class="form-control", title="Fecha fin" required />
+                            </div>
+
+                            <div class="boton-aplicar">
+                                <button class="btn btn-default" type="submit">Ir a informe</button>
+                            </div>
+
+                        {{ Form::close() }}
+                    </div>
+
                 </div> <!-- /.acordion -->
               </div> <!-- /#tab3 -->
 
@@ -259,13 +281,11 @@
     </div> <!-- /.col-lg-6 -->
     @endforeach
 
-    <?php
-        if(isset($input)) {
-            echo $articles->appends(array_except($input, 'page'))->links();
-        } else {
-            echo $articles->links();
-        }
-    ?>
+    @if(isset($input))
+        {{$articles->appends(array_except($input, 'page'))->links()}}
+    @else
+        {{$articles->links()}}
+    @endif
 
     <!-- Modal -->
       <div class="modal fade" id="imagenModal">
