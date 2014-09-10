@@ -184,7 +184,7 @@
                                 <tr>
                                     <td>Compra</td>
                                     <td>
-                                        @if($article->inSales($branch) > 0)
+                                        @if($article->inPurchases($branch) > 0)
                                             <a href="{{ url('purchases/filter-by-status-article-dates?estado=pendiente&article='. $article->id .'&fecha1=2000-01-01&fecha2=2038-12-31') }}" class="btn btn-default">
                                                 {{ $article->inPurchases($branch) .' '. $article->unit }}
                                             </a>
@@ -232,9 +232,9 @@
                                 <input type="date" name="fecha2" class="form-control", title="Fecha fin" required />
                             </div>
 
-                            <div class="boton-aplicar">
-                                <button class="btn btn-default" type="submit">Ir a informe</button>
-                            </div>
+                            <br />
+
+                            <button class="btn btn-default btn-sm" type="submit">Generar informe</button>
 
                         {{ Form::close() }}
                     </div>

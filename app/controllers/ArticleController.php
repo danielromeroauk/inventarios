@@ -455,11 +455,12 @@ class ArticleController extends BaseController {
                     ->setCellValue('A1', 'Movimientos del artículo '. $article->name .' desde '. $fecha1 .' hasta '. $fecha2)
                     ->setCellValue('A2', 'Fecha')
                     ->setCellValue('B2', 'Tipo de remisión')
-                    ->setCellValue('C2', 'Sucursal')
-                    ->setCellValue('D2', 'Cantidad')
-                    ->setCellValue('E2', 'Estado')
-                    ->setCellValue('F2', 'Comentario del remisionero')
-                    ->setCellValue('G2', 'Nota reciente');
+                    ->setCellValue('C2', 'Id remisión')
+                    ->setCellValue('D2', 'Sucursal')
+                    ->setCellValue('E2', 'Cantidad')
+                    ->setCellValue('F2', 'Estado')
+                    ->setCellValue('G2', 'Comentario del remisionero')
+                    ->setCellValue('H2', 'Nota reciente');
 
         $stocks = Stock::where('article_id', '=', $article->id)->get();
 
@@ -473,11 +474,12 @@ class ArticleController extends BaseController {
             $objPHPExcel->setActiveSheetIndex(0)
                     ->setCellValue('A'. $fila, $fecha)
                     ->setCellValue('B'. $fila, $movimiento['tipo'])
-                    ->setCellValue('C'. $fila, $movimiento['sucursal'])
-                    ->setCellValue('D'. $fila, $movimiento['cantidad'])
-                    ->setCellValue('E'. $fila, $movimiento['estado'])
-                    ->setCellValue('F'. $fila, $movimiento['comentario'])
-                    ->setCellValue('G'. $fila, $movimiento['nota']);
+                    ->setCellValue('C'. $fila, $movimiento['id'])
+                    ->setCellValue('D'. $fila, $movimiento['sucursal'])
+                    ->setCellValue('E'. $fila, $movimiento['cantidad'])
+                    ->setCellValue('F'. $fila, $movimiento['estado'])
+                    ->setCellValue('G'. $fila, $movimiento['comentario'])
+                    ->setCellValue('H'. $fila, $movimiento['nota']);
 
             $fila++;
         }
@@ -495,6 +497,21 @@ class ArticleController extends BaseController {
 
         return Redirect::to('articles/search?filterBy=id&search='. $idArticle)
             ->with(array('mensajewell' => 'El archivo '. $nombre_archivo .' se ha creado con éxito, si la descarga no inicia automáticamente haga click <a id="descarga" href="'. url('excel/'. $nombre_archivo) .'">aquí</a> para descargarlo.<script>$(document).on("ready", function(){  $(location).attr("href", "'. url('excel/'. $nombre_archivo) .'");  });</script>'));
+
+        //Formula para calcular columna de saldo
+        /*
+        =SI(
+            Y(B4="compra";F4<>"cancelado");
+                I3+E4;
+                    SI(
+                        Y( O(B4="venta";B4="daño";B4="entrega inmediata"); F4<>"cancelado");
+                            I3-E4;
+                                I3
+                    )
+        )
+
+        =SI(Y(B4="compra";F4<>"cancelado");I3+E4;SI(Y(O(B4="venta";B4="daño";B4="entrega inmediata");F4<>"cancelado");I3-E4;I3))
+        */
 
     } #getExcelArticuloMovimientos
 

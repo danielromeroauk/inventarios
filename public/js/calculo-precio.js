@@ -1,3 +1,4 @@
+/*
 function calcularPrecio()
 {
     var costo = $('#cost').val();
@@ -9,3 +10,4 @@ function calcularPrecio()
 
 $('#cost').on('change', calcularPrecio);
 $('#iva').on('change', calcularPrecio);
+*/
