@@ -108,7 +108,7 @@ class SaleController extends BaseController {
 
             if(!empty($articleStock)) {
                 $articleStock->stock -= $amount;
-                $articleStock->update();
+                $articleStock->save();
             } #if !empty($ArticleStock)
 
         } catch (Exception $e) {
@@ -144,7 +144,8 @@ class SaleController extends BaseController {
                 /*Cambiar el status en la tabla sale a finalizado*/
                 $sale = Sale::find($input['sale']);
                 $sale->status = 'finalizado';
-                $sale->update();
+                $sale->save();
+
             } #if notaparcial == 'false'
 
             $saleStore = new SaleStore();
@@ -152,7 +153,6 @@ class SaleController extends BaseController {
             $ss['user_id'] = Auth::user()->id;
             $ss['comments'] = $input['comments'];
             $saleStore->create($ss);
-
 
             return Redirect::to('sales/items/'. $input['sale']);
 

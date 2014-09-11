@@ -126,12 +126,7 @@ class PurchaseController extends BaseController {
 
             $input = Input::all();
 
-            /*Verifica que la remisión de verdad está activa*/
-            $purchase = Purchase::find($input['purchase']);
-            if (in_array($purchase->status, array('finalizado', 'cancelado'))) {
-                return Redirect::to('purchases/items/'. $input['purchase']);
-            }
-
+            // Si no existe notaparcial es porque se está finalizando la remisión.
             if(!isset($input['notaparcial']))
             {
                 $pitems = PurchaseItem::where('purchase_id', '=', $input['purchase'])->get();
@@ -143,8 +138,8 @@ class PurchaseController extends BaseController {
                 /*Cambiar el status en la tabla purchase a finalizado*/
                 $purchase = Purchase::find($input['purchase']);
                 $purchase->status = 'finalizado';
-                $purchase->update();
-            } #if notaparcial == 'false'
+                $purchase->save();
+            }
 
             $purchaseStore = new PurchaseStore();
             $ps['purchase_id'] = $input['purchase'];
