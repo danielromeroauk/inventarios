@@ -44,11 +44,13 @@ class SaleController extends BaseController {
         }
 
         /*Crea el registro en la tabla sales*/
-        self::saveInSaleTable();
+        $sale = self::saveInSaleTable();
 
         /*Crea los registros en la tabla sale_items*/
-        foreach ($cart as $item) {
-            self::saveInSaleItemTable($item['article']->id, $item['amount']);
+        foreach ($cart as $item)
+        {
+            self::saveInSaleItemTable($item['article']->id, $item['amount'], $sale->id);
+
         } #foreach $cart as $item
 
         /*Vacía el carrito*/
@@ -65,33 +67,48 @@ class SaleController extends BaseController {
             $input = Input::all();
             $saleTable = new Sale();
 
+            $saleTable->user_id = Auth::user()->id;
+            $saleTable->branch_id = $input['branch_id'];
+            $saleTable->comments = $input['comments'];
+            $saleTable->status = 'pendiente';
+
+            $saleTable->save();
+
+            return $saleTable;
+/*
             $sale['user_id'] = Auth::user()->id;
             $sale['branch_id'] = $input['branch_id'];
             $sale['comments'] = $input['comments'];
             $sale['status'] = 'pendiente';
 
             $saleTable->create($sale);
-
+*/
         } catch (Exception $e) {
             die('No se pudo guardar el registro en ventas.');
         }
 
     } #saveInSaleTable
 
-    private function saveInSaleItemTable($idArticle, $amount)
+    private function saveInSaleItemTable($idArticle, $amount, $idSale)
     {
         try {
 
-            $sale_id = Sale::first()->orderBy('created_at', 'desc')->first()->id;
+            #$sale_id = Sale::first()->orderBy('created_at', 'desc')->first()->id;
 
-            $saleItemsTable = new SaleItem(); /* sit */
+            $saleItemsTable = new SaleItem();
+            $saleItemsTable->sale_id = $idSale;
+            $saleItemsTable->article_id = $idArticle;
+            $saleItemsTable->amount = $amount;
 
+            $saleItemsTable->save();
+
+/*
             $sit['sale_id'] = $sale_id;
             $sit['article_id'] = $idArticle;
             $sit['amount'] = $amount;
 
             $saleItemsTable->create($sit);
-
+*/
         } catch (Exception $e) {
             die($e .'No se pudo guardar el articulo '. $idArticle .' como item de la venta.');
         }
@@ -106,9 +123,11 @@ class SaleController extends BaseController {
             // $articleStock = Stock::where('article_id', '=', $idArticle)->where('branch_id', '=', $idBranch)->first();
             $articleStock = Stock::where('article_id', $idArticle)->where('branch_id', $idBranch)->first();
 
-            if(!empty($articleStock)) {
+            if(!empty($articleStock))
+            {
                 $articleStock->stock -= $amount;
                 $articleStock->save();
+
             } #if !empty($ArticleStock)
 
         } catch (Exception $e) {
@@ -149,11 +168,17 @@ class SaleController extends BaseController {
             } #if notaparcial == 'false'
 
             $saleStore = new SaleStore();
+            $saleStore->sale_id = $input['sale'];
+            $saleStore->user_id = Auth::user()->id;
+            $saleStore->comments = $input['comments'];
+            $saleStore->save();
+/*
+            $saleStore = new SaleStore();
             $ss['sale_id'] = $input['sale'];
             $ss['user_id'] = Auth::user()->id;
             $ss['comments'] = $input['comments'];
             $saleStore->create($ss);
-
+*/
             return Redirect::to('sales/items/'. $input['sale']);
 
         } catch (Exception $e) {
@@ -170,7 +195,7 @@ class SaleController extends BaseController {
             if ($sale->status != 'finalizado') {
 
                 $sale->status = 'cancelado';
-                $sale->update();
+                $sale->save();
 
             }
 

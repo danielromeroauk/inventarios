@@ -31,10 +31,13 @@ class PurchaseController extends BaseController {
             return Redirect::to('purchases');
         }
 
-        self::saveInPurchaseTable();
+        //Crea la compra y guarda la referencia a ella.
+        $purchase = self::saveInPurchaseTable();
 
-        foreach ($cart as $item) {
-            self::saveInPurchaseItemTable($item['article']->id, $item['amount']);
+        foreach ($cart as $item)
+        {
+            self::saveInPurchaseItemTable($item['article']->id, $item['amount'], $purchase->id);
+
         } #foreach $cart as $item
 
         Session::forget('cart');
@@ -50,34 +53,50 @@ class PurchaseController extends BaseController {
             $input = Input::all();
             $purchaseTable = new Purchase();
 
+            $purchaseTable->user_id = Auth::user()->id;
+            $purchaseTable->branch_id = $input['branch_id'];
+            $purchaseTable->comments = $input['comments'];
+            $purchaseTable->status = 'pendiente';
+
+            $purchaseTable->save();
+
+            return $purchaseTable;
+
+/*
             $purchase['user_id'] = Auth::user()->id;
             $purchase['branch_id'] = $input['branch_id'];
             $purchase['comments'] = $input['comments'];
             $purchase['status'] = 'pendiente';
 
             $purchaseTable->create($purchase);
-
+*/
         } catch (Exception $e) {
             die('No se pudo guardar el registro en compras.');
         }
 
     } #saveInPurchaseTable
 
-    private function saveInPurchaseItemTable($idArticle, $amount)
+    private function saveInPurchaseItemTable($idArticle, $amount, $idPurchase)
     {
         try {
 
-            $purchase_id = Purchase::first()->orderBy('created_at', 'desc')->first()->id;
+            #$purchase_id = Purchase::first()->orderBy('created_at', 'desc')->first()->id;
 
-            $purchaseItemsTable = new PurchaseItem(); /* pit */
-
+            $purchaseItemsTable = new PurchaseItem();
+            $purchaseItemsTable->purchase_id = $idPurchase;
+            $purchaseItemsTable->article_id = $idArticle;
+            $purchaseItemsTable->amount = $amount;
+            $purchaseItemsTable->save();
+/*
             $pit['purchase_id'] = $purchase_id;
             $pit['article_id'] = $idArticle;
             $pit['amount'] = $amount;
 
             $purchaseItemsTable->create($pit);
-
-        } catch (Exception $e) {
+*/
+        }
+        catch (Exception $e)
+        {
             die('No se pudo guardar el artículo '. $idArticle .' como item de la compra.');
         }
 
@@ -89,18 +108,26 @@ class PurchaseController extends BaseController {
 
             $articleStock = Stock::where('article_id', $idArticle)->where('branch_id', $idBranch)->first();
 
-            if(!empty($articleStock)) {
+            if(!empty($articleStock))
+            {
                 $articleStock->stock += $amount;
-                $articleStock->update();
-            } else {
-                $StockTable = new Stock();
-
+                $articleStock->save();
+            }
+            else
+            {
+                $stockTable = new Stock();
+                $stockTable->branch_id = $idBranch;
+                $stockTable->article_id = $idArticle;
+                $stockTable->stock = $amount;
+                $stockTable->minstock = 0;
+                $stockTable->save();
+/*
                 $stock['branch_id'] = $idBranch;
                 $stock['article_id'] = $idArticle;
                 $stock['stock'] = $amount;
                 $stock['minstock'] = 0;
-
-                $StockTable->create($stock);
+                $stockTable->create($stock);
+*/
             } #if !empty($ArticleStock)
 
         } catch (Exception $e) {
@@ -142,11 +169,16 @@ class PurchaseController extends BaseController {
             }
 
             $purchaseStore = new PurchaseStore();
+            $purchaseStore->purchase_id = $input['purchase'];
+            $purchaseStore->user_id = Auth::user()->id;
+            $purchaseStore->comments = $input['comments'];
+            $purchaseStore->save();
+/*
             $ps['purchase_id'] = $input['purchase'];
             $ps['user_id'] = Auth::user()->id;
             $ps['comments'] = $input['comments'];
             $purchaseStore->create($ps);
-
+*/
             return Redirect::to('purchases/items/'. $input['purchase']);
 
         } catch (Exception $e) {
@@ -164,7 +196,7 @@ class PurchaseController extends BaseController {
             if ($purchase->status != 'finalizado') {
 
                 $purchase->status = 'cancelado';
-                $purchase->update();
+                $purchase->save();
 
             }
 
