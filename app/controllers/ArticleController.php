@@ -15,7 +15,7 @@ class ArticleController extends BaseController {
 
         $articles = Article::orderBy('name', 'asc')->paginate(6);
 
-        $branches = Branche::all();
+        $branches = Branche::orderBy('name', 'asc')->get();
 
 		return View::make('articles.index')
 				->with(compact('articles', 'title', 'branches'));
@@ -36,6 +36,12 @@ class ArticleController extends BaseController {
 		if(Auth::user() && (Auth::user()->permitido('administrador') || Auth::user()->permitido('remisionero')))
         {
 			$input = Input::all();
+
+            //Redondea a dos decimales el costo
+            $input['cost'] = round($input['cost'], 2);
+
+            //Redondea a dos decimales el precio
+            $input['price'] = round($input['price'], 2);
 
 			$v = Validator::make($input, Article::$rules, Article::$messages);
 
@@ -95,6 +101,12 @@ class ArticleController extends BaseController {
     	$title = 'Editar artículo';
         $input = array_except(Input::all(), '_method');
         $id = $input['id'];
+
+        //Redondea a dos decimales el costo
+        $input['cost'] = round($input['cost'], 2);
+
+        //Redondea a dos decimales el precio
+        $input['price'] = round($input['price'], 2);
 
         $v = Validator::make($input, Article::$rules, Article::$messages);
 
@@ -179,7 +191,7 @@ class ArticleController extends BaseController {
         }
 
 
-        $branches = Branche::all();
+        $branches = Branche::orderBy('name', 'asc')->get();
 
         return View::make('articles.index')
                 ->with(compact('articles', 'title', 'branches', 'filtro', 'input'));
