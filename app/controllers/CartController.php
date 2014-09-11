@@ -34,6 +34,9 @@ class CartController extends BaseController {
     {
         $cart = array();
 
+        //Redondea a dos decimales la cantidad.
+        $cantidad = round($cantidad, 2);
+
         if (Session::has('cart')) {
             $cart = Session::get('cart');
         }
