@@ -460,7 +460,8 @@ class ArticleController extends BaseController {
                     ->setCellValue('E2', 'Cantidad')
                     ->setCellValue('F2', 'Estado')
                     ->setCellValue('G2', 'Comentario del remisionero')
-                    ->setCellValue('H2', 'Nota reciente');
+                    ->setCellValue('H2', 'Nota reciente')
+                    ->setCellValue('I2', 'Saldo (opcional)');
 
         $stocks = Stock::where('article_id', '=', $article->id)->get();
 
@@ -483,6 +484,13 @@ class ArticleController extends BaseController {
 
             $fila++;
         }
+
+        $formula = 'SI(Y(B4="compra";F4<>"cancelado");I3+E4;SI(Y(O(B4="venta";B4="daño";B4="entrega inmediata");F4<>"cancelado");I3-E4;I3))';
+
+        //Valor inicial de saldo
+        $objPHPExcel->setActiveSheetIndex(0)
+                ->setCellValue('I3', '0')
+                ->setCellValue('I4', (string) $formula);
 
         // Rename worksheet
         $objPHPExcel->getActiveSheet()->setTitle('m' . $article->id . date('_Ymd'));
