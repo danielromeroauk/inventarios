@@ -22,7 +22,8 @@ class SaleController extends BaseController {
         $cart = array();
         $input = Input::all();
 
-        if (Session::has('cart')) {
+        if (Session::has('cart'))
+        {
             $cart = Session::get('cart');
         }
 
@@ -30,8 +31,8 @@ class SaleController extends BaseController {
             return Redirect::to('sales');
         }
 
-        foreach ($cart as $item) {
-
+        foreach ($cart as $item)
+        {
             $check = Article::checkStock($item['article'], $input['branch_id'], $item['amount'], 'venta');
 
             /*Comprueba si hay suficiente stock en la sucursal*/
@@ -62,8 +63,8 @@ class SaleController extends BaseController {
 
     private function saveInSaleTable()
     {
-        try {
-
+        try
+        {
             $input = Input::all();
             $saleTable = new Sale();
 
@@ -75,15 +76,10 @@ class SaleController extends BaseController {
             $saleTable->save();
 
             return $saleTable;
-/*
-            $sale['user_id'] = Auth::user()->id;
-            $sale['branch_id'] = $input['branch_id'];
-            $sale['comments'] = $input['comments'];
-            $sale['status'] = 'pendiente';
 
-            $saleTable->create($sale);
-*/
-        } catch (Exception $e) {
+        }
+        catch (Exception $e)
+        {
             die('No se pudo guardar el registro en ventas.');
         }
 
@@ -91,10 +87,8 @@ class SaleController extends BaseController {
 
     private function saveInSaleItemTable($idArticle, $amount, $idSale)
     {
-        try {
-
-            #$sale_id = Sale::first()->orderBy('created_at', 'desc')->first()->id;
-
+        try
+        {
             $saleItemsTable = new SaleItem();
             $saleItemsTable->sale_id = $idSale;
             $saleItemsTable->article_id = $idArticle;
@@ -102,14 +96,9 @@ class SaleController extends BaseController {
 
             $saleItemsTable->save();
 
-/*
-            $sit['sale_id'] = $sale_id;
-            $sit['article_id'] = $idArticle;
-            $sit['amount'] = $amount;
-
-            $saleItemsTable->create($sit);
-*/
-        } catch (Exception $e) {
+        }
+        catch (Exception $e)
+        {
             die($e .'No se pudo guardar el articulo '. $idArticle .' como item de la venta.');
         }
 
@@ -147,12 +136,13 @@ class SaleController extends BaseController {
 
     public function postSaleStore()
     {
-        try {
-
+        try
+        {
             $input = Input::all();
+            $sale = Sale::find($input['sale']);
 
-            // Si no existe notaparcial es porque se está finalizando la remisión.
-            if(!isset($input['notaparcial']))
+            // Si no existe notaparcial y está pendiente es porque se está finalizando la remisión.
+            if(!isset($input['notaparcial']) && $sale->status == 'pendiente')
             {
                 $sitems = SaleItem::where('sale_id', '=', $input['sale'])->get();
 
@@ -165,35 +155,32 @@ class SaleController extends BaseController {
                 $sale->status = 'finalizado';
                 $sale->save();
 
-            } #if notaparcial == 'false'
+            }
 
             $saleStore = new SaleStore();
             $saleStore->sale_id = $input['sale'];
             $saleStore->user_id = Auth::user()->id;
             $saleStore->comments = $input['comments'];
             $saleStore->save();
-/*
-            $saleStore = new SaleStore();
-            $ss['sale_id'] = $input['sale'];
-            $ss['user_id'] = Auth::user()->id;
-            $ss['comments'] = $input['comments'];
-            $saleStore->create($ss);
-*/
+
             return Redirect::to('sales/items/'. $input['sale']);
 
-        } catch (Exception $e) {
+        }
+        catch (Exception $e)
+        {
             die('No se pudo disminuir el stock.');
         }
+
     } #postSaleStore
 
     public function getCancel($idSale)
     {
-        try {
-
+        try
+        {
             $sale = Sale::find($idSale);
 
-            if ($sale->status != 'finalizado') {
-
+            if ($sale->status != 'finalizado')
+            {
                 $sale->status = 'cancelado';
                 $sale->save();
 
@@ -201,10 +188,13 @@ class SaleController extends BaseController {
 
             return Redirect::to('sales/items/'. $idSale);
 
-        } catch (Exception $e) {
+        }
+        catch (Exception $e)
+        {
             die('No fue posible cancelar la venta.');
         }
-    }
+
+    } #getCancel
 
     public function getFilterByStatus()
     {

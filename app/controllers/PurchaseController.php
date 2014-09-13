@@ -23,11 +23,13 @@ class PurchaseController extends BaseController {
         $cart = array();
         $input = Input::all();
 
-        if (Session::has('cart')) {
+        if (Session::has('cart'))
+        {
             $cart = Session::get('cart');
         }
 
-        if (empty($cart)) {
+        if (empty($cart))
+        {
             return Redirect::to('purchases');
         }
 
@@ -48,8 +50,8 @@ class PurchaseController extends BaseController {
 
     private function saveInPurchaseTable()
     {
-        try {
-
+        try
+        {
             $input = Input::all();
             $purchaseTable = new Purchase();
 
@@ -62,15 +64,9 @@ class PurchaseController extends BaseController {
 
             return $purchaseTable;
 
-/*
-            $purchase['user_id'] = Auth::user()->id;
-            $purchase['branch_id'] = $input['branch_id'];
-            $purchase['comments'] = $input['comments'];
-            $purchase['status'] = 'pendiente';
-
-            $purchaseTable->create($purchase);
-*/
-        } catch (Exception $e) {
+        }
+        catch (Exception $e)
+        {
             die('No se pudo guardar el registro en compras.');
         }
 
@@ -78,22 +74,13 @@ class PurchaseController extends BaseController {
 
     private function saveInPurchaseItemTable($idArticle, $amount, $idPurchase)
     {
-        try {
-
-            #$purchase_id = Purchase::first()->orderBy('created_at', 'desc')->first()->id;
-
+        try
+        {
             $purchaseItemsTable = new PurchaseItem();
             $purchaseItemsTable->purchase_id = $idPurchase;
             $purchaseItemsTable->article_id = $idArticle;
             $purchaseItemsTable->amount = $amount;
             $purchaseItemsTable->save();
-/*
-            $pit['purchase_id'] = $purchase_id;
-            $pit['article_id'] = $idArticle;
-            $pit['amount'] = $amount;
-
-            $purchaseItemsTable->create($pit);
-*/
         }
         catch (Exception $e)
         {
@@ -104,8 +91,8 @@ class PurchaseController extends BaseController {
 
     private function saveInStockTable($idBranch, $idArticle, $amount)
     {
-        try {
-
+        try
+        {
             $articleStock = Stock::where('article_id', $idArticle)->where('branch_id', $idBranch)->first();
 
             if(!empty($articleStock))
@@ -121,16 +108,12 @@ class PurchaseController extends BaseController {
                 $stockTable->stock = $amount;
                 $stockTable->minstock = 0;
                 $stockTable->save();
-/*
-                $stock['branch_id'] = $idBranch;
-                $stock['article_id'] = $idArticle;
-                $stock['stock'] = $amount;
-                $stock['minstock'] = 0;
-                $stockTable->create($stock);
-*/
+
             } #if !empty($ArticleStock)
 
-        } catch (Exception $e) {
+        }
+        catch (Exception $e)
+        {
             die('No se pudo modificar el stock del artículo'. $idArticle .' en la sucursal '. $idBranch);
         }
 
@@ -149,18 +132,20 @@ class PurchaseController extends BaseController {
 
     public function postPurchaseStore()
     {
-        try {
-
+        try
+        {
             $input = Input::all();
+            $purchase = Purchase::find($input['purchase']);
 
-            // Si no existe notaparcial es porque se está finalizando la remisión.
-            if(!isset($input['notaparcial']))
+            // Si no existe notaparcial y está pendiente es porque se está finalizando la remisión.
+            if(!isset($input['notaparcial']) && $purchase->status == 'pendiente')
             {
                 $pitems = PurchaseItem::where('purchase_id', '=', $input['purchase'])->get();
 
-                foreach ($pitems as $pitem) {
+                foreach ($pitems as $pitem)
+                {
                     self::saveInStockTable($input['branch_id'], $pitem->article->id, $pitem->amount);
-                } #foreach
+                }
 
                 /*Cambiar el status en la tabla purchase a finalizado*/
                 $purchase = Purchase::find($input['purchase']);
@@ -173,15 +158,12 @@ class PurchaseController extends BaseController {
             $purchaseStore->user_id = Auth::user()->id;
             $purchaseStore->comments = $input['comments'];
             $purchaseStore->save();
-/*
-            $ps['purchase_id'] = $input['purchase'];
-            $ps['user_id'] = Auth::user()->id;
-            $ps['comments'] = $input['comments'];
-            $purchaseStore->create($ps);
-*/
+
             return Redirect::to('purchases/items/'. $input['purchase']);
 
-        } catch (Exception $e) {
+        }
+        catch (Exception $e)
+        {
             die('No se pudo aumentar el stock.<br />');
         }
 
@@ -189,20 +171,21 @@ class PurchaseController extends BaseController {
 
     public function getCancel($idPurchase)
     {
-        try {
-
+        try
+        {
             $purchase = Purchase::find($idPurchase);
 
-            if ($purchase->status != 'finalizado') {
-
+            if ($purchase->status != 'finalizado')
+            {
                 $purchase->status = 'cancelado';
                 $purchase->save();
-
             }
 
             return Redirect::to('purchases/items/'. $idPurchase);
 
-        } catch (Exception $e) {
+        }
+        catch (Exception $e)
+        {
             die('No fue posible cancelar la compra.');
         }
 
