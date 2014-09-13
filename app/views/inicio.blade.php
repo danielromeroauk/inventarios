@@ -3,7 +3,7 @@
 @section('content')
 
 	<div class="col-md-3">
-		<img src="img/inventarios.jpg" alt="inventarios" class="img-responsive" />
+		<img src="{{url('img/inventarios.jpg')}}" alt="inventarios" class="img-responsive" />
 	</div>
 
 	<div class="col-md-6">

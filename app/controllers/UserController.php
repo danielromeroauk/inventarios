@@ -28,39 +28,41 @@ class UserController extends BaseController {
 
 		$v = Validator::make($input, $rules, User::$messages);
 
-		if ($v->fails()) {
-
+		if ($v->fails())
+		{
 			return Redirect::to('users/index')
 					->withInput()
 					->withErrors($v)
 					->with('message');
 
-		} else {
+		}
+		else
+		{
 			$credentials = array(
 				'email' => $input['email'],
 				'password' => $input['password']
 			);
 
-			if (Auth::attempt($credentials)) {
-				$title = 'Perfil';
+			if (Auth::attempt($credentials))
+			{
+				$title = 'Inicio';
 				Session::forget('message');
 
-				return View::make('users.profile')->with('title', $title);
+				return View::make('inicio')->with('title', $title);
 
-			} else {
+			}
+			else
+			{
 				$title = 'LogIn';
 				$message = 'El email o el password introducidos no son correctos.';
 				Session::flash('message', $message);
 
 				return View::make('users.index')
 					->with(array('title' => $title, 'email' => $input['email']));
-
-				// return View::make('users/index')
-				// 	->with(array('message' => $message, 'title' => $title))
-				// 	->withInput();
 			}
 		}
-	}
+
+	} #postIndex
 
 	public function getRegister()
 	{
