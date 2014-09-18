@@ -134,7 +134,7 @@
 
                     <h3>COP$ {{ number_format($article->price, 2, ',', '.') }}</h3>
 
-                    @if(Auth::check() && (Auth::user()->permitido('administrador') || Auth::user()->permitido('remisionero')))
+                    @if(Auth::check() && (Auth::user()->permitido('administrador') || Auth::user()->permitido('remisionero') || Auth::user()->permitido('bodeguero')))
 
                          {{ Form::open(array('url' => 'cart/add', 'class' => 'form-inline')) }}
 
@@ -212,7 +212,15 @@
                                     <td>{{ $article->inRotationsTo($branch) .' '. $article->unit }}</td>
                                 </tr>
                                     <td>Daño</td>
-                                    <td>{{ $article->inDamages($branch) .' '. $article->unit }}</td>
+                                    <td>
+                                        @if($article->inDamages($branch) > 0)
+                                            <a href="{{ url('damages/filter-by-article-dates?article='. $article->id .'&fecha1=2000-01-01&fecha2=2038-12-31') }}" class="btn btn-default">
+                                                {{ $article->inDamages($branch) .' '. $article->unit }}
+                                            </a>
+                                        @else
+                                            {{ $article->inDamages($branch) .' '. $article->unit }}
+                                        @endif
+                                    </td>
                                 </tr>
                             </table>
                         </div>

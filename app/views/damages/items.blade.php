@@ -68,7 +68,11 @@
                     </tr>
                     @foreach($ditems as $ditem)
                         <tr>
-                            <td>{{ $ditem->article->id }}</td>
+                            <td>
+                                <a href="{{ url('articles/search?filterBy=id&search='. $ditem->article->id) }}">
+                                    {{ $ditem->article->id }}
+                                </a>
+                            </td>
                             <td>{{ $ditem->article->name }}</td>
                             <td>{{ $ditem->amount .' '. $ditem->article->unit }}</td>
                         </tr>
@@ -93,7 +97,7 @@
                         {{ Form::input('hidden', 'branch_id', $damage->branch->id) }}
                         {{ Form::input('hidden', 'notaparcial', 'false', array('id' => 'notap')) }}
                         {{ Form::textarea('comments', '', array('id' => 'comments', 'rows' => '3', 'class' => 'form-control', 'placeholder' => 'Comentarios del bodeguero.', 'maxlength' => '255', 'required')) }}
-                        <span class="button" id="notaparcial">
+                        <span class="btn btn-success btn-sm" id="notaparcial">
                             <span class="glyphicon glyphicon-comment"></span>
                             Registrar nota parcial
                         </span>
@@ -104,12 +108,12 @@
                         {{ Form::submit('Enviar', array('class' => 'hidden')) }}
                     {{ Form::close() }}
 
-                    @if(Auth::user()->permitido('remisionero') || Auth::user()->permitido('administrador'))
+                    @if(Auth::user()->permitido('remisionero') || Auth::user()->permitido('administrador') || Auth::user()->permitido('bodeguero'))
 
-                            {{ '<a href="'. url('damages/cancel/'. $damage->id) .'" class="btn btn-danger btn-sm">
-                                <span class="glyphicon glyphicon-minus-sign"></span>
-                                Cancelar remisión
-                            </a>' }}
+                        {{ '<a href="'. url('damages/cancel/'. $damage->id) .'" class="btn btn-danger btn-sm">
+                            <span class="glyphicon glyphicon-minus-sign"></span>
+                            Cancelar remisión
+                        </a>' }}
 
                     @endif
 

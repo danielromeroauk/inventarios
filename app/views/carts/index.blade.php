@@ -159,13 +159,19 @@
 
             <div id="tabs">
               <ul>
-                <li><a href="#tab1"><span>Compra</span></a></li>
-                <li><a href="#tab2"><span>Venta</span></a></li>
+                @if(Auth::user()->permitido('administrador') || Auth::user()->permitido('remisionero'))
+
+                    <li><a href="#tab1"><span>Compra</span></a></li>
+                    <li><a href="#tab2"><span>Venta</span></a></li>
+                    <li><a href="#tab4"><span>Entrega inmediata</span></a></li>
+                    <li><a href="#tab5"><span>Rotación</span></a></li>
+
+                @endif
+
                 <li><a href="#tab3"><span>Daño</span></a></li>
-                <li><a href="#tab4"><span>Entrega inmediata</span></a></li>
-                <li><a href="#tab5"><span>Rotación</span></a></li>
               </ul>
 
+            @if(Auth::user()->permitido('administrador') || Auth::user()->permitido('remisionero'))
               <div id="tab1">
 
                 {{ Form::open(array('url' => 'purchases/add', 'id' => 'purchaseForm')) }}
@@ -207,27 +213,6 @@
                 {{ Form::close() }}
 
               </div><!-- /#tab2 -->
-
-              <div id="tab3">
-
-                {{ Form::open(array('url' => 'damages/add', 'id' => 'damageForm')) }}
-                        <div class="input-group">
-                            <span class="input-group-addon">Sucursal: </span>
-                            {{ Form::text('branch', '', array('id' => 'branch3', 'class' => 'form-control', 'placeholder' => 'Especifique la sucursal donde sucedió el daño.', 'title' => 'Sucursal', 'maxlength' => '255', 'required', 'readonly')) }}
-                            <a href="#branchesModal" class="input-group-addon btn btn-success" id="examinar3" data-toggle="modal">Examinar</a>
-                        </div> <!-- /input-group -->
-                        {{ Form::input('hidden', 'branch_id', '', array('id' => 'branch_id3')) }}
-                        {{ Form::textarea('comments', '', array('rows' => '3', 'class' => 'form-control', 'placeholder' => 'Datos adicionales de daño.', 'maxlength' => '255')) }}
-                        <p> </p>
-
-                        <a href="#damageModal" class="button" data-toggle="modal">
-                            <span class="glyphicon glyphicon-floppy-save"></span>
-                            Enviar daño
-                        </a>
-                        {{ Form::submit('Enviar', array('class' => 'hidden')) }}
-                {{ Form::close() }}
-
-              </div><!-- /#tab3 -->
 
               <div id="tab4">
 
@@ -272,6 +257,29 @@
                 {{ Form::close() }}
 
               </div><!-- /#tab5 -->
+
+            @endif
+
+              <div id="tab3">
+
+                {{ Form::open(array('url' => 'damages/add', 'id' => 'damageForm')) }}
+                        <div class="input-group">
+                            <span class="input-group-addon">Sucursal: </span>
+                            {{ Form::text('branch', '', array('id' => 'branch3', 'class' => 'form-control', 'placeholder' => 'Especifique la sucursal donde sucedió el daño.', 'title' => 'Sucursal', 'maxlength' => '255', 'required', 'readonly')) }}
+                            <a href="#branchesModal" class="input-group-addon btn btn-success" id="examinar3" data-toggle="modal">Examinar</a>
+                        </div> <!-- /input-group -->
+                        {{ Form::input('hidden', 'branch_id', '', array('id' => 'branch_id3')) }}
+                        {{ Form::textarea('comments', '', array('rows' => '3', 'class' => 'form-control', 'placeholder' => 'Datos adicionales de daño.', 'maxlength' => '255')) }}
+                        <p> </p>
+
+                        <a href="#damageModal" class="button" data-toggle="modal">
+                            <span class="glyphicon glyphicon-floppy-save"></span>
+                            Enviar daño
+                        </a>
+                        {{ Form::submit('Enviar', array('class' => 'hidden')) }}
+                {{ Form::close() }}
+
+              </div><!-- /#tab3 -->
 
             </div><!-- /#tabs -->
 
