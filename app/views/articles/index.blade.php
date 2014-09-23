@@ -61,7 +61,7 @@
                 <input type="radio" name="filterBy" value="comments" /> Por adicionales
               </span>
 
-              {{ Form::text('search', '', array('placeholder' => 'Buscar...', 'class' => 'form-control')) }}
+              {{ Form::text('search', '', array('placeholder' => 'Buscar...', 'class' => 'form-control', 'autofocus')) }}
               <span class="input-group-btn">
                 <button class="btn btn-default" type="submit">Buscar</button>
               </span>
@@ -118,6 +118,12 @@
                     <span class="glyphicon glyphicon-road"></span>
                     Ver historial de cambios
                 </a>
+
+                <div class="well">
+                    <h4>Ventas recientes</h4>
+
+                </div>
+
               </div> <!-- /#tab1 -->
 
               <div id="tab2-{{ $article->id }}">
@@ -126,7 +132,8 @@
                         {{ '<img src="'. url('img/articles/'. $article->image()->first()->image) .'" class="img-rounded">' }}
                     @else
                         <!-- <img src="http://placehold.it/150x150" /> -->
-                        <img src="{{ url('img/150x150.gif') }}" />
+                        <!-- <img src="{{ url('img/150x150.gif') }}" /> -->
+                        <div class="img"></div>
                     @endif
                 </div>
 
