@@ -21,10 +21,16 @@ ul.purchase, ul.sale, ul.damage, ul.instant, ul.rotation {
 
 .article-image, .article-image img {
     display:inline-block;
+    max-height: 100px;
     margin: 0 2em 1.5em 0;
-    max-height:150px;
-    max-width:150px;
+    max-width:100px;
     vertical-align:top;
+}
+
+.img {
+    border: dashed 1px #3576BE;
+    height: 100px;
+    width: 100px;
 }
 
 .boton-aplicar {
