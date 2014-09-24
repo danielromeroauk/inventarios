@@ -10,7 +10,10 @@
         <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
     @endif
 
+    {{ HTML::script('js/jquery.timeago.js') }}
+
     <script>
+
         (function($){
 
             $(document).on('ready', iniciar);
@@ -38,9 +41,16 @@
                 $("#btnFiltrar").on('click', function(){
                     $(".acordion").toggle("slow");
                 });
+
+                $('.tabs ul li a').on('click', function()
+                    {
+                        var elem = $(this).attr('href') + ' .timeago';
+                        $(elem).timeago();
+                    });
             }
 
         })(jQuery);
+
     </script>
 
 @stop
@@ -93,6 +103,21 @@
               </ul>
 
               <div id="tab1-{{ $article->id }}">
+
+                @if($article->ventaReciente() != '2013-01-01')
+                    <div class="well">
+                        <p>
+                            La venta más reciente fue registrada
+                            <time class="timeago" datetime="{{ $article->ventaReciente() }}">{{ $article->ventaReciente() }}</time>.
+                        </p>
+
+                        <a href="{{ url('sales/filter-by-article?article='. $article->id) }}" class="btn btn-default btn-xs">
+                            <span class="glyphicon glyphicon-search"></span>
+                            Ver más...
+                        </a>
+                    </div>
+                @endif
+
                 <table class="table table-bordered table-hover">
                     <tr>
                         <th>Código</th>
@@ -118,11 +143,6 @@
                     <span class="glyphicon glyphicon-road"></span>
                     Ver historial de cambios
                 </a>
-
-                <div class="well">
-                    <h4>Ventas recientes</h4>
-
-                </div>
 
               </div> <!-- /#tab1 -->
 

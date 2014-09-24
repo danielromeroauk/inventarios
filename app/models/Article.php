@@ -390,4 +390,22 @@ class Article extends Eloquent {
 
     } #movimientos
 
+    public function ventaReciente()
+    {
+        $reciente = SaleItem::where('article_id', '=', $this->id)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        if(!empty($reciente))
+        {
+            return $reciente->created_at;
+        }
+        else
+        {
+            return '2013-01-01';
+        }
+
+
+    } #ventaReciente
+
 } #Article
