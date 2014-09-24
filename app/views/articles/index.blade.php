@@ -105,16 +105,18 @@
               <div id="tab1-{{ $article->id }}">
 
                 @if($article->ventaReciente() != '2013-01-01')
-                    <div class="well">
+                    <div class="alert alert-info">
                         <p>
                             La venta más reciente fue registrada
                             <time class="timeago" datetime="{{ $article->ventaReciente() }}">{{ $article->ventaReciente() }}</time>.
                         </p>
 
-                        <a href="{{ url('sales/filter-by-article?article='. $article->id) }}" class="btn btn-default btn-xs">
-                            <span class="glyphicon glyphicon-search"></span>
-                            Ver más...
-                        </a>
+                        <p>
+                            <a href="{{ url('sales/filter-by-article?article='. $article->id) }}" class="btn btn-default btn-xs">
+                                <span class="glyphicon glyphicon-search"></span>
+                                Ver más...
+                            </a>
+                        </p>
                     </div>
                 @endif
 
