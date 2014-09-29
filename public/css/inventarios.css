@@ -6,6 +6,10 @@ div.panel-footer form {
     font-size: .875em;
 }
 
+*[class*=alert-] {
+    max-width: 79em;
+}
+
 ul.purchase, ul.sale, ul.damage, ul.instant, ul.rotation {
     list-style-type: none;
     margin: 0;
