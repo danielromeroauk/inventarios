@@ -35,7 +35,7 @@
                 });
 
                 $('#examinar1').on('click', function(){
-                    $('#branchesModal .modal-body').load( "{{  url('branches/select?campo1=branch&campo2=branch_id') }}" );
+                    $('#branchesModal .modal-body').load( "{{ url('branches/select?campo1=branch&campo2=branch_id') }}" );
                 });
 
                 $("#btnFiltrar").on('click', function(){
