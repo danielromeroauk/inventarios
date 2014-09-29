@@ -58,6 +58,21 @@ ul.purchase, ul.sale, ul.damage, ul.instant, ul.rotation {
     display: block;
 }
 
+#busquedaform {
+    float: none;
+}
+
+#busquedaform .grupobusqueda {
+    clear: both;
+    margin: 0 0 1em 0;
+    max-width: 79em;
+    min-width: 365px;
+}
+
+#busquedaform .grupofilterBy {
+    padding: 0;
+}
+
 #encabezado {
     margin-bottom: 2px;
 }

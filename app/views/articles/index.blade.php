@@ -2,341 +2,342 @@
 
 @section('head')
 
-    @if(Config::get('app.entorno') == 'local')
-        {{ HTML::style('css/jquery-ui-smoothness.css') }}
-        {{ HTML::script('js/jquery-ui.js') }}
-    @else
-        <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
-        <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-    @endif
+	@if(Config::get('app.entorno') == 'local')
+		{{ HTML::style('css/jquery-ui-smoothness.css') }}
+		{{ HTML::script('js/jquery-ui.js') }}
+	@else
+		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+		<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+	@endif
 
-    {{ HTML::script('js/jquery.timeago.js') }}
+	{{ HTML::script('js/jquery.timeago.js') }}
 
-    <script>
+	<script>
 
-        (function($){
+		(function($){
 
-            $(document).on('ready', iniciar);
+			$(document).on('ready', iniciar);
 
-            function iniciar() {
-                $('.pagination').addClass('btn-toolbar');
-                $('.pagination ul').addClass('btn-group');
-                $('.pagination ul li').addClass('btn btn-default');
+			function iniciar() {
+				$('.pagination').addClass('btn-toolbar');
+				$('.pagination ul').addClass('btn-group');
+				$('.pagination ul li').addClass('btn btn-default');
 
-                $('.tabs').tabs({ active: 1 });
+				$('.tabs').tabs({ active: 1 });
 
-                $('.acordion').accordion({
-                    heightStyle: "content"
-                });
+				$('.acordion').accordion({
+					heightStyle: "content"
+				});
 
-                $('.auk-imagen').on('click', function(){
-                    var url = "{{ url('articles/image') }}" + "/" + $(this).attr('id') ;
-                    $('#imagenModal .modal-body').load( url );
-                });
+				$('.auk-imagen').on('click', function(){
+					var url = "{{ url('articles/image') }}" + "/" + $(this).attr('id') ;
+					$('#imagenModal .modal-body').load( url );
+				});
 
-                $('#examinar1').on('click', function(){
-                    $('#branchesModal .modal-body').load( "{{ url('branches/select?campo1=branch&campo2=branch_id') }}" );
-                });
+				$('#examinar1').on('click', function(){
+					$('#branchesModal .modal-body').load( "{{ url('branches/select?campo1=branch&campo2=branch_id') }}" );
+				});
 
-                $("#btnFiltrar").on('click', function(){
-                    $(".acordion").toggle("slow");
-                });
+				$("#btnFiltrar").on('click', function(){
+					$(".acordion").toggle("slow");
+				});
 
-                $('.tabs ul li a').on('click', function()
-                    {
-                        var elem = $(this).attr('href') + ' .timeago';
-                        $(elem).timeago();
-                    });
-            }
+				$('.tabs ul li a').on('click', function()
+					{
+						var elem = $(this).attr('href') + ' .timeago';
+						$(elem).timeago();
+					});
+			}
 
-        })(jQuery);
+		})(jQuery);
 
-    </script>
+	</script>
 
 @stop
 
 @section('content')
 
-    <h1>Informe de Artículos</h1>
-    <div style="margin-bottom:1em;">
-        {{ Form::open(array('url' => 'articles/search', 'method' => 'get')) }}
-            <div class="input-group">
-              <span class="input-group-addon">
-                <input type="radio" name="filterBy" value="id" /> Por código
-              </span>
-              <span class="input-group-addon">
-                <input type="radio" name="filterBy" value="name" checked /> Por nombre
-              </span>
-              <span class="input-group-addon">
-                <input type="radio" name="filterBy" value="comments" /> Por adicionales
-              </span>
+	<h1>Informe de Artículos</h1>
 
-              {{ Form::text('search', '', array('placeholder' => 'Buscar...', 'class' => 'form-control', 'autofocus')) }}
-              <span class="input-group-btn">
-                <button class="btn btn-default" type="submit">Buscar</button>
-              </span>
-            </div><!-- /input-group -->
-        {{ Form::close() }}
+	{{ Form::open(array('url' => 'articles/search', 'method' => 'get', 'id' => 'busquedaform')) }}
+		<div class="input-group col-xs-3 grupofilterBy">
+			<span class="input-group-addon">
+			<input type="radio" name="filterBy" value="id" /> Por código
+			</span>
+			<span class="input-group-addon">
+			<input type="radio" name="filterBy" value="name" checked /> Por nombre
+			</span>
+			<span class="input-group-addon">
+			<input type="radio" name="filterBy" value="comments" /> Por adicionales
+			</span>
+		</div>
 
-        @if(isset($filtro))
-            <div class="alert alert-dismissable alert-info">
-              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-              {{ $filtro }}
-            </div>
-        @endif
-    </div>
+		<div class="input-group grupobusqueda">
+			{{ Form::text('search', '', array('placeholder' => 'Buscar...', 'class' => 'form-control', 'autofocus')) }}
+				<span class="input-group-btn">
+					<button class="btn btn-default" type="submit">Buscar</button>
+				</span>
+		</div><!-- /input-group -->
+	{{ Form::close() }}
 
-    @foreach($articles as $article)
-    <div class="col-lg-6 articulo">
-        <div class="panel panel-primary">
-          <div class="panel-heading">
-                <span class="glyphicon glyphicon-send"></span>
-                {{ $article->name }}
-          </div>
-          <div class="panel-body">
+	@if(isset($filtro))
+		<div class="alert alert-dismissable alert-info">
+		  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+		  {{ $filtro }}
+		</div>
+	@endif
 
-            <div class="tabs">
-              <ul>
-                {{ '<li><a href="#tab1-'. $article->id .'"><span>Datos generales</span></a></li>' }}
-                {{ '<li><a href="#tab2-'. $article->id .'"><span>Stock disponible</span></a></li>' }}
-                {{ '<li><a href="#tab3-'. $article->id .'"><span>Stock en pendientes</span></a></li>' }}
-              </ul>
+	@foreach($articles as $article)
+	<div class="col-lg-6 articulo">
+		<div class="panel panel-primary">
+		  <div class="panel-heading">
+				<span class="glyphicon glyphicon-send"></span>
+				{{ $article->name }}
+		  </div>
+		  <div class="panel-body">
 
-              <div id="tab1-{{ $article->id }}">
+			<div class="tabs">
+			  <ul>
+				{{ '<li><a href="#tab1-'. $article->id .'"><span>Datos generales</span></a></li>' }}
+				{{ '<li><a href="#tab2-'. $article->id .'"><span>Stock disponible</span></a></li>' }}
+				{{ '<li><a href="#tab3-'. $article->id .'"><span>Stock en pendientes</span></a></li>' }}
+			  </ul>
 
-                @if($article->ventaReciente() != '2013-01-01')
-                    <div class="alert alert-info">
-                        <p>
-                            La venta más reciente fue registrada
-                            <time class="timeago" datetime="{{ $article->ventaReciente() }}">{{ $article->ventaReciente() }}</time>.
-                        </p>
+			  <div id="tab1-{{ $article->id }}">
 
-                        <p>
-                            <a href="{{ url('sales/filter-by-article?article='. $article->id) }}" class="btn btn-default btn-xs">
-                                <span class="glyphicon glyphicon-search"></span>
-                                Ver más...
-                            </a>
-                        </p>
-                    </div>
-                @endif
+				@if($article->ventaReciente() != '2013-01-01')
+					<div class="alert alert-info">
+						<p>
+							La venta más reciente fue registrada
+							<time class="timeago" datetime="{{ $article->ventaReciente() }}">{{ $article->ventaReciente() }}</time>.
+						</p>
 
-                <table class="table table-bordered table-hover">
-                    <tr>
-                        <th>Código</th>
-                        <th>Medida</th>
-                        <th>Costo</th>
-                        <th>Precio</th>
-                        <th>IVA</th>
-                    </tr>
-                    <tr>
-                        <td>{{ $article->id }}</td>
-                        <td>{{ $article->unit }}</td>
-                        <td>{{ number_format($article->cost, 2, ',', '.') }}</td>
-                        <td>{{ number_format($article->price, 2, ',', '.') }}</td>
-                        <td>{{ $article->iva }}%</td>
-                    </tr>
-                </table>
+						<p>
+							<a href="{{ url('sales/filter-by-article?article='. $article->id) }}" class="btn btn-default btn-xs">
+								<span class="glyphicon glyphicon-search"></span>
+								Ver más...
+							</a>
+						</p>
+					</div>
+				@endif
 
-                @if(!empty($article->comments))
-                    <p class="well">{{ $article->comments }}</p>
-                @endif
+				<table class="table table-bordered table-hover">
+					<tr>
+						<th>Código</th>
+						<th>Medida</th>
+						<th>Costo</th>
+						<th>Precio</th>
+						<th>IVA</th>
+					</tr>
+					<tr>
+						<td>{{ $article->id }}</td>
+						<td>{{ $article->unit }}</td>
+						<td>{{ number_format($article->cost, 2, ',', '.') }}</td>
+						<td>{{ number_format($article->price, 2, ',', '.') }}</td>
+						<td>{{ $article->iva }}%</td>
+					</tr>
+				</table>
 
-                <a href="{{ url('articles/show-changes/'. $article->id) }}" class="link">
-                    <span class="glyphicon glyphicon-road"></span>
-                    Ver historial de cambios
-                </a>
+				@if(!empty($article->comments))
+					<p class="well">{{ $article->comments }}</p>
+				@endif
 
-              </div> <!-- /#tab1 -->
+				<a href="{{ url('articles/show-changes/'. $article->id) }}" class="link">
+					<span class="glyphicon glyphicon-road"></span>
+					Ver historial de cambios
+				</a>
 
-              <div id="tab2-{{ $article->id }}">
-                <div class="article-image">
-                    @if(isset($article->image()->first()->image))
-                        {{ '<img src="'. url('img/articles/'. $article->image()->first()->image) .'" class="img-rounded">' }}
-                    @else
-                        <!-- <img src="http://placehold.it/150x150" /> -->
-                        <!-- <img src="{{ url('img/150x150.gif') }}" /> -->
-                        <div class="img"></div>
-                    @endif
-                </div>
+			  </div> <!-- /#tab1 -->
 
-                <div style="display:inline-block;">
+			  <div id="tab2-{{ $article->id }}">
+				<div class="article-image">
+					@if(isset($article->image()->first()->image))
+						{{ '<img src="'. url('img/articles/'. $article->image()->first()->image) .'" class="img-rounded">' }}
+					@else
+						<!-- <img src="http://placehold.it/150x150" /> -->
+						<!-- <img src="{{ url('img/150x150.gif') }}" /> -->
+						<div class="img"></div>
+					@endif
+				</div>
 
-                    <h3>COP$ {{ number_format($article->price, 2, ',', '.') }}</h3>
+				<div style="display:inline-block;">
 
-                    @if(Auth::check() && (Auth::user()->permitido('administrador') || Auth::user()->permitido('remisionero') || Auth::user()->permitido('bodeguero')))
+					<h3>COP$ {{ number_format($article->price, 2, ',', '.') }}</h3>
 
-                         {{ Form::open(array('url' => 'cart/add', 'class' => 'form-inline')) }}
+					@if(Auth::check() && (Auth::user()->permitido('administrador') || Auth::user()->permitido('remisionero') || Auth::user()->permitido('bodeguero')))
 
-                            {{ Form::text('id', $article->id, array('class' => 'hidden')) }}
+						 {{ Form::open(array('url' => 'cart/add', 'class' => 'form-inline')) }}
 
-                            <div class="col-xs-9 alcarrito">
-                                {{ Form::input('number', 'cantidad', '1.00', array('class' => 'form-control input-sm', 'min' => '0.01', 'step' => '0.01', 'max' => '99999999999999.99', 'title' => 'Cantidad', 'required')) }}
-                            </div>
+							{{ Form::text('id', $article->id, array('class' => 'hidden')) }}
 
-                            <button type="submit" class="btn btn-success btn-sm">
-                                <span class="glyphicon glyphicon-shopping-cart"></span>
-                            </button>
+							<div class="col-xs-9 alcarrito">
+								{{ Form::input('number', 'cantidad', '1.00', array('class' => 'form-control input-sm', 'min' => '0.01', 'step' => '0.01', 'max' => '99999999999999.99', 'title' => 'Cantidad', 'required')) }}
+							</div>
 
-                        {{ Form::close() }}
+							<button type="submit" class="btn btn-success btn-sm">
+								<span class="glyphicon glyphicon-shopping-cart"></span>
+							</button>
 
-                    @endif
+						{{ Form::close() }}
 
-                </div>
+					@endif
 
-                <div>
-                    <table class="table table-stripped table-hover">
-                        <tr>
-                            <th>Sucursal</th>
-                            <th>Stock disponible</th>
-                        </tr>
-                        @foreach($article->stocks as $stock)
-                            <tr>
-                                <td>{{ $stock->branch->name }}</td>
-                                <td>{{ $article->disponible($stock->branch) .' '. $article->unit }}</td>
-                            </tr>
-                        @endforeach
-                    </table>
-                </div>
+				</div>
 
-              </div> <!-- /#tab2 -->
+				<div>
+					<table class="table table-stripped table-hover">
+						<tr>
+							<th>Sucursal</th>
+							<th>Stock disponible</th>
+						</tr>
+						@foreach($article->stocks as $stock)
+							<tr>
+								<td>{{ $stock->branch->name }}</td>
+								<td>{{ $article->disponible($stock->branch) .' '. $article->unit }}</td>
+							</tr>
+						@endforeach
+					</table>
+				</div>
 
-              <div id="tab3-{{ $article->id }}">
-                <div class="acordion">
-                    @foreach($branches as $branch)
-                        <h3>{{ $branch->name }}</h3>
-                        <div>
-                            <table class="table table-stripped table-hover">
-                                <tr>
-                                    <th>Tipo de movimiento</th>
-                                    <th>Cantidad pendiente</th>
-                                </tr>
-                                <tr>
-                                    <td>Compra</td>
-                                    <td>
-                                        @if($article->inPurchases($branch) > 0)
-                                            <a href="{{ url('purchases/filter-by-status-article-dates?estado=pendiente&article='. $article->id .'&fecha1=2000-01-01&fecha2=2038-12-31') }}" class="btn btn-default">
-                                                {{ $article->inPurchases($branch) .' '. $article->unit }}
-                                            </a>
-                                        @else
-                                            {{ $article->inPurchases($branch) .' '. $article->unit }}
-                                        @endif
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Venta</td>
-                                    <td>
-                                        @if($article->inSales($branch) > 0)
-                                            <a href="{{ url('sales/filter-by-status-article-dates?estado=pendiente&article='. $article->id .'&fecha1=2000-01-01&fecha2=2038-12-31') }}" class="btn btn-default">
-                                                {{ $article->inSales($branch) .' '. $article->unit }}
-                                            </a>
-                                        @else
-                                            {{ $article->inSales($branch) .' '. $article->unit }}
-                                        @endif
-                                    </td>
-                                </tr>
-                                    <td>Origen de rotación</td>
-                                    <td>{{ $article->inRotationsFrom($branch) .' '. $article->unit }}</td>
-                                </tr>
-                                    <td>Destino de rotación</td>
-                                    <td>{{ $article->inRotationsTo($branch) .' '. $article->unit }}</td>
-                                </tr>
-                                    <td>Daño</td>
-                                    <td>
-                                        @if($article->inDamages($branch) > 0)
-                                            <a href="{{ url('damages/filter-by-article-dates?article='. $article->id .'&fecha1=2000-01-01&fecha2=2038-12-31') }}" class="btn btn-default">
-                                                {{ $article->inDamages($branch) .' '. $article->unit }}
-                                            </a>
-                                        @else
-                                            {{ $article->inDamages($branch) .' '. $article->unit }}
-                                        @endif
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                    @endforeach
+			  </div> <!-- /#tab2 -->
 
-                    <h3>Informe de todos los movimientos en cualquier estado</h3>
-                    <div>
-                        {{ Form::open(array('url' => 'articles/movimientos/'. $article->id, 'method' => 'get')) }}
+			  <div id="tab3-{{ $article->id }}">
+				<div class="acordion">
+					@foreach($branches as $branch)
+						<h3>{{ $branch->name }}</h3>
+						<div>
+							<table class="table table-stripped table-hover">
+								<tr>
+									<th>Tipo de movimiento</th>
+									<th>Cantidad pendiente</th>
+								</tr>
+								<tr>
+									<td>Compra</td>
+									<td>
+										@if($article->inPurchases($branch) > 0)
+											<a href="{{ url('purchases/filter-by-status-article-dates?estado=pendiente&article='. $article->id .'&fecha1=2000-01-01&fecha2=2038-12-31') }}" class="btn btn-default">
+												{{ $article->inPurchases($branch) .' '. $article->unit }}
+											</a>
+										@else
+											{{ $article->inPurchases($branch) .' '. $article->unit }}
+										@endif
+									</td>
+								</tr>
+								<tr>
+									<td>Venta</td>
+									<td>
+										@if($article->inSales($branch) > 0)
+											<a href="{{ url('sales/filter-by-status-article-dates?estado=pendiente&article='. $article->id .'&fecha1=2000-01-01&fecha2=2038-12-31') }}" class="btn btn-default">
+												{{ $article->inSales($branch) .' '. $article->unit }}
+											</a>
+										@else
+											{{ $article->inSales($branch) .' '. $article->unit }}
+										@endif
+									</td>
+								</tr>
+									<td>Origen de rotación</td>
+									<td>{{ $article->inRotationsFrom($branch) .' '. $article->unit }}</td>
+								</tr>
+									<td>Destino de rotación</td>
+									<td>{{ $article->inRotationsTo($branch) .' '. $article->unit }}</td>
+								</tr>
+									<td>Daño</td>
+									<td>
+										@if($article->inDamages($branch) > 0)
+											<a href="{{ url('damages/filter-by-article-dates?article='. $article->id .'&fecha1=2000-01-01&fecha2=2038-12-31') }}" class="btn btn-default">
+												{{ $article->inDamages($branch) .' '. $article->unit }}
+											</a>
+										@else
+											{{ $article->inDamages($branch) .' '. $article->unit }}
+										@endif
+									</td>
+								</tr>
+							</table>
+						</div>
+					@endforeach
 
-                            <div class="input-group">
-                                <span class="input-group-addon">Desde:</span>
-                                <input type="date" name="fecha1" class="form-control", title="Fecha inicio" required />
-                            </div>
+					<h3>Informe de todos los movimientos en cualquier estado</h3>
+					<div>
+						{{ Form::open(array('url' => 'articles/movimientos/'. $article->id, 'method' => 'get')) }}
 
-                            <div class="input-group">
-                                <span class="input-group-addon">Hasta:</span>
-                                <input type="date" name="fecha2" class="form-control", title="Fecha fin" required />
-                            </div>
+							<div class="input-group">
+								<span class="input-group-addon">Desde:</span>
+								<input type="date" name="fecha1" class="form-control", title="Fecha inicio" required />
+							</div>
 
-                            <br />
+							<div class="input-group">
+								<span class="input-group-addon">Hasta:</span>
+								<input type="date" name="fecha2" class="form-control", title="Fecha fin" required />
+							</div>
 
-                            <button class="btn btn-default btn-sm" type="submit">Generar informe</button>
+							<br />
 
-                        {{ Form::close() }}
-                    </div>
+							<button class="btn btn-default btn-sm" type="submit">Generar informe</button>
 
-                </div> <!-- /.acordion -->
-              </div> <!-- /#tab3 -->
+						{{ Form::close() }}
+					</div>
 
-            </div> <!-- /#tabs -->
+				</div> <!-- /.acordion -->
+			  </div> <!-- /#tab3 -->
 
-          </div> <!-- /.panel-body -->
+			</div> <!-- /#tabs -->
 
-            @if(Auth::check() && (Auth::user()->permitido('administrador') || Auth::user()->permitido('remisionero')))
+		  </div> <!-- /.panel-body -->
 
-              <div class="panel-footer">
+			@if(Auth::check() && (Auth::user()->permitido('administrador') || Auth::user()->permitido('remisionero')))
 
-                    {{ '<a href="'. url('articles/edit/'. $article->id) .'" class="btn btn-primary btn-sm">
-                        <span class="glyphicon glyphicon-edit"></span>
-                        Editar
-                    </a>' }}
+			  <div class="panel-footer">
 
-                    {{ '<a href="#imagenModal" data-toggle="modal" class="btn btn-info btn-sm auk-imagen" id="'. $article->id .'">
-                        <span class="glyphicon glyphicon-picture"></span>
-                        Cambiar imagen
-                    </a>' }}
+					{{ '<a href="'. url('articles/edit/'. $article->id) .'" class="btn btn-primary btn-sm">
+						<span class="glyphicon glyphicon-edit"></span>
+						Editar
+					</a>' }}
 
-                    {{ '<a href="'. url('articles/excel-by-article/'. $article->id) .'" class="btn btn-success btn-sm auk-imagen" id="'. $article->id .'">
-                        <span class="glyphicon glyphicon-export"></span>
-                        Exportar stock
-                    </a>' }}
+					{{ '<a href="#imagenModal" data-toggle="modal" class="btn btn-info btn-sm auk-imagen" id="'. $article->id .'">
+						<span class="glyphicon glyphicon-picture"></span>
+						Cambiar imagen
+					</a>' }}
 
-                    @if(isset($article->image()->first()->image))
-                        {{ '<a href="'. url('articles/quitar-imagen/'. $article->id) .'" class="btn btn-danger btn-sm" id="'. $article->id .'">
-                            <span class="glyphicon remove"></span>
-                            Quitar imagen
-                        </a>' }}
-                    @endif
+					{{ '<a href="'. url('articles/excel-by-article/'. $article->id) .'" class="btn btn-success btn-sm auk-imagen" id="'. $article->id .'">
+						<span class="glyphicon glyphicon-export"></span>
+						Exportar stock
+					</a>' }}
 
-              </div> <!-- /.panel.footer -->
+					@if(isset($article->image()->first()->image))
+						{{ '<a href="'. url('articles/quitar-imagen/'. $article->id) .'" class="btn btn-danger btn-sm" id="'. $article->id .'">
+							<span class="glyphicon remove"></span>
+							Quitar imagen
+						</a>' }}
+					@endif
 
-            @endif
+			  </div> <!-- /.panel.footer -->
 
-        </div> <!-- /.panel.panel-primary -->
+			@endif
 
-    </div> <!-- /.col-lg-6 -->
-    @endforeach
+		</div> <!-- /.panel.panel-primary -->
 
-    @if(isset($input))
-        {{$articles->appends(array_except($input, 'page'))->links()}}
-    @else
-        {{$articles->links()}}
-    @endif
+	</div> <!-- /.col-lg-6 -->
+	@endforeach
 
-    <!-- Modal -->
-      <div class="modal fade" id="imagenModal">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
-              <h4 class="modal-title">Cambiar imagen</h4>
-            </div>
-            <div class="modal-body">
-              No se ha podido cargar el formulario para cambiar la imagen.
-            </div>
-          </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-      </div><!-- /.modal -->
+	@if(isset($input))
+		{{$articles->appends(array_except($input, 'page'))->links()}}
+	@else
+		{{$articles->links()}}
+	@endif
+
+	<!-- Modal -->
+	  <div class="modal fade" id="imagenModal">
+		<div class="modal-dialog">
+		  <div class="modal-content">
+			<div class="modal-header">
+			  <button type="button" class="close" data-dismiss="modal" aria-hidden="false">&times;</button>
+			  <h4 class="modal-title">Cambiar imagen</h4>
+			</div>
+			<div class="modal-body">
+			  No se ha podido cargar el formulario para cambiar la imagen.
+			</div>
+		  </div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	  </div><!-- /.modal -->
 
 @stop
