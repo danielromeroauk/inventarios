@@ -82,91 +82,92 @@
 
 	@if(isset($filtro))
 		<div class="alert alert-dismissable alert-info">
-		  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-		  {{ $filtro }}
+			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+			{{ $filtro }}
 		</div>
 	@endif
 
 	@foreach($articles as $article)
 	<div class="col-lg-6 articulo">
 		<div class="panel panel-primary">
-		  <div class="panel-heading">
+			<div class="panel-heading">
 				<span class="glyphicon glyphicon-send"></span>
 				{{ $article->name }}
-		  </div>
-		  <div class="panel-body">
+			</div>
+
+			<div class="panel-body">
 
 			<div class="tabs">
-			  <ul>
-				{{ '<li><a href="#tab1-'. $article->id .'"><span>Datos generales</span></a></li>' }}
-				{{ '<li><a href="#tab2-'. $article->id .'"><span>Stock disponible</span></a></li>' }}
-				{{ '<li><a href="#tab3-'. $article->id .'"><span>Stock en pendientes</span></a></li>' }}
-			  </ul>
+				<ul>
+					{{ '<li><a href="#tab1-'. $article->id .'"><span>Datos generales</span></a></li>' }}
+					{{ '<li><a href="#tab2-'. $article->id .'"><span>Stock disponible</span></a></li>' }}
+					{{ '<li><a href="#tab3-'. $article->id .'"><span>Stock en pendientes</span></a></li>' }}
+				</ul>
 
-			  <div id="tab1-{{ $article->id }}">
+				<div id="tab1-{{ $article->id }}">
 
-				@if($article->ventaReciente() != '2013-01-01')
-					<div class="alert alert-info">
-						<p>
-							La venta más reciente fue registrada
-							<time class="timeago" datetime="{{ $article->ventaReciente() }}">{{ $article->ventaReciente() }}</time>.
-						</p>
+					@if($article->ventaReciente() != '2013-01-01')
+						<div class="alert alert-info">
+							<p>
+								La venta más reciente fue registrada
+								<time class="timeago" datetime="{{ $article->ventaReciente() }}">{{ $article->ventaReciente() }}</time>.
+							</p>
 
-						<p>
-							<a href="{{ url('sales/filter-by-article?article='. $article->id) }}" class="btn btn-default btn-xs">
-								<span class="glyphicon glyphicon-search"></span>
-								Ver más...
-							</a>
-						</p>
-					</div>
-				@endif
-
-				<table class="table table-bordered table-hover">
-					<tr>
-						<th>Código</th>
-						<th>Medida</th>
-						<th>Costo</th>
-						<th>Precio</th>
-						<th>IVA</th>
-					</tr>
-					<tr>
-						<td>{{ $article->id }}</td>
-						<td>{{ $article->unit }}</td>
-						<td>{{ number_format($article->cost, 2, ',', '.') }}</td>
-						<td>{{ number_format($article->price, 2, ',', '.') }}</td>
-						<td>{{ $article->iva }}%</td>
-					</tr>
-				</table>
-
-				@if(!empty($article->comments))
-					<p class="well">{{ $article->comments }}</p>
-				@endif
-
-				<a href="{{ url('articles/show-changes/'. $article->id) }}" class="link">
-					<span class="glyphicon glyphicon-road"></span>
-					Ver historial de cambios
-				</a>
-
-			  </div> <!-- /#tab1 -->
-
-			  <div id="tab2-{{ $article->id }}">
-				<div class="article-image">
-					@if(isset($article->image()->first()->image))
-						{{ '<img src="'. url('img/articles/'. $article->image()->first()->image) .'" class="img-rounded">' }}
-					@else
-						<!-- <img src="http://placehold.it/150x150" /> -->
-						<!-- <img src="{{ url('img/150x150.gif') }}" /> -->
-						<div class="img"></div>
+							<p>
+								<a href="{{ url('sales/filter-by-article?article='. $article->id) }}" class="btn btn-default btn-xs">
+									<span class="glyphicon glyphicon-search"></span>
+									Ver más...
+								</a>
+							</p>
+						</div>
 					@endif
-				</div>
 
-				<div style="display:inline-block;">
+					<table class="table table-bordered table-hover">
+						<tr>
+							<th>Código</th>
+							<th>Medida</th>
+							<th>Costo</th>
+							<th>Precio</th>
+							<th>IVA</th>
+						</tr>
+						<tr>
+							<td>{{ $article->id }}</td>
+							<td>{{ $article->unit }}</td>
+							<td>{{ number_format($article->cost, 2, ',', '.') }}</td>
+							<td>{{ number_format($article->price, 2, ',', '.') }}</td>
+							<td>{{ $article->iva }}%</td>
+						</tr>
+					</table>
 
-					<h3>COP$ {{ number_format($article->price, 2, ',', '.') }}</h3>
+					@if(!empty($article->comments))
+						<p class="well">{{ $article->comments }}</p>
+					@endif
 
-					@if(Auth::check() && (Auth::user()->permitido('administrador') || Auth::user()->permitido('remisionero') || Auth::user()->permitido('bodeguero')))
+					<a href="{{ url('articles/show-changes/'. $article->id) }}" class="link">
+						<span class="glyphicon glyphicon-road"></span>
+						Ver historial de cambios
+					</a>
 
-						 {{ Form::open(array('url' => 'cart/add', 'class' => 'form-inline')) }}
+				</div> <!-- /#tab1 -->
+
+				<div id="tab2-{{ $article->id }}">
+					<div class="article-image">
+						@if(isset($article->image()->first()->image))
+							{{ '<img src="'. url('img/articles/'. $article->image()->first()->image) .'" class="img-rounded">' }}
+						@else
+							<!-- <img src="http://placehold.it/150x150" /> -->
+							<!-- <img src="{{ url('img/150x150.gif') }}" /> -->
+							<div class="img"></div>
+						@endif
+					</div>
+
+					<div style="display:inline-block;">
+
+						<h3>$ {{ number_format($article->price, 2, ',', '.') }} COP</h3>
+
+						@if(Auth::check() && (Auth::user()->permitido('administrador') || Auth::user()->permitido('remisionero') || Auth::user()->permitido('bodeguero')))
+
+							{{ Form::open(array('url' => 'cart/add', 'class' => 'form-inline')) }}
 
 							{{ Form::text('id', $article->id, array('class' => 'hidden')) }}
 
@@ -178,26 +179,26 @@
 								<span class="glyphicon glyphicon-shopping-cart"></span>
 							</button>
 
-						{{ Form::close() }}
+							{{ Form::close() }}
 
-					@endif
+						@endif
 
-				</div>
+					</div>
 
-				<div>
-					<table class="table table-stripped table-hover">
-						<tr>
-							<th>Sucursal</th>
-							<th>Stock disponible</th>
-						</tr>
-						@foreach($article->stocks as $stock)
+					<div>
+						<table class="table table-stripped table-hover">
 							<tr>
-								<td>{{ $stock->branch->name }}</td>
-								<td>{{ $article->disponible($stock->branch) .' '. $article->unit }}</td>
+								<th>Sucursal</th>
+								<th>Stock disponible</th>
 							</tr>
-						@endforeach
-					</table>
-				</div>
+							@foreach($article->stocks as $stock)
+								<tr>
+									<td>{{ $stock->branch->name }}</td>
+									<td>{{ $article->disponible($stock->branch) .' '. $article->unit }}</td>
+								</tr>
+							@endforeach
+						</table>
+					</div>
 
 			  </div> <!-- /#tab2 -->
 
