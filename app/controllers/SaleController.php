@@ -70,7 +70,13 @@ class SaleController extends BaseController {
 
 			$saleTable->user_id = Auth::user()->id;
 			$saleTable->branch_id = $input['branch_id'];
-			$saleTable->comments = $input['comments'];
+
+			$saleTable->comments = $input['fechareal'] .' '
+				. $input['documento'] .' '
+				. $input['nombre'] .' '
+				. $input['nit'] .' '
+				. $input['direccion'];
+
 			$saleTable->status = 'pendiente';
 
 			$saleTable->save();

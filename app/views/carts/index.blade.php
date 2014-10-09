@@ -69,10 +69,47 @@
 
 		function validarSale()
 		{
-			if ($('#branch_id2').val() != '') {
-				$('#saleForm').submit();
-			} else {
-				alert('Faltan campos de la venta por diligenciar.');
+			if ($('#branch_id2').val() != '')
+			{
+				var documento = $('#documento').val();
+				var nombre = $('#nombre').val();
+				var nit = $('#nit').val();
+				var direccion = $('#direccion').val();
+
+				if (documento != '')
+				{
+					if (nombre != '')
+					{
+						if (nit != '')
+						{
+							if (direccion != '')
+							{
+								$('#saleForm').submit();
+
+							}
+							else
+							{
+								alert('El campo direccion es obligatorio');
+							}
+						}
+						else
+						{
+							alert('El campo NIT/CC es obligatorio');
+						}
+					}
+					else
+					{
+						alert('El campo nombre es obligatorio');
+					}
+				}
+				else
+				{
+					alert('El campo documento es obligatorio');
+				}
+			}
+			else
+			{
+				alert('El campo sucursal es obligatorio');
 			}
 		}
 
@@ -203,15 +240,34 @@
 									{{ Form::text('branch', '', array('id' => 'branch2', 'class' => 'form-control', 'placeholder' => 'Especifique la sucursal que debe entregar el contenido del carrito.', 'title' => 'Sucursal', 'maxlength' => '255', 'required', 'readonly')) }}
 									<a href="#branchesModal" class="input-group-addon btn btn-success" id="examinar2" data-toggle="modal">Examinar</a>
 								</div> <!-- /input-group -->
+
 								{{ Form::input('hidden', 'branch_id', '', array('id' => 'branch_id2')) }}
-								{{ Form::textarea('comments', '', array('rows' => '3', 'class' => 'form-control', 'placeholder' => 'Datos adicionales de la venta.', 'maxlength' => '255')) }}
+
+								<div class="input-group">
+									<span class="input-group-addon">Fecha real: </span>
+									{{Form::input('date', 'fechareal', date('Y-m-d'), ['class' => 'form-control'])}}
+								</div>
+
+								{{Form::text('documento', 'FACTURA X', ['id' => 'documento', 'class' => 'form-control', 'maxlength' => '20', 'required'])}}
+
+								<div class="input-group">
+									<span class="input-group-addon">Nombre: </span>
+									{{Form::text('nombre', '', ['id' => 'nombre', 'class' => 'form-control', 'maxlength' => '130', 'required'])}}
+								</div>
+
+								{{Form::text('nit', 'NIT: X', ['id' => 'nit', 'class' => 'form-control', 'maxlength' => '20', 'required'])}}
+
+								{{Form::textarea('direccion', 'DIRECCION: X', ['id' => 'direccion', 'rows' => '3', 'class' => 'form-control', 'maxlength' => '70', 'required'])}}
+
 								<p> </p>
 
 								<a href="#saleModal" class="button" data-toggle="modal">
 									<span class="glyphicon glyphicon-floppy-save"></span>
 									Enviar venta
 								</a>
+
 								{{ Form::submit('Enviar', array('class' => 'hidden')) }}
+
 						{{ Form::close() }}
 
 					</div><!-- /#tab2 -->
