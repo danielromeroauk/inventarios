@@ -248,16 +248,16 @@
 									{{Form::input('date', 'fechareal', date('Y-m-d'), ['class' => 'form-control'])}}
 								</div>
 
-								{{Form::text('documento', 'FACTURA X', ['id' => 'documento', 'class' => 'form-control', 'maxlength' => '20', 'required'])}}
+								{{Form::text('documento', 'FACTURA: ', ['id' => 'documento', 'class' => 'form-control', 'maxlength' => '20', 'required'])}}
 
 								<div class="input-group">
 									<span class="input-group-addon">Nombre: </span>
 									{{Form::text('nombre', '', ['id' => 'nombre', 'class' => 'form-control', 'maxlength' => '130', 'required'])}}
 								</div>
 
-								{{Form::text('nit', 'NIT: X', ['id' => 'nit', 'class' => 'form-control', 'maxlength' => '20', 'required'])}}
+								{{Form::text('nit', 'NIT: ', ['id' => 'nit', 'class' => 'form-control', 'maxlength' => '20', 'required'])}}
 
-								{{Form::textarea('direccion', 'DIRECCION: X', ['id' => 'direccion', 'rows' => '3', 'class' => 'form-control', 'maxlength' => '70', 'required'])}}
+								{{Form::textarea('direccion', 'DIRECCION: ', ['id' => 'direccion', 'rows' => '3', 'class' => 'form-control', 'maxlength' => '70', 'required'])}}
 
 								<p> </p>
 
