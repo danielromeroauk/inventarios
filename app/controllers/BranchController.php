@@ -175,7 +175,7 @@ class BranchController extends BaseController {
         $objPHPExcel->setActiveSheetIndex(0)
                     ->setCellValue('A3', 'Código de artículo')
                     ->setCellValue('B3', 'Nombre de artículo')
-                    ->setCellValue('C3', 'Stock')
+                    ->setCellValue('C3', 'Stock físico')
                     ->setCellValue('D3', 'Unidad de medida')
                     ->setCellValue('E3', 'Precio unitario')
                     ->setCellValue('F3', 'Costo unitario')
