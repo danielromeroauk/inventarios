@@ -25,8 +25,10 @@ class CartController extends BaseController {
 
 		self::addToCart($article, $cantidad);
 
-		return View::make('carts.index')
-			->with(compact('title'));
+		return Redirect::back();
+
+		/*return View::make('carts.index')
+			//->with(compact('title'));*/
 
 	} #postAdd
 
