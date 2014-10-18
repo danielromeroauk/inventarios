@@ -237,10 +237,18 @@
 									</td>
 								</tr>
 									<td>Origen de rotación</td>
-									<td>{{ $article->inRotationsFrom($branch) .' '. $article->unit }}</td>
+									<td>
+									    <a href="{{url('rotations/filter-by-status?estado=pendiente+en+origen')}}" class="btn btn-default">
+									        {{ $article->inRotationsFrom($branch) .' '. $article->unit }}
+									    </a>
+									</td>
 								</tr>
 									<td>Destino de rotación</td>
-									<td>{{ $article->inRotationsTo($branch) .' '. $article->unit }}</td>
+									<td>
+									    <a href="{{url('rotations/filter-by-status?estado=pendiente+en+destino')}}" class="btn btn-default">
+									        {{ $article->inRotationsTo($branch) .' '. $article->unit }}
+									    </a>
+									</td>
 								</tr>
 									<td>Daño</td>
 									<td>

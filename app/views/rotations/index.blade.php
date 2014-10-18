@@ -194,17 +194,17 @@
             <div class="panel panel-success">
                 <div class="panel-heading">
                     <span class="glyphicon glyphicon-retweet"></span>
-                    Código de rotación: {{ $rotation->id }}
+                    Rotación {{ $rotation->id }}
+                    Creada por {{ $rotation->user->name }}
+                    el día {{ $rotation->created_at }}
                 </div>
                 <div class="panel-body">
+                    <p><strong>{{ strtoupper($rotation->status) }}</strong></p>
                     <ul class="rotation">
-                        <li><strong>Estado:</strong> {{ $rotation->status }}</li>
-                        <li><strong>Fecha de creación:</strong> {{ $rotation->created_at }}</li>
-                        <li><strong>De la sucursal:</strong> {{ $rotation->branch_from()->first()->name }}</li>
-                        <li><strong>Para la sucursal:</strong> {{ $rotation->branch_to()->first()->name }}</li>
-                        <li><strong>Usuario:</strong> {{ $rotation->user->name }}</li>
-                        <li><strong>Fecha de modificación:</strong> {{ $rotation->updated_at }}</li>
+                        <li><strong>Origen:</strong> {{ $rotation->branch_from()->first()->name }}</li>
+                        <li><strong>Destino:</strong> {{ $rotation->branch_to()->first()->name }}</li>
                     </ul>
+                    <p>Modificada el día {{ $rotation->updated_at }}</p>
                     <p>{{ $rotation->comments }}</p>
                 </div>
                 <div class="panel-footer">

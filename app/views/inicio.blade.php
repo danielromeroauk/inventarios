@@ -56,10 +56,10 @@
 			</tr>
 			<tr>
 				<td>Rotaciones</td>
-				<td class="center">{{ Rotation::where('status', '=', 'pendiente')->count() }}</td>
+				<td class="center">{{ Rotation::where('status', 'like', 'pendiente%')->count() }}</td>
 				@if (Auth::check())
 					<td>
-						<a href="{{ url('rotations/filter-by-status?estado=pendiente') }}">
+						<a href="{{ url('rotations/filter-by-status?estado=pendiente%') }}">
 							<span class="glyphicon glyphicon-search"></span>
 							Ver informe
 						</a>

@@ -220,7 +220,7 @@ class RotationController extends BaseController {
         $title = 'Rotaciones';
         $input = Input::all();
 
-        $rotations = Rotation::where('status', '=', $input['estado'])->orderBy('id', 'desc')->paginate(6);
+        $rotations = Rotation::where('status', 'like', $input['estado'])->orderBy('id', 'desc')->paginate(6);
 
         $filterRotation = 'Rotaciones con estado <strong>'. $input['estado'] .'</strong>';
 
