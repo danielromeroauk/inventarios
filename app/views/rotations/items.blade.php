@@ -170,10 +170,15 @@
                         {{ Form::submit('Enviar', array('class' => 'hidden')) }}
                     {{ Form::close() }}
 
+                @endif
+
+                @if( $rotation->status != 'finalizado' )
+
                     <span class="btn btn-success btn-sm" id="notaparcial">
                         <span class="glyphicon glyphicon-comment"></span>
                         Comentar
                     </span>
+
                 @endif
 
             </div><!-- /.panel-footer -->
