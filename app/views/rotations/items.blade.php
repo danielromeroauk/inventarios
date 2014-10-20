@@ -159,9 +159,17 @@
                         {{ Form::submit('Enviar', array('class' => 'hidden')) }}
                     {{ Form::close() }}
 
-                @endif
 
-                @if($rotation->status != 'finalizado')
+                @elseif( $rotation->status != 'finalizado' )
+
+                    {{ Form::open(array('url' => 'rotations/rotation-store', 'id' => 'rotationStoreForm')) }}
+                        {{ Form::input('hidden', 'rotation', $rotation->id) }}
+                        {{ Form::input('hidden', 'notaparcial', 'true', array('id' => 'notap')) }}
+                        {{ Form::textarea('comments_to', '', array('id' => 'comments', 'rows' => '3', 'class' => 'form-control', 'placeholder' => 'Comentarios.', 'maxlength' => '255', 'required')) }}
+
+                        {{ Form::submit('Enviar', array('class' => 'hidden')) }}
+                    {{ Form::close() }}
+
                     <span class="btn btn-success btn-sm" id="notaparcial">
                         <span class="glyphicon glyphicon-comment"></span>
                         Comentar

@@ -2,379 +2,379 @@
 
 class RotationController extends BaseController {
 
-    public function getIndex()
-    {
-        $title = 'Rotaciones';
-        $branchUser = Auth::user()->roles()->first()->branch;
+	public function getIndex()
+	{
+		$title = 'Rotaciones';
+		$branchUser = Auth::user()->roles()->first()->branch;
 
-        $rotations = Rotation::where('status', '<>', 'finalizado')->whereRaw('branch_from = "'. $branchUser->id .'" OR branch_to = "'. $branchUser->id .'"')->orderBy('id', 'desc')->paginate(6);
+		$rotations = Rotation::where('status', '<>', 'finalizado')->whereRaw('branch_from = "'. $branchUser->id .'" OR branch_to = "'. $branchUser->id .'"')->orderBy('id', 'desc')->paginate(6);
 
-        $filterRotation = 'Rotaciones <strong>sin finalizar</strong> de la sucursal <strong>'. $branchUser->name .'</strong>.';
+		$filterRotation = 'Rotaciones <strong>sin finalizar</strong> de la sucursal <strong>'. $branchUser->name .'</strong>.';
 
-        return View::make('rotations.index')
-                ->with(compact('title', 'rotations', 'filterRotation'));
+		return View::make('rotations.index')
+				->with(compact('title', 'rotations', 'filterRotation'));
 
-    } #getIndex
+	} #getIndex
 
-    public function postAdd()
-    {
-        $title = 'Proceso de rotación';
-        $cart = array();
-        $input = Input::all();
+	public function postAdd()
+	{
+		$title = 'Proceso de rotación';
+		$cart = array();
+		$input = Input::all();
 
-        if (Session::has('cart')) {
-            $cart = Session::get('cart');
-        }
+		if (Session::has('cart')) {
+			$cart = Session::get('cart');
+		}
 
-        if (empty($cart)) {
-            return Redirect::to('rotations');
-        }
+		if (empty($cart)) {
+			return Redirect::to('rotations');
+		}
 
-        foreach ($cart as $item) {
+		foreach ($cart as $item) {
 
-            $check = Article::checkStock($item['article'], $input['branch_from'], $item['amount'], 'rotación');
+			$check = Article::checkStock($item['article'], $input['branch_from'], $item['amount'], 'rotación');
 
-            /*Comprueba si hay suficiente stock en la sucursal*/
-            if ($check != 'Ok') {
-                Session::flash('message', $check);
+			/*Comprueba si hay suficiente stock en la sucursal*/
+			if ($check != 'Ok') {
+				Session::flash('message', $check);
 
-                return Redirect::to('cart');
-            }
-        }
+				return Redirect::to('cart');
+			}
+		}
 
-        /*Crea el registro en la tabla rotations*/
-        self::saveInRotationTable();
+		/*Crea el registro en la tabla rotations*/
+		self::saveInRotationTable();
 
-        /*Crea los registros en la tabla rotation_items*/
-        foreach ($cart as $item) {
-            self::saveInRotationItemTable($item['article']->id, $item['amount']);
-        } #foreach $cart as $item
+		/*Crea los registros en la tabla rotation_items*/
+		foreach ($cart as $item) {
+			self::saveInRotationItemTable($item['article']->id, $item['amount']);
+		} #foreach $cart as $item
 
-        /*Vacía el carrito*/
-        Session::forget('cart');
+		/*Vacía el carrito*/
+		Session::forget('cart');
 
-        return Redirect::to('rotations');
+		return Redirect::to('rotations/filter-by-status?estado=pendiente%');
 
-    } #postAdd
+	} #postAdd
 
-    private function saveInRotationTable()
-    {
-        try {
+	private function saveInRotationTable()
+	{
+		try {
 
-            $input = Input::all();
-            $rotationTable = new Rotation();
+			$input = Input::all();
+			$rotationTable = new Rotation();
 
-            $rotation['user_id'] = Auth::user()->id;
-            $rotation['branch_from'] = $input['branch_from'];
-            $rotation['branch_to'] = $input['branch_to'];
-            $rotation['comments'] = $input['comments'];
-            $rotation['status'] = 'pendiente en origen';
+			$rotation['user_id'] = Auth::user()->id;
+			$rotation['branch_from'] = $input['branch_from'];
+			$rotation['branch_to'] = $input['branch_to'];
+			$rotation['comments'] = $input['comments'];
+			$rotation['status'] = 'pendiente en origen';
 
-            $rotationTable->create($rotation);
+			$rotationTable->create($rotation);
 
-        } catch (Exception $e) {
-            die('No se pudo guardar el registro en rotaciones.');
-        }
+		} catch (Exception $e) {
+			die('No se pudo guardar el registro en rotaciones.');
+		}
 
-    } #saveInRotationTable
+	} #saveInRotationTable
 
-    private function saveInRotationItemTable($idArticle, $amount)
-    {
-        try {
+	private function saveInRotationItemTable($idArticle, $amount)
+	{
+		try {
 
-            $rotation_id = Rotation::first()->orderBy('created_at', 'desc')->first()->id;
+			$rotation_id = Rotation::first()->orderBy('created_at', 'desc')->first()->id;
 
-            $rotationItemsTable = new RotationItem(); /* rit */
+			$rotationItemsTable = new RotationItem(); /* rit */
 
-            $rit['rotation_id'] = $rotation_id;
-            $rit['article_id'] = $idArticle;
-            $rit['amount'] = $amount;
+			$rit['rotation_id'] = $rotation_id;
+			$rit['article_id'] = $idArticle;
+			$rit['amount'] = $amount;
 
-            $rotationItemsTable->create($rit);
+			$rotationItemsTable->create($rit);
 
-        } catch (Exception $e) {
-            die($e .'No se pudo guardar el artículo '. $idArticle .' como item de la rotación.');
-        }
+		} catch (Exception $e) {
+			die($e .'No se pudo guardar el artículo '. $idArticle .' como item de la rotación.');
+		}
 
-    } #saveInRotationItemTable
+	} #saveInRotationItemTable
 
-    private function saveInStockTable($disminuir, $idBranch, $idArticle, $amount)
-    {
-        try {
+	private function saveInStockTable($disminuir, $idBranch, $idArticle, $amount)
+	{
+		try {
 
-            $articleStock = Stock::where('article_id', $idArticle)->where('branch_id', $idBranch)->first();
-
-            if(!empty($articleStock)) {
-                if ($disminuir == true) {
-                    $articleStock->stock -= $amount;
-                } else {
-                    $articleStock->stock += $amount;
-                }
-                $articleStock->update();
-            } else {
-                $StockTable = new Stock();
+			$articleStock = Stock::where('article_id', $idArticle)->where('branch_id', $idBranch)->first();
+
+			if(!empty($articleStock)) {
+				if ($disminuir == true) {
+					$articleStock->stock -= $amount;
+				} else {
+					$articleStock->stock += $amount;
+				}
+				$articleStock->update();
+			} else {
+				$StockTable = new Stock();
 
-                $stock['branch_id'] = $idBranch;
-                $stock['article_id'] = $idArticle;
-                $stock['stock'] = $amount;
-                $stock['minstock'] = 0;
+				$stock['branch_id'] = $idBranch;
+				$stock['article_id'] = $idArticle;
+				$stock['stock'] = $amount;
+				$stock['minstock'] = 0;
 
-                $StockTable->create($stock);
-            } #if
+				$StockTable->create($stock);
+			} #if
 
-        } catch (Exception $e) {
-            die('No se pudo modificar el stock del artículo'. $idArticle .' en la sucursal '. $idBranch);
-        }
-    }
+		} catch (Exception $e) {
+			die('No se pudo modificar el stock del artículo'. $idArticle .' en la sucursal '. $idBranch);
+		}
+	}
 
-    public function getItems($idRotation)
-    {
-        $title = 'Items de la rotación';
-        $rotation = Rotation::find($idRotation);
-        $ritems = RotationItem::where('rotation_id', '=', $idRotation)->get();
+	public function getItems($idRotation)
+	{
+		$title = 'Items de la rotación';
+		$rotation = Rotation::find($idRotation);
+		$ritems = RotationItem::where('rotation_id', '=', $idRotation)->get();
 
-        return View::make('rotations.items')
-            ->with(compact('title', 'rotation', 'ritems'));
-    }
+		return View::make('rotations.items')
+			->with(compact('title', 'rotation', 'ritems'));
+	}
 
-    public function postRotationStore()
-    {
-        $input = Input::all();
+	public function postRotationStore()
+	{
+		$input = Input::all();
 
-        try {
+		try {
 
-            /*Verifica que la remisión de verdad está activa*/
-            $rotation = Rotation::find($input['rotation']);
-            if (in_array($rotation->status, array('finalizado', 'cancelado'))) {
-                return Redirect::to('rotations/items/'. $input['rotation']);
-            }
+			/*Verifica que la remisión de verdad está activa*/
+			$rotation = Rotation::find($input['rotation']);
+			if (in_array($rotation->status, array('finalizado', 'cancelado'))) {
+				return Redirect::to('rotations/items/'. $input['rotation']);
+			}
 
-            $rotations = RotationItem::where('rotation_id', '=', $input['rotation'])->get();
+			$rotations = RotationItem::where('rotation_id', '=', $input['rotation'])->get();
 
 
-            if($input['notaparcial'] == 'false')
-            {
-                foreach ($rotations as $rotation) {
-                    if (isset($input['branch_from'])) {
-                        self::saveInStockTable(true, $input['branch_from'], $rotation->article->id, $rotation->amount);
-                    } elseif (isset($input['branch_to'])) {
-                        self::saveInStockTable(false, $input['branch_to'], $rotation->article->id, $rotation->amount);
-                    }
-                } #foreach
+			if($input['notaparcial'] == 'false')
+			{
+				foreach ($rotations as $rotation) {
+					if (isset($input['branch_from'])) {
+						self::saveInStockTable(true, $input['branch_from'], $rotation->article->id, $rotation->amount);
+					} elseif (isset($input['branch_to'])) {
+						self::saveInStockTable(false, $input['branch_to'], $rotation->article->id, $rotation->amount);
+					}
+				} #foreach
 
-                /*Cambiar el status en la tabla rotation a finalizado*/
-                $rotation = Rotation::find($input['rotation']);
-                if (isset($input['branch_from'])) {
-                    $rotation->status = 'pendiente en destino';
-                } elseif (isset($input['branch_to'])) {
-                    $rotation->status = 'finalizado';
-                }
-                $rotation->update();
+				/*Cambiar el status en la tabla rotation a finalizado*/
+				$rotation = Rotation::find($input['rotation']);
+				if (isset($input['branch_from'])) {
+					$rotation->status = 'pendiente en destino';
+				} elseif (isset($input['branch_to'])) {
+					$rotation->status = 'finalizado';
+				}
+				$rotation->update();
 
-            } #if notaparcial == 'false'
+			} #if notaparcial == 'false'
 
-            $rotationStore = new RotationStore();
-            $rs['rotation_id'] = $input['rotation'];
-            $rs['user_id'] = Auth::user()->id;
+			$rotationStore = new RotationStore();
+			$rs['rotation_id'] = $input['rotation'];
+			$rs['user_id'] = Auth::user()->id;
 
-            if (isset($input['comments_from'])) {
-                $rs['comments_from'] = $input['comments_from'];
-            } elseif (isset($input['comments_to'])) {
-                $rs['comments_to'] = $input['comments_to'];
-            }
+			if (isset($input['comments_from'])) {
+				$rs['comments_from'] = $input['comments_from'];
+			} elseif (isset($input['comments_to'])) {
+				$rs['comments_to'] = $input['comments_to'];
+			}
 
-            $rotationStore->create($rs);
+			$rotationStore->create($rs);
 
-            return Redirect::to('rotations/items/'. $input['rotation']);
+			return Redirect::to('rotations/items/'. $input['rotation']);
 
-        } catch (Exception $e) {
+		} catch (Exception $e) {
 
-            Session::flash('message', 'Ha ocurrido un error, verifique si ya se han guardado los datos.');
+			Session::flash('message', 'Ha ocurrido un error, verifique si ya se han guardado los datos.');
 
-            return Redirect::to('rotations/items/'. $input['rotation']);
-        }
-    } #postRotationStore
+			return Redirect::to('rotations/items/'. $input['rotation']);
+		}
+	} #postRotationStore
 
-    public function getCancel($idRotation)
-    {
-        try {
+	public function getCancel($idRotation)
+	{
+		try {
 
-            $rotation = Rotation::find($idRotation);
+			$rotation = Rotation::find($idRotation);
 
-            if (!in_array($rotation->status, array('pendiente en destino', 'finalizado'))) {
+			if (!in_array($rotation->status, array('pendiente en destino', 'finalizado'))) {
 
-                $rotation->status = 'cancelado';
-                $rotation->update();
+				$rotation->status = 'cancelado';
+				$rotation->update();
 
-            }
+			}
 
-            return Redirect::to('rotations/items/'. $idRotation);
+			return Redirect::to('rotations/items/'. $idRotation);
 
-        } catch (Exception $e) {
-            die('No fue posible cancelar la rotación.');
-        }
-    }
+		} catch (Exception $e) {
+			die('No fue posible cancelar la rotación.');
+		}
+	}
 
-    public function getFilterByStatus()
-    {
-        $title = 'Rotaciones';
-        $input = Input::all();
+	public function getFilterByStatus()
+	{
+		$title = 'Rotaciones';
+		$input = Input::all();
 
-        $rotations = Rotation::where('status', 'like', $input['estado'])->orderBy('id', 'desc')->paginate(6);
+		$rotations = Rotation::where('status', 'like', $input['estado'])->orderBy('id', 'desc')->paginate(6);
 
-        $filterRotation = 'Rotaciones con estado <strong>'. $input['estado'] .'</strong>';
+		$filterRotation = 'Rotaciones con estado <strong>'. $input['estado'] .'</strong>';
 
-        return View::make('rotations.index')
-                ->with(compact('title', 'rotations', 'filterRotation', 'input'));
+		return View::make('rotations.index')
+				->with(compact('title', 'rotations', 'filterRotation', 'input'));
 
-    } #getFilterByStatus
+	} #getFilterByStatus
 
-    public function getFilterByStatusBranch()
-    {
-        $title = 'Rotaciones';
-        $input = Input::all();
+	public function getFilterByStatusBranch()
+	{
+		$title = 'Rotaciones';
+		$input = Input::all();
 
-        $branch = Branche::find($input['branch_id']);
+		$branch = Branche::find($input['branch_id']);
 
-        $rotations = Rotation::where('status', '=', $input['estado'])->whereRaw('branch_from = "'. $input['branch_id'] .'" OR branch_to = "'. $input['branch_id'] .'"')->orderBy('id', 'desc')->paginate(6);
+		$rotations = Rotation::where('status', '=', $input['estado'])->whereRaw('branch_from = "'. $input['branch_id'] .'" OR branch_to = "'. $input['branch_id'] .'"')->orderBy('id', 'desc')->paginate(6);
 
-        $filterRotation = 'Rotaciones con estado <strong>'. $input['estado'] .'</strong> en la sucursal <strong>'. $branch->name .'</strong>';
+		$filterRotation = 'Rotaciones con estado <strong>'. $input['estado'] .'</strong> en la sucursal <strong>'. $branch->name .'</strong>';
 
-        return View::make('rotations.index')
-                ->with(compact('title', 'rotations', 'filterRotation', 'input'));
+		return View::make('rotations.index')
+				->with(compact('title', 'rotations', 'filterRotation', 'input'));
 
-    } #getFilterByStatusBranch
+	} #getFilterByStatusBranch
 
-    public function getFilterById()
-    {
-        $title = 'Rotación';
-        $input = Input::all();
+	public function getFilterById()
+	{
+		$title = 'Rotación';
+		$input = Input::all();
 
-        $rotations = Rotation::where('id', '=', $input['idRotation'])->orderBy('id', 'desc')->paginate(6);
+		$rotations = Rotation::where('id', '=', $input['idRotation'])->orderBy('id', 'desc')->paginate(6);
 
-        $filterRotation = 'Rotación con código '. $input['idRotation'] .'</strong>';
+		$filterRotation = 'Rotación con código '. $input['idRotation'] .'</strong>';
 
-        return View::make('rotations.index')
-                ->with(compact('title', 'rotations', 'filterRotation', 'input'));
+		return View::make('rotations.index')
+				->with(compact('title', 'rotations', 'filterRotation', 'input'));
 
-    } #getFilterById
+	} #getFilterById
 
-    public function getFilterByArticle()
-    {
-        $title = 'Rotaciones';
-        $input = Input::all();
-        $idsRotation = '0';
+	public function getFilterByArticle()
+	{
+		$title = 'Rotaciones';
+		$input = Input::all();
+		$idsRotation = '0';
 
-        $article = Article::find($input['article']);
+		$article = Article::find($input['article']);
 
-        if (!empty($article)) {
+		if (!empty($article)) {
 
-            foreach ($article->rotationItems as $ritems) {
-                $idsRotation .= $ritems->rotation->id .',';
-            }
+			foreach ($article->rotationItems as $ritems) {
+				$idsRotation .= $ritems->rotation->id .',';
+			}
 
-        } #if
+		} #if
 
 
-        $idsRotation = trim($idsRotation, ',');
+		$idsRotation = trim($idsRotation, ',');
 
-        $rotations = Rotation::whereRaw('id in ('. $idsRotation .')')->orderBy('id', 'desc')->paginate(6);
+		$rotations = Rotation::whereRaw('id in ('. $idsRotation .')')->orderBy('id', 'desc')->paginate(6);
 
-        $filterRotation = 'Rotaciones que contienen el artículo <strong>'. $input['article'] .'</strong>';
+		$filterRotation = 'Rotaciones que contienen el artículo <strong>'. $input['article'] .'</strong>';
 
-        return View::make('rotations.index')
-                ->with(compact('title', 'rotations', 'filterRotation', 'input'));
+		return View::make('rotations.index')
+				->with(compact('title', 'rotations', 'filterRotation', 'input'));
 
-    } #getFilterByArticle
+	} #getFilterByArticle
 
-    public function getFilterByDates()
-    {
-        $title = 'Rotaciones';
-        $input = Input::all();
+	public function getFilterByDates()
+	{
+		$title = 'Rotaciones';
+		$input = Input::all();
 
-        $rotations = Rotation::whereRaw('created_at BETWEEN "'. $input['fecha1'] .'" AND "'. $input['fecha2'] .'"')->orderBy('id', 'desc')->paginate(6);
+		$rotations = Rotation::whereRaw('created_at BETWEEN "'. $input['fecha1'] .'" AND "'. $input['fecha2'] .'"')->orderBy('id', 'desc')->paginate(6);
 
-        $filterRotation = 'Rotaciones con fecha de creación entre <strong>'. $input['fecha1'] .'</strong> y <strong>'. $input['fecha2'] .'</strong>';
+		$filterRotation = 'Rotaciones con fecha de creación entre <strong>'. $input['fecha1'] .'</strong> y <strong>'. $input['fecha2'] .'</strong>';
 
-        return View::make('rotations.index')
-                ->with(compact('title', 'rotations', 'filterRotation', 'input'));
+		return View::make('rotations.index')
+				->with(compact('title', 'rotations', 'filterRotation', 'input'));
 
-    } #getFilterByDates
+	} #getFilterByDates
 
-    public function getFilterByArticleDates()
-    {
-        $title = 'Rotaciones';
-        $input = Input::all();
-        $idsRotation = '0';
-        $amounts = array();
-        $articleName = $input['article'];
+	public function getFilterByArticleDates()
+	{
+		$title = 'Rotaciones';
+		$input = Input::all();
+		$idsRotation = '0';
+		$amounts = array();
+		$articleName = $input['article'];
 
-        $article = Article::find($input['article']);
+		$article = Article::find($input['article']);
 
-        if (!empty($article)) {
-            $articleName = $article->name;
+		if (!empty($article)) {
+			$articleName = $article->name;
 
-            foreach ($article->rotationItems as $ritem) {
-                $idsRotation .= $ritem->rotation->id .',';
-                $amounts[$ritem->rotation->id] = $ritem->amount;
-            }
+			foreach ($article->rotationItems as $ritem) {
+				$idsRotation .= $ritem->rotation->id .',';
+				$amounts[$ritem->rotation->id] = $ritem->amount;
+			}
 
-        }
+		}
 
-        $idsRotation = trim($idsRotation, ',');
+		$idsRotation = trim($idsRotation, ',');
 
-        $rotations = Rotation::whereRaw('id in ('. $idsRotation .')')
-            ->whereRaw('created_at BETWEEN "'. $input['fecha1'] .'" AND "'. $input['fecha2'] .'"')
-            ->orderBy('id', 'asc')->paginate(100);
+		$rotations = Rotation::whereRaw('id in ('. $idsRotation .')')
+			->whereRaw('created_at BETWEEN "'. $input['fecha1'] .'" AND "'. $input['fecha2'] .'"')
+			->orderBy('id', 'asc')->paginate(100);
 
-        $filterRotation = 'Rotaciones entre <strong>'. $input['fecha1'] .'</strong> y <strong>'. $input['fecha2'] .'</strong> que contienen el artículo <strong>'. $articleName .'</strong>';
+		$filterRotation = 'Rotaciones entre <strong>'. $input['fecha1'] .'</strong> y <strong>'. $input['fecha2'] .'</strong> que contienen el artículo <strong>'. $articleName .'</strong>';
 
-        return View::make('rotations.list')
-                ->with(compact('title', 'rotations', 'filterRotation', 'input', 'amounts'));
+		return View::make('rotations.list')
+				->with(compact('title', 'rotations', 'filterRotation', 'input', 'amounts'));
 
-    } #getFilterByArticleDates
+	} #getFilterByArticleDates
 
-    public function getFilterByComments()
-    {
-        $title = 'Rotaciones';
-        $input = Input::all();
+	public function getFilterByComments()
+	{
+		$title = 'Rotaciones';
+		$input = Input::all();
 
-        $rotations = Rotation::whereRaw("comments like '%". $input['comments'] ."%'")->orderBy('id', 'desc')->paginate(6);
+		$rotations = Rotation::whereRaw("comments like '%". $input['comments'] ."%'")->orderBy('id', 'desc')->paginate(6);
 
-        $filterRotation = 'Rotaciones que contienen <strong>'. $input['comments'] .'</strong> en los comentarios del remisionero.';
+		$filterRotation = 'Rotaciones que contienen <strong>'. $input['comments'] .'</strong> en los comentarios del remisionero.';
 
-        return View::make('rotations.index')
-                ->with(compact('title', 'rotations', 'filterRotation', 'input'));
+		return View::make('rotations.index')
+				->with(compact('title', 'rotations', 'filterRotation', 'input'));
 
-    } #getFilterByComments
+	} #getFilterByComments
 
-    public function getFilterByArticleComments()
-    {
-        $title = 'Rotaciones';
-        $input = Input::all();
-        $idsRotation = '0';
+	public function getFilterByArticleComments()
+	{
+		$title = 'Rotaciones';
+		$input = Input::all();
+		$idsRotation = '0';
 
-        $article = Article::find($input['article']);
+		$article = Article::find($input['article']);
 
-        if (!empty($article)) {
+		if (!empty($article)) {
 
-            foreach ($article->rotationItems as $ritems) {
-                $idsRotation .= $ritems->rotation->id .',';
-            }
+			foreach ($article->rotationItems as $ritems) {
+				$idsRotation .= $ritems->rotation->id .',';
+			}
 
-        } #if
+		} #if
 
-        $idsRotation = trim($idsRotation, ',');
+		$idsRotation = trim($idsRotation, ',');
 
-        $rotations = Rotation::whereRaw('id in ('. $idsRotation .')')
-            ->whereRaw('comments like "%'. $input['comments'] .'%"')
-            ->orderBy('id', 'desc')->paginate(6);
+		$rotations = Rotation::whereRaw('id in ('. $idsRotation .')')
+			->whereRaw('comments like "%'. $input['comments'] .'%"')
+			->orderBy('id', 'desc')->paginate(6);
 
-        $filterRotation = 'Rotaciones que contienen el artículo <strong>'. $input['article'] .'</strong> y en los comentarios del remisionero <strong>'. $input['comments'] .'</strong>.';
+		$filterRotation = 'Rotaciones que contienen el artículo <strong>'. $input['article'] .'</strong> y en los comentarios del remisionero <strong>'. $input['comments'] .'</strong>.';
 
-        return View::make('rotations.index')
-                ->with(compact('title', 'rotations', 'filterRotation', 'input'));
+		return View::make('rotations.index')
+				->with(compact('title', 'rotations', 'filterRotation', 'input'));
 
-    } #getFilterByArticleComments
+	} #getFilterByArticleComments
 
 } #RotationController
