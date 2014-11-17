@@ -27,7 +27,8 @@ class Article extends Eloquent {
         'Pares' => 'Pares',
         'Kilogramos' => 'Kilogramos',
         'Metros' => 'Metros',
-        'Centímetros' => 'Centímetros'
+        'Centímetros' => 'Centímetros',
+				'Bultos' => 'Bultos'
     );
 
     public function stocks()
