@@ -47,5 +47,7 @@
 
 	</div>
 
+	@include('analyticstracking')
+	
 </body>
 </html>
