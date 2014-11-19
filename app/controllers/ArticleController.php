@@ -183,17 +183,31 @@ class ArticleController extends BaseController {
 		}
 		else if($input['filterBy'] == 'comments')
 		{
+			$palabras = explode(' ', $input['search']);
+
+			$articles = Article::where('comments', 'LIKE', '%%');
+			foreach ($palabras as $palabra)
+			{
+				$articles->where('comments', 'LIKE', '%'. $palabra .'%');
+			}
+			$articles = $articles->orderBy('comments', 'ASC')->paginate(6);
+
 			$filtro = 'Artículos que contienen en datos adicionales <strong>'. $input['search'] .'</strong>.';
-
-			$articles = Article::whereRaw("comments like '%". $input['search'] ."%'")->orderBy('name', 'asc')->paginate(6);
-
+			//$articles = Article::whereRaw("comments like '%". $input['search'] ."%'")->orderBy('name', 'asc')->paginate(6);
 		}
 		else
 		{ // Se asume que el filtro es por nombre.
+			$palabras = explode(' ', $input['search']);
+
+			$articles = Article::where('name', 'LIKE', '%%');
+			foreach ($palabras as $palabra)
+			{
+				$articles->where('name', 'LIKE', '%'. $palabra .'%');
+			}
+			$articles = $articles->orderBy('name', 'ASC')->paginate(6);
 
 			$filtro = 'Artículos que contienen en el nombre <strong>'. $input['search'] .'</strong>.';
-
-			$articles = Article::whereRaw("name like '%". $input['search'] ."%'")->orderBy('name', 'asc')->paginate(6);
+			//$articles = Article::whereRaw("name like '%". $input['search'] ."%'")->orderBy('name', 'asc')->paginate(6);
 		}
 
 
