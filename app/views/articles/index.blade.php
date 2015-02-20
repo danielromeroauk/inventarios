@@ -194,7 +194,7 @@
 							@foreach($article->stocks as $stock)
 								<tr>
 									<td>{{ $stock->branch->name }}</td>
-									<td>{{ $article->disponible($stock->branch) .' '. $article->unit }}</td>
+									<td>{{ number_format($article->disponible($stock->branch), 2, ',', '.') .' '. $article->unit }}</td>
 								</tr>
 							@endforeach
 						</table>

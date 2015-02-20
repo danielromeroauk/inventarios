@@ -4,9 +4,12 @@
 	"keywords": ["framework", "laravel", "inventarios", "adsiar", "construimportados"],
 	"require": {
 		"laravel/framework": "4.0.10",
-		"way/generators": "dev-master",
-		"phpoffice/phpexcel": "dev-develop",
-		"intervention/image": "dev-master"
+		"phpoffice/phpexcel": "1.8.0",
+		"intervention/image": "2.1.1"
+	},
+	"require-dev": {
+		"way/generators": "~2.0",
+		"barryvdh/laravel-debugbar": "1.8.*@dev"
 	},
 	"autoload": {
 		"classmap": [
