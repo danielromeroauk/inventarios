@@ -1,5 +1,7 @@
 # inventarios
 
+[![Join the chat at https://gitter.im/danielromeroauk/inventarios](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/danielromeroauk/inventarios?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Aplicación realizada con laravel 4.0.10, un framework con sintaxis elegante que facilita el desarrollo de aplicaciones web.
 
 ## Captura de pantalla del informe de artículos
