@@ -311,7 +311,7 @@ class ArticleController extends BaseController {
 		}
 		catch (Exception $e)
 		{
-			return Redirect::to('articles/search?filterBy=id&search='. $idArticle)->with(array('message' => '<p>La imagen no se pudo subir, revisa el formato (jpg,jpeg,gif,png) y el tamaño del archivo (max:1000KB).</p>'));
+			return Redirect::to('articles/search?filterBy=id&search='. $idArticle)->with(array('message' => "<p>$e</p>".'<p>La imagen no se pudo subir, revisa el formato (jpg,jpeg,gif,png) y el tamaño del archivo (max:1000KB).</p>'));
 		}
 
 	} #postImage
