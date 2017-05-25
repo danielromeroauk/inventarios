@@ -126,14 +126,18 @@
 						<tr>
 							<th>Código</th>
 							<th>Medida</th>
-							<th>Costo</th>
+							@if(Auth::check() && !Auth::user()->permitido('vendedor'))
+								<th>Costo</th>
+							@endif
 							<th>Precio</th>
 							<th>IVA</th>
 						</tr>
 						<tr>
 							<td>{{ $article->id }}</td>
 							<td>{{ $article->unit }}</td>
-							<td>{{ number_format($article->cost, 2, ',', '.') }}</td>
+							@if(Auth::check() && !Auth::user()->permitido('vendedor'))
+								<td>{{ number_format($article->cost, 2, ',', '.') }}</td>
+							@endif
 							<td>{{ number_format($article->price, 2, ',', '.') }}</td>
 							<td>{{ $article->iva }}%</td>
 						</tr>
@@ -143,10 +147,12 @@
 						<p class="well">{{ $article->comments }}</p>
 					@endif
 
-					<a href="{{ url('articles/show-changes/'. $article->id) }}" class="link">
-						<span class="glyphicon glyphicon-road"></span>
-						Ver historial de cambios
-					</a>
+					@if(Auth::check() && !Auth::user()->permitido('vendedor'))
+						<a href="{{ url('articles/show-changes/'. $article->id) }}" class="link">
+							<span class="glyphicon glyphicon-road"></span>
+							Ver historial de cambios
+						</a>
+					@endif
 
 				</div> <!-- /#tab1 -->
 
