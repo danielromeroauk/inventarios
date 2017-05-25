@@ -157,6 +157,10 @@ class ArticleController extends BaseController {
 
 	public function getShowChanges($idArticle)
 	{
+        if(Auth::user()->permitido('vendedor')) {
+            App::abort(403, 'Unauthorized action.');
+        }
+
 		$article = DB::table('article_changes')
 			->where('article_id', '=', $idArticle)
 			->orderBy('created_at', 'desc')

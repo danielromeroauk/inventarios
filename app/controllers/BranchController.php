@@ -11,7 +11,11 @@ class BranchController extends BaseController {
 
 	public function getIndex()
 	{
-		$title = "Sucursales";
+        if(Auth::user()->permitido('vendedor')) {
+           App::abort(403, 'Unauthorized action.');
+        }
+
+        $title = "Sucursales";
 
         $branches = Branche::all();
 
@@ -135,6 +139,10 @@ class BranchController extends BaseController {
 
     public function getExcelByBranch($idBranch)
     {
+        if(Auth::user()->permitido('vendedor')) {
+            App::abort(403, 'Unauthorized action.');
+        }
+
         $branch = Branche::find($idBranch);
 
         if(empty($branch))

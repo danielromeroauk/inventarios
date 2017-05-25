@@ -101,7 +101,9 @@
           <li> {{ HTML::link('users/list', 'Usuarios') }} </li>
         @endif
 
-        <li> {{ HTML::link('branches', 'Sucursales') }} </li>
+        @if(!Auth::user()->permitido('vendedor'))
+          <li> {{ HTML::link('branches', 'Sucursales') }} </li>
+        @endif
 
         <li> {{ HTML::link('users/change-password', 'Cambiar password') }} </li>
 
