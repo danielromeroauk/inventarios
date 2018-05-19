@@ -1,11 +1,14 @@
-#<IfModule mod_rewrite.c>
-#	Options -MultiViews
-#	RewriteEngine On
-#	RewriteBase /
-#	RewriteCond %{REQUEST_FILENAME} !-d
-#	RewriteCond %{REQUEST_FILENAME} !-f
-#	RewriteRule ^ index.php [L]
-
+<IfModule mod_rewrite.c>
+	Options -MultiViews
+	RewriteEngine On
+	RewriteBase /
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteCond %{REQUEST_FILENAME} !-f
 #	RewriteCond %{HTTP_HOST} ^www.construimportados.adsiar.com [NC]
 #	RewriteRule ^(.*)$ http://construimportados.adsiar.com/$1 [L,R=301]
-#</IfModule>
+	RewriteRule ^ index.php [L]
+</IfModule>
+#
+#<FilesMatch "\.(js)$">
+#    Header set Cache-Control "max-age=86400, public"
+#</FilesMatch>

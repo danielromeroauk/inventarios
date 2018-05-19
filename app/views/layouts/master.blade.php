@@ -23,7 +23,7 @@
 	{{ HTML::style('css/inventarios.css') }}
 
 	{{ HTML::script('js/jconfirmaction.jquery.js') }}
-	{{ HTML::script('js/contador.js?year=2018') }}
+	{{ HTML::script('js/contador.js?year=2019') }}
 	{{ HTML::script('js/inventarios.js') }}
 
 	@yield('head')
